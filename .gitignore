@@ -1,0 +1,14 @@
+# Host-specific wiring — private rails live ONLY here, never in tracked files
+engine/local.env
+
+# Runtime checkpoint state (regenerated per run; engine_state.json IS tracked)
+.state/runs/*.json
+.state/runs/*.pid
+.state/runs/*.sid
+.state/runs/*.tmp
+
+# Detached-worker stdout logs (runtime traces; logs/runs/ corpus IS tracked)
+logs/workers/*.log
+
+# Local proxy config (env placeholder lives local-only by policy)
+SystemsBenchPitchSite/proxy.json

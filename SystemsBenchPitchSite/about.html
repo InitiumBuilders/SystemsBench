@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Outlier.Systems — The Lab. The Research DAO. The Signal.</title>
+<meta name="description" content="Outlier.Systems — the lab, the research DAO, the signal. Operator and steward of SystemsBench. Systems innovation in a whole new light. Contact: EVOLVE@Outlier.Systems" />
+<meta name="theme-color" content="#070709" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@200;300;400;500;600;700;800&family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#070709;--bg-1:#0c0d10;--bg-2:#121317;--bg-3:#181a1f;
+  --line:rgba(180,200,230,.10);--line-2:rgba(180,200,230,.18);
+  --ink:#eef6ff;--ink-soft:#cdd6e0;--muted:#a4a9b4;--faint:#7e8590;
+  --c-cyan:#22d3ee;--c-sky:#38bdf8;--c-blue:#3b82f6;--c-indigo:#6366f1;--c-violet:#a855f7;--c-magenta:#d946ef;--accent:#54c6ef;
+  --band:linear-gradient(90deg,#22d3ee 0%,#38bdf8 22%,#3b82f6 44%,#6366f1 64%,#a855f7 82%,#d946ef 100%);
+  --band-soft:linear-gradient(120deg,rgba(34,211,238,.16),rgba(99,102,241,.14) 50%,rgba(217,70,239,.13));
+  --sans:'Sora',system-ui,-apple-system,sans-serif;--mono:'IBM Plex Mono',ui-monospace,monospace;
+  --maxw:1120px;--r:18px;--r-sm:12px;--ease:cubic-bezier(.22,.61,.36,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink-soft);line-height:1.62;font-weight:300;
+  overflow-x:hidden;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background:radial-gradient(1100px 720px at 80% -10%,rgba(99,102,241,.14),transparent 60%),
+  radial-gradient(900px 620px at 8% 6%,rgba(34,211,238,.10),transparent 58%),
+  radial-gradient(1000px 800px at 50% 110%,rgba(217,70,239,.09),transparent 60%)}
+body::after{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;opacity:.5;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:64px 64px;mask-image:radial-gradient(circle at 50% 30%,#000 0%,transparent 78%)}
+a{color:inherit;text-decoration:none}::selection{background:rgba(84,198,239,.28);color:#fff}
+.wrap{width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:22px}
+section{position:relative;padding:78px 0}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--faint);
+  display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.eyebrow::before{content:"";width:26px;height:1px;background:var(--band)}
+h1,h2,h3{font-weight:600;color:var(--ink);line-height:1.1;letter-spacing:-.02em}
+h2{font-size:clamp(26px,5vw,42px);margin-bottom:16px}h3{font-size:clamp(18px,3vw,22px)}
+.lede{font-size:clamp(16px,2.4vw,19px);color:var(--ink-soft);font-weight:300;max-width:62ch}
+.gradient-text{background:var(--band);-webkit-background-clip:text;background-clip:text;color:transparent}
+.divider{height:1px;background:var(--line);width:100%}
+
+.nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(16px);background:rgba(7,7,9,.72);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.brand{display:flex;align-items:center;gap:11px;font-weight:600;color:var(--ink);font-size:15px}
+.dot{width:11px;height:11px;border-radius:50%;background:var(--band);box-shadow:0 0 16px rgba(84,198,239,.7);flex:none;animation:pulse 3.2s var(--ease) infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:.95}50%{transform:scale(1.22);opacity:1}}
+.nav-cta{font-family:var(--mono);font-size:12px;letter-spacing:.06em;padding:8px 15px;border:1px solid var(--line-2);border-radius:99px;color:var(--ink);transition:.22s}
+.nav-cta:hover{border-color:var(--accent);background:rgba(84,198,239,.08)}
+
+.hero{padding:84px 0 56px;text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11.5px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--ink-soft);padding:7px 16px;border:1px solid var(--line-2);border-radius:99px;background:var(--band-soft);margin-bottom:28px}
+.hero h1{font-size:clamp(34px,7vw,68px);font-weight:700;letter-spacing:-.035em;margin-bottom:14px}
+.hero .three{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;font-family:var(--mono);font-size:13px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:26px}
+.hero .three span{color:var(--ink)}
+.manifesto{max-width:62ch;margin:0 auto;font-size:clamp(16px,2.5vw,19px);color:var(--ink-soft);line-height:1.72;font-weight:300}
+.manifesto b{color:var(--ink);font-weight:500}
+
+.poetic{border-left:2px solid;border-image:var(--band) 1;padding:14px 0 14px 26px;margin:34px 0;
+  font-size:clamp(17px,3vw,22px);font-weight:300;color:var(--ink);line-height:1.5;letter-spacing:-.01em}
+.poetic b{font-weight:500}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:28px}
+.card{border:1px solid var(--line);border-radius:var(--r);background:var(--bg-1);padding:26px 24px;transition:.3s var(--ease)}
+.card:hover{border-color:var(--line-2);transform:translateY(-3px)}
+.card .tag{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.card h3{margin-bottom:8px}.card p{font-size:14px;color:var(--muted);line-height:1.6}
+@media(max-width:720px){.grid2{grid-template-columns:1fr}}
+
+.services{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:26px}
+.svc{padding:20px 20px;border:1px solid var(--line);border-radius:var(--r-sm);background:rgba(7,7,9,.4)}
+.svc .sn{font-family:var(--mono);font-size:11px;color:var(--c-cyan);letter-spacing:.14em;margin-bottom:8px}
+.svc .st{font-weight:600;color:var(--ink);font-size:15.5px;margin-bottom:6px}
+.svc .sd{font-size:13px;color:var(--muted);line-height:1.55}
+
+/* OOSINT */
+.oosint-letters{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:26px}
+.ol{padding:20px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--bg-1)}
+.ol .l{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.1em;background:var(--band);
+  -webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:8px}
+.ol .lt{font-weight:600;color:var(--ink);font-size:14.5px;margin-bottom:4px}
+.ol .ld{font-size:12.5px;color:var(--muted);line-height:1.5}
+.flow{display:flex;flex-wrap:wrap;gap:9px;margin-top:22px;justify-content:flex-start}
+.flow-node{font-family:var(--mono);font-size:12px;letter-spacing:.04em;padding:9px 14px;border-radius:99px;
+  border:1px solid var(--line-2);color:var(--ink-soft);background:rgba(18,19,23,.6)}
+.flow-arrow{color:var(--faint);align-self:center}
+.ethics{margin-top:22px;font-size:14px;color:var(--ink-soft);padding:18px 20px;border:1px solid var(--line-2);
+  border-radius:var(--r-sm);background:var(--band-soft)}
+.ethics b{color:var(--ink);font-weight:500}
+
+.final{text-align:center;padding:90px 0 70px}
+.final h2{font-size:clamp(28px,5.5vw,48px);font-weight:700;letter-spacing:-.03em;margin-bottom:16px}
+.contact-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:26px}
+.contact-chip{font-family:var(--mono);font-size:12.5px;padding:11px 18px;border:1px solid var(--line-2);border-radius:99px;color:var(--ink-soft);transition:.22s}
+.contact-chip:hover{border-color:var(--accent);color:var(--ink);background:rgba(84,198,239,.06)}
+.contact-chip b{color:var(--c-cyan);font-weight:500}
+footer{border-top:1px solid var(--line);padding:40px 0 60px;text-align:center}
+footer .f-lines{font-size:13px;color:var(--muted);line-height:1.9}
+footer .f-lines a{color:var(--ink-soft);border-bottom:1px solid var(--line-2)}
+footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);letter-spacing:.14em;margin-top:18px}
+
+/* ---- MotusViews / VotusViews counters ---- */
+.motusbar{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;padding:10px 0}
+.motusbar.top{border-bottom:1px solid var(--line);background:rgba(7,7,9,.4)}
+.counter{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;
+  padding:7px 14px;border:1px solid var(--line-2);border-radius:99px;background:rgba(18,19,23,.55);color:var(--muted);transition:.3s}
+.counter:hover{border-color:var(--accent)}
+.counter .cdot{width:7px;height:7px;border-radius:50%;background:var(--c-cyan);box-shadow:0 0 9px var(--c-cyan);flex:none;animation:cpulse 2.6s ease-in-out infinite}
+@keyframes cpulse{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.25)}}
+.counter .clabel{color:var(--faint);text-transform:uppercase;letter-spacing:.12em;font-size:10px}
+.counter .cval{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums;min-width:1ch}
+.counter .cstamp{color:var(--faint);font-size:9.5px;letter-spacing:.1em}
+.counter.counter-live .cdot{background:var(--c-cyan)}
+.tg-join{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:13px;letter-spacing:.03em;
+  padding:12px 22px;border-radius:99px;border:1px solid transparent;color:#061018;font-weight:600;
+  background:linear-gradient(92deg,#22d3ee,#38bdf8 55%,#6366f1);box-shadow:0 6px 30px rgba(56,189,248,.22);transition:.25s var(--ease)}
+.tg-join:hover{transform:translateY(-2px);box-shadow:0 10px 38px rgba(56,189,248,.34)}
+.tg-join svg{width:18px;height:18px;flex:none}
+.tg-wrap{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:24px}
+
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+@media(max-width:600px){section{padding:58px 0}.wrap{padding-inline:18px}}
+</style>
+</head>
+<body>
+
+<!-- MOTUSVIEWS — TOP -->
+<div class="motusbar top">
+  <span class="counter" data-counter title="MotusViews — lifetime views of the SystemsBench pitch">
+    <span class="cdot"></span><span class="clabel">MotusViews</span>
+    <span class="cval" data-motus>—</span><span class="cstamp" data-counter-stamp></span>
+  </span>
+</div>
+
+<nav class="nav">
+  <div class="wrap">
+    <a class="brand" href="index.html"><span class="dot"></span> SystemsBench</a>
+    <a class="nav-cta" href="index.html">← Back to SystemsBench</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="hero-badge">Operator &amp; Steward of SystemsBench</span>
+    <h1 class="gradient-text">Outlier.Systems</h1>
+    <div class="three"><span>The Lab.</span> <span>The Research DAO.</span> <span>The Signal.</span></div>
+    <p class="manifesto">We design, build, refine, and evolve systems that change how humanity <b>sees together</b> — how we <b>move together</b> — and how we truly <b>see one another</b>. The systems that stand out. The systems that change how we think, and how we make better decisions together over time. Systems that survive and thrive towards stewardship. <b>The Systems That Sustain.</b> From network-states towards Sacred States. This is Systems Innovation in a whole new light.</p>
+  </div>
+</header>
+
+<div class="wrap"><div class="divider"></div></div>
+
+<!-- MINDSET -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">01 — The Mindset</div>
+    <h2>Systems innovation that has the power to <span class="gradient-text">heal nations.</span></h2>
+    <p class="lede">Here at Outlier.Systems we design systems that go beyond. We design and build systems that grow our humanity — and refuse and reject the types of systems that take it away.</p>
+    <div class="poetic reveal">Systems with soul. Systems with a statement. Systems built for the beyond.<br/><b>Designed to diverge. Built to become.</b></div>
+    <p class="lede">This is community-driven development. Outlier Intelligence as a Service. Systemic solutions to systemic problems. It's time to dance.</p>
+  </div>
+</section>
+
+<div class="wrap"><div class="divider"></div></div>
+
+<!-- STRUCTURE / SERVICES -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">02 — The Structure &amp; The Work</div>
+    <h2>An Outlier Research Organization.</h2>
+    <p class="lede">We study the systems the world runs on — and synthesize the leverage to evolve them. Our work spans systems design, development, evolution, research, and leverage synthesis.</p>
+    <div class="services">
+      <div class="svc reveal"><div class="sn">CORE PRODUCT</div><div class="st">SystemsBench</div><div class="sd">The open-source benchmark for systems intelligence in LLMs — measuring how well a mind thinks in systems and applies leverage.</div></div>
+      <div class="svc reveal"><div class="sn">INTELLIGENCE</div><div class="st">OOSINT</div><div class="sd">The Outlier Open-Source Intelligence Network — public information, properly understood, by a curated community paid to look.</div></div>
+      <div class="svc reveal"><div class="sn">SERVICE</div><div class="st">Outlier Intelligence as a Service</div><div class="sd">See · Map · Move · Make — leverage-synthesis engagements with real organizations facing systemic problems.</div></div>
+      <div class="svc reveal"><div class="sn">EMERGENT</div><div class="st">The Cortex &amp; the EI council</div><div class="sd">Where AI agents — built on the Meadows lineage — synthesize, harmonize, and do collective systems thinking.</div></div>
+    </div>
+    <div class="grid2" style="margin-top:18px">
+      <div class="card reveal"><div class="tag">The Goal</div><h3>The systems that sustain</h3><p>Not systems that extract or addict — systems that grow humanity, compound stewardship, and survive across time. From network-states toward Sacred States.</p></div>
+      <div class="card reveal"><div class="tag">The Method</div><h3>We can't control systems — but we can dance with them</h3><p>After Donella Meadows, "Dancing with Systems." We intervene where the leverage is: small, structural, high-leverage moves — watching the feedback, holding the goal of goodness.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="divider"></div></div>
+
+<!-- OOSINT -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">03 — OOSINT · The Outlier Open-Source Intelligence Network</div>
+    <h2>Open-source intelligence, with an <span class="gradient-text">outlier's eye</span>, run as a network.</h2>
+    <p class="lede">OSINT is the discipline of producing genuine intelligence from sources anyone can legally access: public records, reporting, data, imagery, research. No secrets. No intrusion. Only the signal already in the open, properly understood. OOSINT adds an outlier's eye for the data point others dismiss as noise — and runs it as a distributed body of minds.</p>
+    <div class="oosint-letters">
+      <div class="ol reveal"><div class="l">O — Outlier</div><div class="lt">An outlier's eye for signal</div><div class="ld">Built to notice the anomaly that quietly says the prevailing story is wrong.</div></div>
+      <div class="ol reveal"><div class="l">O — Open-Source</div><div class="lt">Public sources, open methods</div><div class="ld">Everything drawn from legally accessible information, with methods that can be audited. Closed intelligence rots; open intelligence compounds.</div></div>
+      <div class="ol reveal"><div class="l">S/I — Intelligence</div><div class="lt">Understanding, not data</div><div class="ld">Raw information is not intelligence. Intelligence is structured, corroborated, contextualized — usable by someone who must act.</div></div>
+      <div class="ol reveal"><div class="l">N — Network</div><div class="lt">A distributed body of minds</div><div class="ld">Not a desk — a curated community of researchers, AI-paired and outlier-first, paid to look.</div></div>
+    </div>
+    <div class="flow reveal" style="margin-top:24px">
+      <span class="flow-node">Collect</span><span class="flow-arrow">→</span>
+      <span class="flow-node">Connect</span><span class="flow-arrow">→</span>
+      <span class="flow-node">Corroborate</span><span class="flow-arrow">→</span>
+      <span class="flow-node">Contextualize</span><span class="flow-arrow">→</span>
+      <span class="flow-node">Communicate</span>
+    </div>
+    <div class="ethics reveal"><b>Privacy &amp; ethics first.</b> No surveillance of individuals. No facial scraping. No harm. OOSINT studies systems and public signal — and ships every claim with its certainty and its sources. We never launder a guess into a fact. Auditability is the feature.</div>
+  </div>
+</section>
+
+<!-- FINAL -->
+<section class="final">
+  <div class="wrap">
+    <div class="eyebrow" style="justify-content:center">Partner · Research · Contribute</div>
+    <h2 class="gradient-text">It's time to dance.</h2>
+    <p class="lede" style="margin:0 auto 8px;text-align:center">For research requests, partnerships, or contributing to Outlier.Systems.</p>
+    <div class="contact-row">
+      <a class="contact-chip" href="mailto:EVOLVE@Outlier.Systems">Contact · <b>EVOLVE@Outlier.Systems</b></a>
+      <a class="contact-chip" href="https://Outlier.Systems/#careers" target="_blank" rel="noopener">Careers at Outlier.Systems →</a>
+      <a class="contact-chip" href="index.html">← SystemsBench</a>
+    </div>
+
+    <!-- TELEGRAM RESEARCH COMMUNITY + VOTUSVIEWS -->
+    <div class="tg-wrap">
+      <a class="tg-join" href="https://t.me/Outlier_Systems" target="_blank" rel="noopener" data-tg-join>
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.95 4.27 18.6 20.05c-.25 1.11-.92 1.38-1.86.86l-5.14-3.79-2.48 2.39c-.27.27-.5.5-1.03.5l.37-5.23 9.52-8.6c.41-.37-.09-.57-.64-.2L5.06 13.1l-5.06-1.58c-1.1-.34-1.12-1.1.23-1.63L20.53 2.7c.92-.34 1.72.21 1.42 1.57z" transform="translate(1 0)"/></svg>
+        Join the Outlier.Systems Research Community
+      </a>
+      <span class="counter" data-counter title="VotusViews — lifetime clicks of the Telegram join link">
+        <span class="cdot"></span><span class="clabel">VotusViews</span>
+        <span class="cval" data-votus>—</span>
+        <span class="cstamp">lifetime joins clicked</span>
+      </span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="f-lines">
+      <b style="color:var(--ink)">Outlier.Systems</b> — An Outlier Research Organization · Est. 2026 · Chicago<br/>
+      Operator &amp; steward of <a href="index.html">SystemsBench</a> · Led by Ember Seoni &amp; August Domanchuk<br/>
+      <a href="mailto:EVOLVE@Outlier.Systems">EVOLVE@Outlier.Systems</a>
+    </div>
+    <div class="f-mantra">SYSTEMIC SOLUTIONS TO SYSTEMIC PROBLEMS · IT'S TIME TO DANCE</div>
+  </div>
+</footer>
+
+<!-- MOTUSVIEWS — BOTTOM -->
+<div class="motusbar">
+  <span class="counter" data-counter title="MotusViews — lifetime views of the SystemsBench pitch">
+    <span class="cdot"></span><span class="clabel">MotusViews</span>
+    <span class="cval" data-motus>—</span><span class="cstamp" data-counter-stamp></span>
+  </span>
+</div>
+
+<script src="motus.js"></script>
+<script>
+(function(){
+  var els=document.querySelectorAll('.reveal');
+  if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in');});return;}
+  var io=new IntersectionObserver(function(en){en.forEach(function(x){if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target);}});},{threshold:.12,rootMargin:'0px 0px -8% 0px'});
+  els.forEach(function(e){io.observe(e);});
+})();
+</script>
+</body>
+</html>

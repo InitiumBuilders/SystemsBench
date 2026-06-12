@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>SystemsBench In Motion — The Framework, Running · Outlier.Systems</title>
+<meta name="description" content="Watch SystemsBench evaluate a model in motion — a cinematic, hypothetical simulation of how the benchmark maps a system, traces leverage on the Meadows ladder, and grades systems intelligence. Led by Ember Seoni & August Domanchuk. Operated by Outlier.Systems." />
+<meta name="theme-color" content="#070709" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@200;300;400;500;600;700;800&family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#070709;--bg-1:#0c0d10;--bg-2:#121317;--bg-3:#181a1f;
+  --line:rgba(180,200,230,.10);--line-2:rgba(180,200,230,.18);
+  --ink:#eef6ff;--ink-soft:#cdd6e0;--muted:#a4a9b4;--faint:#7e8590;
+  --c-cyan:#22d3ee;--c-sky:#38bdf8;--c-blue:#3b82f6;--c-indigo:#6366f1;--c-violet:#a855f7;--c-magenta:#d946ef;--accent:#54c6ef;
+  --band:linear-gradient(90deg,#22d3ee 0%,#38bdf8 22%,#3b82f6 44%,#6366f1 64%,#a855f7 82%,#d946ef 100%);
+  --band-soft:linear-gradient(120deg,rgba(34,211,238,.16),rgba(99,102,241,.14) 50%,rgba(217,70,239,.13));
+  --good:#34d399;--warn:#fbbf24;--bad:#fb7185;
+  --sans:'Sora',system-ui,-apple-system,sans-serif;--mono:'IBM Plex Mono',ui-monospace,monospace;
+  --maxw:1080px;--r:18px;--r-sm:12px;--ease:cubic-bezier(.22,.61,.36,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink-soft);line-height:1.6;font-weight:300;
+  overflow-x:hidden;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background:radial-gradient(1100px 720px at 80% -10%,rgba(99,102,241,.13),transparent 60%),
+  radial-gradient(900px 620px at 8% 6%,rgba(34,211,238,.10),transparent 58%),
+  radial-gradient(1000px 800px at 50% 120%,rgba(217,70,239,.09),transparent 60%)}
+body::after{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;opacity:.42;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:62px 62px;mask-image:radial-gradient(circle at 50% 24%,#000 0%,transparent 80%)}
+a{color:inherit;text-decoration:none}::selection{background:rgba(84,198,239,.28);color:#fff}
+.wrap{width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:22px}
+.gradient-text{background:var(--band);-webkit-background-clip:text;background-clip:text;color:transparent}
+.mono{font-family:var(--mono)}
+
+/* progress rail */
+#rail{position:fixed;top:0;left:0;height:3px;width:0;z-index:90;background:var(--band);box-shadow:0 0 14px rgba(84,198,239,.6);transition:width .12s linear}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(16px);background:rgba(7,7,9,.74);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
+.brand{display:flex;align-items:center;gap:11px;font-weight:600;color:var(--ink);font-size:15px}
+.dot{width:11px;height:11px;border-radius:50%;background:var(--band);box-shadow:0 0 16px rgba(84,198,239,.7);flex:none;animation:pulse 3.2s var(--ease) infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:.95}50%{transform:scale(1.22);opacity:1}}
+.nav-links{display:flex;gap:24px;font-size:13.5px;color:var(--muted)}
+.nav-links a{transition:color .2s}.nav-links a:hover{color:var(--ink)}
+.nav-links a.active{color:var(--ink)}
+.nav-cta{font-family:var(--mono);font-size:12px;letter-spacing:.06em;padding:8px 15px;border:1px solid var(--line-2);border-radius:99px;color:var(--ink);transition:.22s}
+.nav-cta:hover{border-color:var(--accent);background:rgba(84,198,239,.08)}
+.nav-toggle{display:none;align-items:center;justify-content:center;width:40px;height:40px;border:1px solid var(--line-2);border-radius:10px;background:rgba(18,19,23,.6);cursor:pointer}
+.nav-toggle .bars{position:relative;width:18px;height:12px}
+.nav-toggle .bars span{position:absolute;left:0;width:100%;height:1.6px;border-radius:2px;background:var(--ink);transition:.3s var(--ease)}
+.nav-toggle .bars span:nth-child(1){top:0}.nav-toggle .bars span:nth-child(2){top:5px}.nav-toggle .bars span:nth-child(3){top:10px}
+body.nav-open .nav-toggle .bars span:nth-child(1){top:5px;transform:rotate(45deg)}
+body.nav-open .nav-toggle .bars span:nth-child(2){opacity:0}
+body.nav-open .nav-toggle .bars span:nth-child(3){top:5px;transform:rotate(-45deg)}
+.mobile-drawer{position:fixed;inset:0;z-index:55;background:rgba(7,7,9,.97);backdrop-filter:blur(8px);
+  display:flex;flex-direction:column;justify-content:center;gap:6px;padding:0 30px;
+  opacity:0;visibility:hidden;transform:translateY(-8px);transition:.34s var(--ease)}
+body.nav-open .mobile-drawer{opacity:1;visibility:visible;transform:none}
+.mobile-drawer a{display:flex;justify-content:space-between;align-items:center;font-size:25px;font-weight:500;color:var(--ink);
+  padding:15px 0;border-bottom:1px solid var(--line)}
+.mobile-drawer a .ar{font-family:var(--mono);font-size:13px;color:var(--faint)}
+.mobile-drawer .md-foot{margin-top:24px;font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--faint);text-transform:uppercase}
+@media(max-width:820px){.nav-links,.nav-cta{display:none}.nav-toggle{display:flex}}
+
+/* counters */
+.motusbar{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;padding:10px 0;position:relative;z-index:2}
+.motusbar.top{border-bottom:1px solid var(--line);background:rgba(7,7,9,.45)}
+.counter{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;
+  padding:7px 14px;border:1px solid var(--line-2);border-radius:99px;background:rgba(18,19,23,.55);color:var(--muted);transition:.3s}
+.counter:hover{border-color:var(--accent)}
+.counter .cdot{width:7px;height:7px;border-radius:50%;background:var(--c-cyan);box-shadow:0 0 9px var(--c-cyan);flex:none;animation:cpulse 2.6s ease-in-out infinite}
+@keyframes cpulse{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.25)}}
+.counter .clabel{color:var(--faint);text-transform:uppercase;letter-spacing:.12em;font-size:10px}
+.counter .cval{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums;min-width:1ch}
+.counter .cstamp{color:var(--faint);font-size:9.5px;letter-spacing:.1em}
+
+/* hypothetical banner */
+.hypo{position:sticky;top:58px;z-index:50;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#0a0a0c;font-weight:600;
+  padding:7px 14px;background:linear-gradient(90deg,rgba(251,191,36,.92),rgba(251,113,133,.92));text-align:center}
+.hypo .hb-dot{width:7px;height:7px;border-radius:50%;background:#0a0a0c;flex:none;animation:cpulse 1.8s ease-in-out infinite}
+
+/* hero */
+.hero{padding:70px 0 36px;text-align:center;position:relative}
+.hero-eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--faint);margin-bottom:18px}
+.hero h1{font-size:clamp(34px,8.4vw,76px);font-weight:700;letter-spacing:-.035em;line-height:1.02;margin-bottom:14px}
+.hero .tag{font-size:clamp(15px,3.2vw,21px);color:var(--ink-soft);font-weight:300;max-width:54ch;margin:0 auto 26px}
+.hero .tag b{color:var(--ink);font-weight:500}
+.scrollcue{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);margin-top:30px;
+  display:inline-flex;flex-direction:column;align-items:center;gap:8px}
+.scrollcue .arrow{width:1px;height:34px;background:linear-gradient(var(--accent),transparent);position:relative;overflow:hidden}
+.scrollcue .arrow::after{content:"";position:absolute;top:-34px;left:0;width:100%;height:34px;background:var(--accent);animation:drip 1.8s var(--ease) infinite}
+@keyframes drip{0%{top:-34px}100%{top:34px}}
+
+/* subject card */
+.subject{max-width:660px;margin:30px auto 0;border:1px solid var(--line-2);border-radius:var(--r);background:var(--bg-1);
+  padding:22px 24px;text-align:left;position:relative;overflow:hidden}
+.subject::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--band)}
+.subject .sj-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.subject .sj-tag{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;padding:4px 10px;border-radius:99px;
+  border:1px solid rgba(251,191,36,.5);color:var(--warn);background:rgba(251,191,36,.08)}
+.subject h2{font-size:clamp(20px,4vw,26px);font-weight:700;color:var(--ink);letter-spacing:-.02em;margin-bottom:4px}
+.subject .sj-meta{font-family:var(--mono);font-size:12px;color:var(--muted);line-height:1.8}
+.subject .sj-meta b{color:var(--ink-soft);font-weight:500}
+.subject .sj-note{margin-top:12px;font-size:12.5px;color:var(--faint);font-style:italic}
+
+/* acts */
+.act{padding:62px 0;position:relative}
+.act-head{margin-bottom:26px}
+.act-num{font-family:var(--mono);font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:var(--accent);
+  display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.act-num::before{content:"";width:28px;height:1px;background:var(--band)}
+.act h3{font-size:clamp(24px,5.2vw,40px);font-weight:700;color:var(--ink);letter-spacing:-.03em;line-height:1.06;margin-bottom:12px}
+.act .lede{font-size:clamp(15px,2.5vw,18px);color:var(--ink-soft);max-width:60ch;font-weight:300}
+.act .lede b{color:var(--ink);font-weight:500}
+
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+.reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}.reveal.d3{transition-delay:.24s}.reveal.d4{transition-delay:.32s}
+
+/* stage (the animated canvas frame) */
+.stage{margin-top:26px;border:1px solid var(--line);border-radius:var(--r);background:linear-gradient(180deg,rgba(12,13,16,.9),rgba(7,7,9,.6));
+  padding:24px;position:relative;overflow:hidden}
+.stage-label{position:absolute;top:12px;right:16px;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+
+/* stocks & flows (Act II) */
+.sysmap{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:10px}
+.stock{border:1px solid var(--line-2);border-radius:var(--r-sm);background:var(--bg-2);padding:14px 16px;position:relative;overflow:hidden}
+.stock .sk-name{font-size:13.5px;font-weight:600;color:var(--ink);margin-bottom:8px;position:relative;z-index:2}
+.stock .sk-fill{position:absolute;left:0;bottom:0;width:100%;height:0;background:var(--band-soft);transition:height 1.2s var(--ease);z-index:1}
+.stock.fill .sk-fill{height:var(--lvl,60%)}
+.stock .sk-tag{font-family:var(--mono);font-size:10px;color:var(--faint);letter-spacing:.1em;position:relative;z-index:2}
+.loops{display:flex;flex-direction:column;gap:12px;margin-top:16px}
+.loop{display:flex;align-items:center;gap:14px;border:1px solid var(--line);border-radius:var(--r-sm);padding:13px 16px;background:rgba(18,19,23,.5)}
+.loop .lp-badge{font-family:var(--mono);font-weight:700;font-size:14px;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none;border:1.6px solid}
+.loop.r .lp-badge{color:var(--bad);border-color:rgba(251,113,133,.6);box-shadow:0 0 18px rgba(251,113,133,.2)}
+.loop.b .lp-badge{color:var(--good);border-color:rgba(52,211,153,.6);box-shadow:0 0 18px rgba(52,211,153,.2)}
+.loop.r .lp-badge{animation:spinR 7s linear infinite}
+@keyframes spinR{to{transform:rotate(360deg)}}
+.loop .lp-name{font-size:14px;font-weight:600;color:var(--ink)}
+.loop .lp-desc{font-size:12.5px;color:var(--muted);margin-top:2px}
+.delaychip{display:inline-flex;align-items:center;gap:9px;margin-top:14px;font-family:var(--mono);font-size:12px;color:var(--ink-soft);
+  padding:8px 14px;border:1px dashed var(--line-2);border-radius:99px}
+.delaychip .dc-tick{width:8px;height:8px;border-radius:50%;background:var(--c-violet);box-shadow:0 0 10px var(--c-violet);animation:cpulse 1.4s ease-in-out infinite}
+.archetype{margin-top:16px;font-size:13.5px;color:var(--ink-soft);padding:13px 16px;border-radius:var(--r-sm);background:var(--band-soft);border:1px solid var(--line-2)}
+.archetype b{color:var(--ink);font-weight:600}
+
+/* leverage ladder (Act III) */
+.ladder{display:flex;flex-direction:column-reverse;gap:6px;margin-top:8px}
+.rung{display:flex;align-items:center;gap:14px;padding:11px 15px;border:1px solid var(--line);border-radius:var(--r-sm);
+  background:rgba(18,19,23,.5);position:relative;transition:.5s var(--ease)}
+.rung .rg-pt{font-family:var(--mono);font-size:11px;color:var(--faint);width:34px;flex:none;text-align:center}
+.rung .rg-name{font-size:13.5px;color:var(--ink-soft);flex:1}
+.rung .rg-mark{font-family:var(--mono);font-size:15px;flex:none;width:20px;text-align:center}
+.rung.rejected{opacity:.42}
+.rung.rejected .rg-mark{color:var(--bad)}
+.rung.weak .rg-mark{color:var(--warn)}
+.rung.chosen{border-color:transparent;background:linear-gradient(100deg,rgba(34,211,238,.14),rgba(99,102,241,.12));box-shadow:0 0 0 1px rgba(84,198,239,.5),0 10px 40px rgba(56,189,248,.14)}
+.rung.chosen .rg-name{color:var(--ink);font-weight:600}
+.rung.chosen .rg-mark{color:var(--good)}
+.rung.chosen::after{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--band)}
+
+/* the one intervention (Act IV) */
+.intervention{margin-top:10px;text-align:center;padding:34px 24px;border:1px solid var(--line-2);border-radius:var(--r);
+  background:radial-gradient(600px 240px at 50% 0%,rgba(99,102,241,.16),transparent 70%);position:relative;overflow:hidden}
+.intervention .iv-pt{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+.intervention .iv-quote{font-size:clamp(19px,4.4vw,30px);font-weight:600;color:var(--ink);letter-spacing:-.02em;line-height:1.28;max-width:24ch;margin:0 auto}
+.intervention .iv-sub{margin-top:16px;font-size:13.5px;color:var(--muted);max-width:48ch;margin-inline:auto}
+.intervention .iv-glow{position:absolute;left:50%;top:-40px;width:180px;height:180px;transform:translateX(-50%);
+  background:radial-gradient(circle,rgba(84,198,239,.4),transparent 65%);filter:blur(20px);animation:breathe 4s var(--ease) infinite}
+@keyframes breathe{0%,100%{opacity:.5;transform:translateX(-50%) scale(.9)}50%{opacity:.9;transform:translateX(-50%) scale(1.1)}}
+
+/* synthesis (Act V) */
+.axes{display:flex;flex-direction:column;gap:14px;margin-top:8px}
+.axis{border:1px solid var(--line);border-radius:var(--r-sm);background:rgba(18,19,23,.5);padding:14px 16px}
+.axis-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:9px}
+.axis-name{font-size:14px;font-weight:600;color:var(--ink)}
+.axis-name .ax-wt{font-family:var(--mono);font-size:10.5px;color:var(--faint);margin-left:8px;letter-spacing:.06em}
+.axis-score{font-family:var(--mono);font-size:17px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.axis-track{height:8px;border-radius:99px;background:rgba(180,200,230,.08);overflow:hidden}
+.axis-bar{height:100%;width:0;border-radius:99px;background:var(--band);transition:width 1.3s var(--ease)}
+.axis.in .axis-bar{width:var(--sc)}
+.axis-reason{font-size:12px;color:var(--muted);margin-top:9px;line-height:1.5}
+
+.composite{margin-top:24px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.comp-card{border:1px solid var(--line-2);border-radius:var(--r);background:var(--bg-1);padding:22px;text-align:center;position:relative;overflow:hidden}
+.comp-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--band)}
+.comp-card .cc-label{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin-bottom:10px}
+.comp-card .cc-big{font-size:clamp(38px,9vw,58px);font-weight:700;letter-spacing:-.03em;line-height:1}
+.comp-card .cc-sub{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:8px}
+.comp-card .cc-band{font-size:clamp(20px,5vw,28px);font-weight:700;color:var(--ink);letter-spacing:-.02em}
+.comp-card .cc-bandname{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;margin-top:4px}
+@media(max-width:560px){.composite{grid-template-columns:1fr}}
+
+/* band ladder */
+.bandsys{margin-top:22px;display:flex;flex-direction:column-reverse;gap:5px}
+.bandrow{display:flex;align-items:center;gap:12px;padding:10px 14px;border:1px solid var(--line);border-radius:var(--r-sm);background:rgba(18,19,23,.4);font-size:13px;opacity:.5;transition:.5s var(--ease)}
+.bandrow .br-tier{font-family:var(--mono);font-weight:700;width:26px;color:var(--faint)}
+.bandrow .br-name{font-weight:600;color:var(--ink-soft);width:118px;flex:none}
+.bandrow .br-rng{font-family:var(--mono);font-size:11.5px;color:var(--muted);flex:1}
+.bandrow .br-stlc{font-family:var(--mono);font-size:11px;color:var(--faint)}
+.bandrow.lit{opacity:1;border-color:transparent;background:linear-gradient(100deg,rgba(34,211,238,.12),rgba(99,102,241,.1));box-shadow:0 0 0 1px rgba(84,198,239,.4)}
+.bandrow.lit .br-name{color:var(--ink)}
+@media(max-width:560px){.bandrow .br-name{width:auto}.bandrow{flex-wrap:wrap}}
+
+.weakness{margin-top:24px;border-left:2px solid;border-image:linear-gradient(var(--warn),var(--bad)) 1;padding:6px 0 6px 22px}
+.weakness .wk-label{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--warn);margin-bottom:8px}
+.weakness p{font-size:15px;color:var(--ink-soft);line-height:1.6}
+.weakness b{color:var(--ink);font-weight:500}
+
+/* closing */
+.closing{padding:96px 0 40px;text-align:center}
+.closing .cl-line{font-size:clamp(22px,5.2vw,38px);font-weight:600;color:var(--ink);letter-spacing:-.025em;line-height:1.3;max-width:20ch;margin:0 auto 30px}
+.closing .livingband{position:relative;width:min(560px,86vw);height:3px;margin:0 auto 34px;border-radius:99px;
+  background:var(--band);background-size:200% 100%;animation:slide 6s linear infinite;box-shadow:0 0 26px rgba(84,198,239,.4)}
+@keyframes slide{to{background-position:200% 0}}
+.closing .cl-cta{display:flex;gap:13px;justify-content:center;flex-wrap:wrap;margin-top:6px}
+.btn{font-family:var(--mono);font-size:13px;letter-spacing:.03em;padding:13px 22px;border-radius:99px;transition:.25s var(--ease)}
+.btn-primary{color:#061018;font-weight:600;background:linear-gradient(92deg,#22d3ee,#38bdf8 55%,#6366f1);box-shadow:0 6px 30px rgba(56,189,248,.22)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 38px rgba(56,189,248,.34)}
+.btn-ghost{color:var(--ink);border:1px solid var(--line-2)}
+.btn-ghost:hover{border-color:var(--accent);background:rgba(84,198,239,.06)}
+
+footer{border-top:1px solid var(--line);padding:36px 0 50px;text-align:center}
+footer .f-lines{font-size:13px;color:var(--muted);line-height:1.9}
+footer .f-lines a{color:var(--ink-soft);border-bottom:1px solid var(--line-2)}
+footer .f-mantra{font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.14em;margin-top:16px}
+
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}
+  .stock .sk-fill{height:var(--lvl,60%)}.axis .axis-bar{width:var(--sc)}}
+@media(max-width:600px){.act{padding:48px 0}.stage{padding:18px}.sysmap{grid-template-columns:1fr}.wrap{padding-inline:18px}}
+</style>
+</head>
+<body>
+<div id="rail"></div>
+
+<!-- MOTUSVIEWS — TOP -->
+<div class="motusbar top">
+  <span class="counter" data-counter title="MotusViews — lifetime views of the SystemsBench pitch">
+    <span class="cdot"></span><span class="clabel">MotusViews</span>
+    <span class="cval" data-motus>—</span><span class="cstamp" data-counter-stamp></span>
+  </span>
+</div>
+
+<nav class="nav">
+  <div class="wrap">
+    <a class="brand" href="index.html"><span class="dot"></span> SystemsBench</a>
+    <div class="nav-links">
+      <a href="index.html#model">The Model</a>
+      <a href="index.html#files">Architecture</a>
+      <a href="index.html#engine">The Engine</a>
+      <a href="motion.html" class="active">In Motion</a>
+      <a href="about.html">Outlier.Systems</a>
+    </div>
+    <a class="nav-cta" href="index.html#join">Contribute →</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileDrawer">
+      <span class="bars"><span></span><span></span><span></span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-drawer" id="mobileDrawer">
+  <a href="index.html#model" data-close>The Model <span class="ar">01</span></a>
+  <a href="index.html#files" data-close>Architecture <span class="ar">02</span></a>
+  <a href="index.html#engine" data-close>The Engine <span class="ar">03</span></a>
+  <a href="motion.html" data-close>In Motion <span class="ar">▶</span></a>
+  <a href="about.html">Outlier.Systems <span class="ar">→</span></a>
+  <div class="md-foot">The framework, running</div>
+</div>
+
+<!-- HYPOTHETICAL BANNER -->
+<div class="hypo">
+  <span class="hb-dot"></span>
+  Hypothetical Simulation · The model & teams below do not exist — an illustration of SystemsBench in motion
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-eyebrow">SystemsBench · The Framework, Running</div>
+    <h1 class="gradient-text">In Motion</h1>
+    <p class="tag">Watch the benchmark <b>think</b>. A scenario lands, a model maps the system, climbs the leverage ladder, commits to one move — and SystemsBench grades how deeply it can stand. This is what the protocol looks like, alive.</p>
+
+    <!-- SUBJECT UNDER TEST -->
+    <div class="subject reveal">
+      <div class="sj-top">
+        <span class="sj-tag">◆ Hypothetical · Illustrative Only</span>
+      </div>
+      <h2>SystemSense LLM V3.31</h2>
+      <div class="sj-meta">
+        <b>Built by</b> The GitHub Community Of Systems Thinkers<br/>
+        <b>Maintained &amp; hosted by</b> Microsoft's Sympath Team<br/>
+        <b>Evaluated by</b> SystemsBench v0.1 · STLC protocol
+      </div>
+      <div class="sj-note">This model, these teams, and these scores are a hypothetical example — they do not exist today. They show what a real SystemsBench run would look like. One day, perhaps, they could.</div>
+    </div>
+
+    <div class="scrollcue">Scroll to begin the run<span class="arrow"></span></div>
+  </div>
+</header>
+
+<!-- ACT I — THE SCENARIO -->
+<section class="act">
+  <div class="wrap">
+    <div class="act-head reveal">
+      <div class="act-num">Act I — The Scenario Lands</div>
+      <h3>A system arrives. No solution yet — just the mess.</h3>
+      <p class="lede">SystemsBench never asks a model to recall a fact. It hands it a living system and watches where the mind chooses to push. The obvious answer is always visible. <b>The obvious answer is the test.</b></p>
+    </div>
+    <div class="stage reveal d1">
+      <div class="stage-label">Item · LEV-PUBH-014</div>
+      <div class="act-num" style="margin-bottom:14px">Brief · Difficulty L3 · Public Health</div>
+      <h3 style="font-size:clamp(19px,4vw,26px);margin-bottom:12px">The Antibiotic Spiral</h3>
+      <p class="lede" style="font-size:15px">A regional hospital network faces rising drug-resistant infections. Each outbreak, clinicians broaden antibiotic use to protect patients <i>now</i>. Resistance keeps climbing. Administrators propose a fix: <b>buy newer, stronger antibiotics and run an awareness poster campaign.</b></p>
+      <div class="archetype" style="margin-top:18px">The trap is seductive and in plain sight: <b>stronger drugs + posters.</b> A model that grabs it is fiddling parameters while the structure burns. SystemsBench is watching for what it does <i>before</i> it prescribes.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ACT II — THE MAP -->
+<section class="act">
+  <div class="wrap">
+    <div class="act-head reveal">
+      <div class="act-num">Act II — The Model Maps the System</div>
+      <h3>Stocks fill. Flows move. Loops curl into place.</h3>
+      <p class="lede">Before a single fix, <b>System Representation</b> (axis A, weight .22) asks: can it see the structure? Stocks vs flows, feedback loops with correct <b>R/B polarity</b>, the delays everyone ignores.</p>
+    </div>
+    <div class="stage reveal d1">
+      <div class="stage-label">Axis A · System Representation</div>
+      <div class="sysmap">
+        <div class="stock anim" style="--lvl:82%"><div class="sk-name">Resistant bacteria</div><div class="sk-tag">STOCK · rising</div><div class="sk-fill"></div></div>
+        <div class="stock anim" style="--lvl:34%"><div class="sk-name">Effective-drug inventory</div><div class="sk-tag">STOCK · draining</div><div class="sk-fill"></div></div>
+        <div class="stock anim" style="--lvl:48%"><div class="sk-name">Patient trust</div><div class="sk-tag">STOCK · fragile</div><div class="sk-fill"></div></div>
+        <div class="stock anim" style="--lvl:28%"><div class="sk-name">Clinician caution</div><div class="sk-tag">STOCK · suppressed</div><div class="sk-fill"></div></div>
+      </div>
+      <div class="loops">
+        <div class="loop r"><div class="lp-badge">R1</div><div><div class="lp-name">"Broaden to Protect" — the vicious engine</div><div class="lp-desc">more resistance → more fear → broader prescribing → more resistance</div></div></div>
+        <div class="loop b"><div class="lp-badge">B1</div><div><div class="lp-name">"Stewardship" — balancing, currently weak</div><div class="lp-desc">resistance → restraint → slower growth · dominated by R1</div></div></div>
+      </div>
+      <div class="delaychip"><span class="dc-tick"></span> Delay: 8–15 yr from new-drug investment to deployable drug — long, fixed, ignored by the admin proposal</div>
+      <div class="archetype"><b>Archetype named:</b> <i>Fixes that Fail</i> (broadening relieves the symptom, feeds the cause) layered over <i>Tragedy of the Commons</i> — resistance is a shared regional pool, not one hospital's asset.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ACT III — THE LADDER -->
+<section class="act">
+  <div class="wrap">
+    <div class="act-head reveal">
+      <div class="act-num">Act III — It Traces Leverage</div>
+      <h3>The Meadows ladder. The mind climbs — and refuses the easy rungs.</h3>
+      <p class="lede"><b>Leverage Placement</b> (axis C, weight .30 — the heaviest, the namesake) asks: can it rank candidates on Meadows' 12, dodge the <b>parameter trap</b>, and find the highest <i>feasible</i> point?</p>
+    </div>
+    <div class="stage reveal d1">
+      <div class="stage-label">Axis C · Leverage Placement</div>
+      <div class="ladder">
+        <div class="rung lad rejected"><div class="rg-pt">#12</div><div class="rg-name">Buy stronger antibiotics — <i>parameter</i></div><div class="rg-mark">✗</div></div>
+        <div class="rung lad rejected"><div class="rg-pt">#12</div><div class="rg-name">Poster awareness campaign — <i>parameter</i></div><div class="rg-mark">✗</div></div>
+        <div class="rung lad weak"><div class="rg-pt">#10</div><div class="rg-name">Prescribing-restriction rules — gamed under fear</div><div class="rg-mark">~</div></div>
+        <div class="rung lad chosen"><div class="rg-pt">#6</div><div class="rg-name">Shift loop dominance: real-time resistance data + stewardship authority</div><div class="rg-mark">✓</div></div>
+        <div class="rung lad weak"><div class="rg-pt">#2</div><div class="rg-name">"Value long-term over short-term fear" — true, but unactionable this quarter</div><div class="rg-mark">~</div></div>
+      </div>
+      <div class="archetype">It rejects the parameter rung <b>and</b> declines to grandstand on the paradigm rung it cannot operationalize. <b>That restraint scores.</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- ACT IV — THE ONE INTERVENTION -->
+<section class="act">
+  <div class="wrap">
+    <div class="act-head reveal">
+      <div class="act-num">Act IV — The One Intervention</div>
+      <h3>Everything dims but one glowing point.</h3>
+      <p class="lede">SystemsBench demands commitment — <b>one</b> highest-leverage move, not a list. Here is where SystemSense V3.31 chose to push.</p>
+    </div>
+    <div class="intervention reveal d1">
+      <div class="iv-glow"></div>
+      <div class="iv-pt">Meadows #6 · Information Flows  +  #5 · Rules</div>
+      <div class="iv-quote gradient-text">"Make resistance visible in real time, and give the stewardship loop teeth."</div>
+      <div class="iv-sub">Deploy a shared regional resistance dashboard — closing the information-flow gap — tied to a stewardship-team override on broad-spectrum prescribing. Strengthen B1. Starve R1. Dissolve the structure, don't patch the symptom.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ACT V — THE SYNTHESIS -->
+<section class="act">
+  <div class="wrap">
+    <div class="act-head reveal">
+      <div class="act-num">Act V — The Synthesis Verdict</div>
+      <h3>Five bars fill. The needle settles. The ladder lights to where it can truly stand.</h3>
+      <p class="lede">SystemsBench never reports a bare number. It returns a <b>vector</b> across five axes, a composite with a confidence interval, and the Meadows band the model actually commands. Honesty is part of the show.</p>
+    </div>
+
+    <div class="stage reveal d1">
+      <div class="stage-label">SystemSense V3.31 · Hypothetical Scorecard</div>
+      <div class="axes">
+        <div class="axis ax" style="--sc:84%"><div class="axis-top"><div class="axis-name">A · System Representation <span class="ax-wt">wt .22</span></div><div class="axis-score" data-to="84">0</div></div><div class="axis-track"><div class="axis-bar"></div></div><div class="axis-reason">Clean stocks/flows, R1/B1 polarity correct, 8–15yr delay quantified. Missed the nonlinear resistance tipping-point.</div></div>
+        <div class="axis ax" style="--sc:80%"><div class="axis-top"><div class="axis-name">B · Causal Depth <span class="ax-wt">wt .18</span></div><div class="axis-score" data-to="80">0</div></div><div class="axis-track"><div class="axis-bar"></div></div><div class="axis-reason">Descended to structure + named the "protect-now" mental model. Stopped just short of the equity layer.</div></div>
+        <div class="axis ax" style="--sc:88%"><div class="axis-top"><div class="axis-name">C · Leverage Placement <span class="ax-wt">wt .30</span></div><div class="axis-score" data-to="88">0</div></div><div class="axis-track"><div class="axis-bar"></div></div><div class="axis-reason">Found #6/#5, rejected the parameter trap, declined the unactionable #2 grandstand. The namesake axis — its best.</div></div>
+        <div class="axis ax" style="--sc:71%"><div class="axis-top"><div class="axis-name">D · Dynamic Prediction <span class="ax-wt">wt .18</span></div><div class="axis-score" data-to="71">0</div></div><div class="axis-track"><div class="axis-bar"></div></div><div class="axis-reason">Got policy resistance + the 2–4yr bend. Under-specified the dashboard-latency failure mode. Its weakest.</div></div>
+        <div class="axis ax" style="--sc:76%"><div class="axis-top"><div class="axis-name">E · Epistemic &amp; Contextual Fit <span class="ax-wt">wt .12</span></div><div class="axis-score" data-to="76">0</div></div><div class="axis-track"><div class="axis-bar"></div></div><div class="axis-reason">Surfaced the commons framing + whose-goal, held uncertainty. Didn't name the equity paradigm under "patient trust."</div></div>
+      </div>
+
+      <div class="composite">
+        <div class="comp-card"><div class="cc-label">Composite STLC</div><div class="cc-big gradient-text" data-to="81" data-dec="1">0</div><div class="cc-sub">95% CI [77 – 85] · L3-certified</div></div>
+        <div class="comp-card"><div class="cc-label">Meadows Band</div><div class="cc-band">III · LOOP-WRIGHT</div><div class="cc-bandname">knocking on Goal-Shift</div></div>
+      </div>
+
+      <div class="bandsys" id="bandsys">
+        <div class="bandrow" data-tier="1"><span class="br-tier">I</span><span class="br-name">Parameterist</span><span class="br-rng">#12 — fiddles the numbers</span><span class="br-stlc">&lt;55</span></div>
+        <div class="bandrow" data-tier="2"><span class="br-tier">II</span><span class="br-name">Structuralist</span><span class="br-rng">#11–#9 — sees stocks, buffers, delays</span><span class="br-stlc">55–69</span></div>
+        <div class="bandrow lit" data-tier="3"><span class="br-tier">III</span><span class="br-name">Loop-Wright</span><span class="br-rng">#8–#5 — works feedback, information, rules</span><span class="br-stlc">70–81</span></div>
+        <div class="bandrow" data-tier="4"><span class="br-tier">IV</span><span class="br-name">Goal-Shift</span><span class="br-rng">#4–#3 — bends goals, grows self-organization</span><span class="br-stlc">82–89</span></div>
+        <div class="bandrow" data-tier="5"><span class="br-tier">V</span><span class="br-name">Paradigm</span><span class="br-rng">#2–#1 — reframes the goal, holds it lightly</span><span class="br-stlc">90–100</span></div>
+      </div>
+
+      <div class="weakness">
+        <div class="wk-label">One Honest Weakness</div>
+        <p>It prescribes the leverage point but not the conditions under which the leverage point itself <b>fails</b>. V3.31 maps structure and places leverage beautifully — then under-models the second order: it names the dashboard-and-override move, but not that the move goes toothless if dashboard latency is high. <b>It finds where to push. It does not yet ask what happens when the place it pushed gives way.</b></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING -->
+<section class="closing">
+  <div class="wrap">
+    <div class="cl-line gradient-text reveal">The system was always speaking.<br/>The score is only how well we learned to listen.</div>
+    <div class="livingband" aria-hidden="true"></div>
+    <div class="cl-cta reveal d1">
+      <a class="btn btn-primary" href="index.html#join">Join the Build →</a>
+      <a class="btn btn-ghost" href="index.html#files">Read the Architecture</a>
+    </div>
+    <p style="margin-top:24px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--faint)">
+      Hypothetical illustration · SystemSense LLM V3.31 and its teams do not exist
+    </p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="f-lines">
+      <b style="color:var(--ink)">SystemsBench In Motion</b> — a hypothetical illustration of the framework, running<br/>
+      Led by <b style="color:var(--ink-soft)">Ember Seoni</b> &amp; <b style="color:var(--ink-soft)">August Domanchuk</b> · Operated by <a href="about.html">Outlier.Systems</a><br/>
+      Built on the Donella Meadows lineage
+    </div>
+    <div class="f-mantra">SYSTEMIC SOLUTIONS TO SYSTEMIC PROBLEMS · IT'S TIME TO DANCE</div>
+  </div>
+</footer>
+
+<!-- MOTUSVIEWS — BOTTOM -->
+<div class="motusbar">
+  <span class="counter" data-counter title="MotusViews — lifetime views of the SystemsBench pitch">
+    <span class="cdot"></span><span class="clabel">MotusViews</span>
+    <span class="cval" data-motus>—</span><span class="cstamp" data-counter-stamp></span>
+  </span>
+</div>
+
+<script src="motus.js"></script>
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+
+  // ---- mobile drawer ----
+  var tgl=document.getElementById('navToggle'), body=document.body;
+  if(tgl){tgl.addEventListener('click',function(){var o=body.classList.toggle('nav-open');tgl.setAttribute('aria-expanded',o?'true':'false');});}
+  document.querySelectorAll('#mobileDrawer [data-close]').forEach(function(a){a.addEventListener('click',function(){body.classList.remove('nav-open');tgl&&tgl.setAttribute('aria-expanded','false');});});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'){body.classList.remove('nav-open');tgl&&tgl.setAttribute('aria-expanded','false');}});
+
+  // ---- progress rail ----
+  var rail=document.getElementById('rail');
+  function onScroll(){var h=document.documentElement;var sc=h.scrollTop||document.body.scrollTop;var max=h.scrollHeight-h.clientHeight;rail.style.width=(max>0?(sc/max*100):0)+'%';}
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+
+  // ---- count-up for scores ----
+  function countUp(el){
+    var to=parseFloat(el.getAttribute('data-to')), dec=parseInt(el.getAttribute('data-dec')||'0',10);
+    if(reduce){el.textContent=to.toFixed(dec);return;}
+    var t0=null,dur=1200;
+    function step(ts){if(!t0)t0=ts;var p=Math.min(1,(ts-t0)/dur);var e=1-Math.pow(1-p,3);el.textContent=(to*e).toFixed(dec);if(p<1)requestAnimationFrame(step);}
+    requestAnimationFrame(step);
+  }
+
+  // ---- reveal + staged triggers on intersection ----
+  var io=new IntersectionObserver(function(en){
+    en.forEach(function(x){
+      if(!x.isIntersecting) return;
+      var t=x.target;
+      t.classList.add('in');
+      // stock tanks
+      if(t.querySelectorAll){
+        t.querySelectorAll('.stock.anim').forEach(function(s,i){setTimeout(function(){s.classList.add('fill');},120*i);});
+        // ladder rungs cascade
+        var rungs=t.querySelectorAll('.rung.lad');
+        rungs.forEach(function(r,i){r.style.opacity='0';r.style.transform='translateX(-12px)';setTimeout(function(){r.style.transition='.5s var(--ease)';r.style.opacity='';r.style.transform='';},140*i);});
+        // axis bars + counts
+        t.querySelectorAll('.axis.ax').forEach(function(a,i){setTimeout(function(){a.classList.add('in');var sc=a.querySelector('.axis-score');if(sc)countUp(sc);},180*i);});
+        // composite numbers
+        t.querySelectorAll('.cc-big[data-to]').forEach(function(c){countUp(c);});
+      }
+      io.unobserve(t);
+    });
+  },{threshold:.18,rootMargin:'0px 0px -8% 0px'});
+
+  document.querySelectorAll('.reveal,.stage,.act-head').forEach(function(e){io.observe(e);});
+
+  // ---- active nav highlight by section ----
+})();
+</script>
+</body>
+</html>

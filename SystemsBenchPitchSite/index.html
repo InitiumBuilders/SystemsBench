@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>SystemsBench — The Benchmark for Systems Intelligence in LLMs · Outlier.Systems</title>
+<meta name="description" content="SystemsBench is an open-source framework by Outlier.Systems that measures how well a large language model can think in systems — map structure, find leverage, predict consequence — and apply it to the real world. Led by Ember Seoni." />
+<meta name="theme-color" content="#070709" />
+<meta property="og:title" content="SystemsBench — The Benchmark for Systems Intelligence" />
+<meta property="og:description" content="An open-source framework for measuring systems intelligence in LLMs. Not what a model knows — how well it thinks in systems. By Outlier.Systems." />
+<meta property="og:type" content="website" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@200;300;400;500;600;700;800&family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#070709; --bg-1:#0c0d10; --bg-2:#121317; --bg-3:#181a1f; --bg-4:#1e2127;
+  --line:rgba(180,200,230,.10); --line-2:rgba(180,200,230,.18);
+  --ink:#eef6ff; --ink-soft:#cdd6e0; --muted:#a4a9b4; --faint:#7e8590;
+  /* the band of living light */
+  --c-cyan:#22d3ee; --c-sky:#38bdf8; --c-blue:#3b82f6; --c-indigo:#6366f1; --c-violet:#a855f7; --c-magenta:#d946ef;
+  --accent:#54c6ef;
+  --band:linear-gradient(90deg,#22d3ee 0%,#38bdf8 22%,#3b82f6 44%,#6366f1 64%,#a855f7 82%,#d946ef 100%);
+  --band-soft:linear-gradient(120deg,rgba(34,211,238,.16),rgba(99,102,241,.14) 50%,rgba(217,70,239,.13));
+  --sans:'Sora',system-ui,-apple-system,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --maxw:1180px;
+  --r:18px; --r-sm:12px;
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--sans);background:var(--bg);color:var(--ink-soft);
+  line-height:1.62;font-weight:300;letter-spacing:.005em;
+  overflow-x:hidden;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+}
+body::before{ /* deep field glow */
+  content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background:
+    radial-gradient(1100px 720px at 78% -8%,rgba(99,102,241,.14),transparent 60%),
+    radial-gradient(900px 620px at 10% 8%,rgba(34,211,238,.10),transparent 58%),
+    radial-gradient(1000px 800px at 50% 108%,rgba(217,70,239,.09),transparent 60%);
+}
+body::after{ /* fine grid */
+  content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;opacity:.5;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:64px 64px;mask-image:radial-gradient(circle at 50% 30%,#000 0%,transparent 78%);
+}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+::selection{background:rgba(84,198,239,.28);color:#fff}
+
+/* ---------- layout ---------- */
+.wrap{width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:22px}
+section{position:relative;padding:84px 0}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.32em;text-transform:uppercase;
+  color:var(--faint);display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.eyebrow::before{content:"";width:26px;height:1px;background:var(--band)}
+h1,h2,h3{font-weight:600;color:var(--ink);line-height:1.1;letter-spacing:-.02em}
+h2{font-size:clamp(28px,5.4vw,46px);font-weight:600;margin-bottom:18px}
+h3{font-size:clamp(19px,3.2vw,24px);font-weight:600}
+.lede{font-size:clamp(16px,2.4vw,19px);color:var(--ink-soft);font-weight:300;max-width:60ch}
+.gradient-text{background:var(--band);-webkit-background-clip:text;background-clip:text;color:transparent}
+.divider{height:1px;background:var(--line);width:100%}
+
+/* ---------- nav ---------- */
+.nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(16px);
+  background:rgba(7,7,9,.72);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.brand{display:flex;align-items:center;gap:11px;font-weight:600;color:var(--ink);font-size:15px;letter-spacing:-.01em}
+.dot{width:11px;height:11px;border-radius:50%;background:var(--band);box-shadow:0 0 16px rgba(84,198,239,.7);flex:none;animation:pulse 3.2s var(--ease) infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:.95}50%{transform:scale(1.22);opacity:1}}
+.nav-links{display:flex;gap:26px;font-size:13.5px;font-weight:400;color:var(--muted)}
+.nav-links a{transition:color .2s}.nav-links a:hover{color:var(--ink)}
+.nav-cta{font-family:var(--mono);font-size:12px;letter-spacing:.06em;padding:8px 15px;border:1px solid var(--line-2);
+  border-radius:99px;color:var(--ink);transition:.22s}
+.nav-cta:hover{border-color:var(--accent);background:rgba(84,198,239,.08)}
+/* mobile nav toggle + drawer */
+.nav-toggle{display:none;align-items:center;justify-content:center;width:40px;height:40px;border:1px solid var(--line-2);
+  border-radius:11px;background:rgba(18,19,23,.6);cursor:pointer;flex:none;transition:.22s}
+.nav-toggle:hover{border-color:var(--accent)}
+.nav-toggle .bars{position:relative;width:18px;height:12px}
+.nav-toggle .bars span{position:absolute;left:0;width:100%;height:1.6px;border-radius:2px;background:var(--ink);
+  transition:.3s var(--ease)}
+.nav-toggle .bars span:nth-child(1){top:0}.nav-toggle .bars span:nth-child(2){top:5px}.nav-toggle .bars span:nth-child(3){top:10px}
+body.nav-open .nav-toggle .bars span:nth-child(1){top:5px;transform:rotate(45deg)}
+body.nav-open .nav-toggle .bars span:nth-child(2){opacity:0}
+body.nav-open .nav-toggle .bars span:nth-child(3){top:5px;transform:rotate(-45deg)}
+.mobile-drawer{position:fixed;inset:60px 0 0 0;z-index:55;background:rgba(7,7,9,.94);backdrop-filter:blur(20px);
+  display:flex;flex-direction:column;padding:18px 22px 40px;gap:4px;opacity:0;visibility:hidden;
+  transform:translateY(-8px);transition:opacity .3s var(--ease),transform .3s var(--ease),visibility .3s}
+body.nav-open .mobile-drawer{opacity:1;visibility:visible;transform:none}
+.mobile-drawer a{font-size:18px;font-weight:400;color:var(--ink-soft);padding:16px 8px;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;transition:.2s}
+.mobile-drawer a:hover,.mobile-drawer a:active{color:var(--ink);padding-left:14px}
+.mobile-drawer a .ar{font-family:var(--mono);color:var(--faint);font-size:14px}
+.mobile-drawer .md-cta{margin-top:18px;border:1px solid var(--line-2);border-radius:14px;justify-content:center;
+  color:var(--ink);background:var(--band-soft);border-bottom:1px solid var(--line-2)}
+.mobile-drawer .md-foot{margin-top:auto;font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--faint);
+  text-transform:uppercase;padding-top:24px}
+@media(max-width:760px){.nav-links{display:none}.nav-toggle{display:flex}}
+@media(min-width:761px){.mobile-drawer{display:none}}
+
+/* ---------- hero ---------- */
+.hero{padding:72px 0 64px;text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11.5px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--ink-soft);padding:7px 16px;border:1px solid var(--line-2);border-radius:99px;
+  background:var(--band-soft);margin-bottom:30px}
+.hero-badge .b-dot{width:7px;height:7px;border-radius:50%;background:var(--c-cyan);box-shadow:0 0 10px var(--c-cyan)}
+.hero h1{font-size:clamp(36px,8.6vw,82px);font-weight:700;letter-spacing:-.035em;margin-bottom:8px}
+.hero .tag{font-size:clamp(15px,3.2vw,22px);color:var(--ink);font-weight:400;margin-bottom:22px;letter-spacing:-.01em}
+.hero .sub{font-size:clamp(15px,2.5vw,18px);color:var(--muted);font-weight:300;max-width:52ch;margin:0 auto 34px}
+.hero-cta{display:flex;gap:13px;justify-content:center;flex-wrap:wrap;margin-bottom:34px}
+.btn{font-family:var(--mono);font-size:13px;letter-spacing:.04em;padding:13px 24px;border-radius:99px;font-weight:500;
+  transition:.24s var(--ease);display:inline-flex;align-items:center;gap:9px;cursor:pointer;border:1px solid transparent}
+.btn-primary{background:var(--band);color:#06070a;font-weight:600}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 40px -12px rgba(84,198,239,.6)}
+.btn-ghost{border-color:var(--line-2);color:var(--ink)}
+.btn-ghost:hover{border-color:var(--accent);background:rgba(84,198,239,.07)}
+.lineage{font-family:var(--mono);font-size:12px;color:var(--faint);letter-spacing:.04em}
+.lineage b{color:var(--ink-soft);font-weight:500}
+
+/* ---------- countdown ---------- */
+.countdown-card{max-width:640px;margin:46px auto 0;padding:30px 26px;border:1px solid var(--line-2);border-radius:var(--r);
+  background:linear-gradient(180deg,rgba(18,19,23,.9),rgba(12,13,16,.7));position:relative;overflow:hidden}
+.countdown-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--band)}
+.cd-label{font-family:var(--mono);font-size:11.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--c-cyan);margin-bottom:6px}
+.cd-title{font-size:clamp(22px,4.4vw,30px);font-weight:700;color:var(--ink);letter-spacing:-.02em;margin-bottom:4px}
+.cd-note{font-size:13.5px;color:var(--muted);margin-bottom:22px;font-weight:300}
+.cd-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.cd-cell{background:rgba(7,7,9,.6);border:1px solid var(--line);border-radius:var(--r-sm);padding:14px 6px}
+.cd-num{font-family:var(--mono);font-size:clamp(26px,7vw,40px);font-weight:600;color:var(--ink);line-height:1;
+  font-variant-numeric:tabular-nums}
+.cd-unit{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);margin-top:8px}
+
+/* ---------- stat strip ---------- */
+.strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:8px}
+.strip .cell{background:var(--bg-1);padding:24px 18px;text-align:center}
+.strip .k{font-family:var(--mono);font-size:clamp(22px,4vw,30px);font-weight:600;color:var(--ink)}
+.strip .k .gradient-text{font-weight:700}
+.strip .v{font-size:12.5px;color:var(--muted);margin-top:6px;letter-spacing:.01em}
+@media(max-width:680px){.strip{grid-template-columns:repeat(2,1fr)}.cd-grid{gap:8px}}
+
+/* ---------- gap / problem ---------- */
+.quote-block{border-left:2px solid;border-image:var(--band) 1;padding:6px 0 6px 24px;margin:26px 0;
+  font-size:clamp(19px,3.4vw,26px);font-weight:400;color:var(--ink);line-height:1.34;letter-spacing:-.015em}
+
+/* ---------- strata model ---------- */
+.strata{display:grid;gap:16px;margin-top:30px}
+.stratum{border:1px solid var(--line);border-radius:var(--r);background:var(--bg-1);padding:26px 24px;position:relative;
+  transition:.3s var(--ease)}
+.stratum:hover{border-color:var(--line-2);transform:translateY(-3px)}
+.stratum-head{display:flex;align-items:baseline;gap:14px;margin-bottom:6px;flex-wrap:wrap}
+.stratum-tag{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+  padding:4px 11px;border-radius:99px;border:1px solid var(--line-2);color:var(--ink)}
+.s1 .stratum-tag{color:var(--c-cyan);border-color:rgba(34,211,238,.4)}
+.s2 .stratum-tag{color:var(--c-blue);border-color:rgba(59,130,246,.4)}
+.s3 .stratum-tag{color:var(--c-violet);border-color:rgba(168,85,247,.4)}
+.sx .stratum-tag{color:var(--c-magenta);border-color:rgba(217,70,239,.4)}
+.stratum h3{font-size:clamp(18px,3vw,22px)}
+.stratum .q{font-size:14px;color:var(--muted);font-style:italic;margin-bottom:18px}
+.caps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.cap{padding:14px 16px;border-radius:var(--r-sm);background:rgba(7,7,9,.5);border:1px solid var(--line)}
+.cap .cn{font-weight:600;color:var(--ink);font-size:14.5px;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.cap .cn::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent);flex:none}
+.cap .cd{font-size:13px;color:var(--muted);line-height:1.5}
+
+/* ---------- SQ formula ---------- */
+.sq{margin-top:30px;border:1px solid var(--line-2);border-radius:var(--r);padding:34px 28px;text-align:center;
+  background:linear-gradient(180deg,rgba(18,19,23,.8),rgba(12,13,16,.6));position:relative;overflow:hidden}
+.sq::after{content:"";position:absolute;inset:0;background:var(--band-soft);opacity:.5;pointer-events:none}
+.sq-formula{position:relative;font-family:var(--mono);font-size:clamp(17px,3.4vw,26px);font-weight:500;color:var(--ink);
+  letter-spacing:.01em;margin:8px 0 14px;line-height:1.5}
+.sq-formula .x{color:var(--faint);margin:0 6px}
+.sq-formula b{font-weight:600}
+.sq p{position:relative;font-size:14.5px;color:var(--ink-soft);max-width:58ch;margin:0 auto}
+
+/* ---------- files / architecture ---------- */
+.files{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:30px}
+.file{border:1px solid var(--line);border-radius:var(--r);background:var(--bg-1);padding:24px 22px;transition:.3s var(--ease);
+  display:flex;flex-direction:column;position:relative;overflow:hidden}
+.file::before{content:"";position:absolute;top:0;left:0;width:100%;height:2px;background:var(--band);transform:scaleX(0);
+  transform-origin:left;transition:transform .35s var(--ease)}
+.file:hover{border-color:var(--line-2);transform:translateY(-3px)}
+.file:hover::before{transform:scaleX(1)}
+.file-name{font-family:var(--mono);font-size:13.5px;color:var(--c-cyan);font-weight:500;margin-bottom:4px;word-break:break-word}
+.file-role{font-size:11.5px;font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:14px}
+.file-desc{font-size:14px;color:var(--ink-soft);line-height:1.6;flex:1}
+.file-desc b{color:var(--ink);font-weight:500}
+.file-foot{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted)}
+.file-foot .lbl{font-family:var(--mono);color:var(--faint);letter-spacing:.08em}
+@media(max-width:720px){.files{grid-template-columns:1fr}}
+
+/* ---------- engine loop ---------- */
+.loop{display:flex;flex-wrap:wrap;gap:9px;margin-top:26px;justify-content:center}
+.loop-node{font-family:var(--mono);font-size:12px;letter-spacing:.06em;padding:9px 14px;border-radius:99px;
+  border:1px solid var(--line-2);color:var(--ink-soft);background:rgba(18,19,23,.6);transition:.2s}
+.loop-node:hover{color:var(--ink);border-color:var(--accent);background:rgba(84,198,239,.07)}
+.loop-arrow{color:var(--faint);align-self:center;font-size:13px}
+.principles{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-top:30px}
+.principle{padding:18px 18px;border-radius:var(--r-sm);border:1px solid var(--line);background:rgba(7,7,9,.4)}
+.principle .pn{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.14em;margin-bottom:7px}
+.principle .pt{font-weight:600;color:var(--ink);font-size:15px;margin-bottom:5px}
+.principle .pd{font-size:13px;color:var(--muted);line-height:1.55}
+
+/* ---------- impact ---------- */
+.impact{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:30px}
+.imp{padding:24px 22px;border:1px solid var(--line);border-radius:var(--r);background:var(--bg-1)}
+.imp .ic{font-size:22px;margin-bottom:14px;background:var(--band);-webkit-background-clip:text;background-clip:text;color:transparent;
+  font-family:var(--mono);font-weight:600}
+.imp h3{font-size:17px;margin-bottom:8px}
+.imp p{font-size:13.5px;color:var(--muted);line-height:1.6}
+@media(max-width:780px){.impact{grid-template-columns:1fr}}
+
+/* ---------- CTA / footer ---------- */
+.final{text-align:center;padding:96px 0 80px}
+.final h2{font-size:clamp(30px,6vw,56px);font-weight:700;letter-spacing:-.03em;margin-bottom:18px}
+.final .poem{font-size:clamp(16px,2.6vw,20px);color:var(--ink-soft);font-weight:300;max-width:48ch;margin:0 auto 30px;line-height:1.6}
+.contact-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:28px}
+.contact-chip{font-family:var(--mono);font-size:12.5px;padding:11px 18px;border:1px solid var(--line-2);border-radius:99px;
+  color:var(--ink-soft);transition:.22s}
+.contact-chip:hover{border-color:var(--accent);color:var(--ink);background:rgba(84,198,239,.06)}
+.contact-chip b{color:var(--c-cyan);font-weight:500}
+footer{border-top:1px solid var(--line);padding:40px 0 60px;text-align:center}
+footer .f-brand{display:inline-flex;align-items:center;gap:10px;font-weight:600;color:var(--ink);margin-bottom:14px}
+footer .f-lines{font-size:13px;color:var(--muted);line-height:1.9}
+footer .f-lines a{color:var(--ink-soft);border-bottom:1px solid var(--line-2)}
+footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);letter-spacing:.14em;margin-top:18px}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+/* ---- MotusViews / VotusViews counters ---- */
+.motusbar{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;padding:10px 0;position:relative;z-index:2}
+.motusbar.top{border-bottom:1px solid var(--line);background:rgba(7,7,9,.45)}
+.counter{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;
+  padding:7px 14px;border:1px solid var(--line-2);border-radius:99px;background:rgba(18,19,23,.55);color:var(--muted);transition:.3s}
+.counter:hover{border-color:var(--accent)}
+.counter .cdot{width:7px;height:7px;border-radius:50%;background:var(--c-cyan);box-shadow:0 0 9px var(--c-cyan);flex:none;animation:cpulse 2.6s ease-in-out infinite}
+@keyframes cpulse{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.25)}}
+.counter .clabel{color:var(--faint);text-transform:uppercase;letter-spacing:.12em;font-size:10px}
+.counter .cval{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums;min-width:1ch}
+.counter .cstamp{color:var(--faint);font-size:9.5px;letter-spacing:.1em}
+.counter.counter-live .cstamp{color:var(--c-cyan)}
+/* scroll progress */
+.progress{position:fixed;top:0;left:0;height:2px;width:0;z-index:100;background:var(--band);box-shadow:0 0 12px rgba(84,198,239,.6);transition:width .1s linear}
+/* framework deep-dive CTA */
+.fw-cta{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;border:1px solid var(--line-2);border-radius:var(--r);padding:28px;background:linear-gradient(120deg,rgba(34,211,238,.06),rgba(168,85,247,.07));transition:.3s var(--ease);position:relative;overflow:hidden}
+.fw-cta::before{content:"";position:absolute;top:0;left:0;width:100%;height:2px;background:var(--band);transform:scaleX(0);transform-origin:left;transition:transform .4s var(--ease)}
+.fw-cta:hover{border-color:var(--accent);transform:translateY(-3px)}
+.fw-cta:hover::before{transform:scaleX(1)}
+.fw-cta h3{font-size:clamp(20px,3.4vw,27px);margin-bottom:6px;line-height:1.18}
+.fw-cta p{font-size:14px;color:var(--muted);max-width:62ch}
+.fw-cta-go{font-family:var(--mono);font-size:13px;letter-spacing:.04em;padding:13px 22px;border-radius:99px;background:var(--band);color:#06070a;font-weight:600;white-space:nowrap;flex:none}
+
+/* ---------- the band of living light (hero signature) ---------- */
+.livingband{position:relative;width:min(560px,86vw);height:3px;margin:30px auto 0;border-radius:99px;
+  background:var(--band);background-size:220% 100%;animation:bandflow 7s linear infinite;
+  box-shadow:0 0 24px rgba(84,198,239,.4)}
+.livingband::before,.livingband::after{content:"";position:absolute;border-radius:99px;background:inherit;
+  background-size:220% 100%;animation:bandflow 7s linear infinite}
+.livingband::before{inset:-1px -20px;filter:blur(10px);opacity:.55}
+@keyframes bandflow{0%{background-position:0% 50%}100%{background-position:220% 50%}}
+
+/* ---------- systems profile radar ---------- */
+.profile-wrap{margin-top:30px;border:1px solid var(--line-2);border-radius:var(--r);background:var(--bg-1);
+  padding:30px 24px;display:grid;grid-template-columns:1fr 1.1fr;gap:26px;align-items:center}
+.profile-svg{width:100%;max-width:360px;margin:0 auto;display:block}
+.profile-svg .grid-poly{fill:none;stroke:var(--line-2);stroke-width:1}
+.profile-svg .axis{stroke:var(--line);stroke-width:1}
+.profile-svg .ref{fill:rgba(126,133,144,.10);stroke:#7e8590;stroke-width:1.4;stroke-dasharray:4 4}
+.profile-svg .model{fill:rgba(84,198,239,.16);stroke:url(#bandgrad);stroke-width:2.2;
+  filter:drop-shadow(0 0 10px rgba(84,198,239,.4));animation:profilein 1.4s var(--ease) both}
+@keyframes profilein{from{opacity:0;transform:scale(.7);transform-origin:center}to{opacity:1;transform:scale(1)}}
+.profile-svg .vtx{fill:var(--c-cyan)}
+.profile-svg text{font-family:var(--mono);font-size:7.5px;fill:var(--muted);letter-spacing:.02em}
+.profile-legend{display:flex;flex-direction:column;gap:14px}
+.profile-legend .pl-row{display:flex;align-items:flex-start;gap:11px}
+.profile-legend .sw{width:22px;height:3px;border-radius:2px;margin-top:8px;flex:none}
+.profile-legend .sw.m{background:var(--band)}
+.profile-legend .sw.r{background:#7e8590}
+.profile-legend .pl-t{font-weight:600;color:var(--ink);font-size:14px}
+.profile-legend .pl-d{font-size:12.5px;color:var(--muted);line-height:1.5}
+.profile-note{font-family:var(--mono);font-size:11px;color:var(--faint);margin-top:6px;letter-spacing:.02em}
+@media(max-width:760px){.profile-wrap{grid-template-columns:1fr;gap:18px}}
+
+/* ============================================================
+   ONE PULSE · MANY CIRCUITS  — the four living visualizations
+   Theme: one luminous signal traveling four topologies.
+   Motion fires on state-change / advance, eased, not perpetual.
+   ============================================================ */
+
+/* shared SVG signal styling */
+.viz{margin-top:30px}
+.viz-svg{width:100%;display:block;overflow:visible}
+.viz-svg .track{fill:none;stroke:var(--line-2);stroke-width:1.4}
+.viz-svg .nodefill{fill:var(--bg-2);stroke:var(--line-2);stroke-width:1.2}
+.viz-svg .nlabel{font-family:var(--mono);font-size:6.4px;letter-spacing:.04em;fill:var(--ink-soft);text-transform:uppercase}
+.viz-svg .nsub{font-family:var(--mono);font-size:4.6px;letter-spacing:.06em;fill:var(--faint);text-transform:uppercase}
+.viz-cap{font-family:var(--mono);font-size:11.5px;color:var(--faint);letter-spacing:.04em;text-align:center;margin-top:16px}
+.viz-cap b{color:var(--ink-soft);font-weight:500}
+
+/* --- VISUAL 1 · SenseRun closed loop --- */
+.loopviz{border:1px solid var(--line-2);border-radius:var(--r);background:linear-gradient(180deg,rgba(18,19,23,.7),rgba(12,13,16,.55));
+  padding:30px 24px;position:relative;overflow:hidden}
+.loopviz::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--band)}
+.loopviz .ring-rot{transform-origin:160px 160px;animation:slowspin 60s linear infinite}
+@keyframes slowspin{to{transform:rotate(360deg)}}
+.loopviz .signal{fill:none;stroke:url(#sigGrad);stroke-width:2.4;stroke-linecap:round;
+  stroke-dasharray:34 866;filter:drop-shadow(0 0 6px rgba(84,198,239,.8));animation:travel 6s linear infinite}
+@keyframes travel{to{stroke-dashoffset:-900}}
+.loopviz .lnode{cursor:default}
+.loopviz .lnode circle{transition:.3s var(--ease)}
+.loopviz .lnode:hover circle{stroke:var(--accent);fill:var(--bg-3)}
+.loopviz .hub{fill:rgba(7,7,9,.7);stroke:var(--line-2);stroke-width:1.2}
+.loopviz .hub-v{font-family:var(--mono);font-size:11px;font-weight:600;fill:var(--ink);letter-spacing:.04em}
+.loopviz .hub-l{font-family:var(--mono);font-size:4.8px;letter-spacing:.22em;fill:var(--c-cyan);text-transform:uppercase}
+.loopviz .feed{fill:none;stroke:var(--c-cyan);stroke-width:1;stroke-dasharray:3 4;opacity:.4}
+
+/* --- VISUAL 2 · promotion pipeline --- */
+.pipe{border:1px solid var(--line-2);border-radius:var(--r);background:var(--bg-1);padding:30px 24px;overflow:hidden}
+.pipe .stock{fill:rgba(18,19,23,.7);stroke:var(--line-2);stroke-width:1.2;rx:8}
+.pipe .stock-r{stroke:rgba(34,211,238,.4)}
+.pipe .stock-s{stroke:rgba(168,85,247,.5)}
+.pipe .stock-f{stroke:rgba(217,70,239,.4)}
+.pipe .stitle{font-family:var(--mono);font-size:6.2px;letter-spacing:.1em;fill:var(--ink);text-transform:uppercase;font-weight:600}
+.pipe .ssub{font-family:var(--mono);font-size:4.4px;letter-spacing:.06em;fill:var(--faint)}
+.pipe .gate{stroke:url(#sigGrad);stroke-width:1.6;fill:none}
+.pipe .gate-x{stroke:var(--faint);stroke-width:1}
+.pipe .glabel{font-family:var(--mono);font-size:4.6px;letter-spacing:.14em;fill:var(--c-violet);text-transform:uppercase}
+.pipe .particle{fill:var(--c-cyan)}
+.pipe .particle.pass{fill:var(--c-violet)}
+.pipe .particle.reject{fill:var(--faint)}
+.pipe .flowpath{fill:none;stroke:var(--line);stroke-width:.8;stroke-dasharray:2 3}
+/* particle drift: a few advance through the gate, most pool & fade back (rejection shown) */
+.pipe .particle{opacity:0}
+@keyframes pass{0%{opacity:0;transform:translate(0,0);fill:var(--c-cyan)}
+  10%{opacity:1}45%{transform:translate(132px,8px);fill:var(--c-cyan)}
+  55%{fill:var(--c-violet)}90%{opacity:1;transform:translate(250px,4px);fill:var(--c-violet)}
+  100%{opacity:0;transform:translate(255px,4px)}}
+@keyframes reject{0%{opacity:0;transform:translate(0,0)}12%{opacity:1}
+  40%{transform:translate(130px,0);opacity:1}48%{transform:translate(138px,0);fill:var(--faint)}
+  70%{transform:translate(90px,10px);opacity:.5;fill:var(--faint)}100%{transform:translate(40px,16px);opacity:0}}
+.pipe .p1{animation:pass 7s var(--ease) infinite .2s}
+.pipe .p2{animation:reject 5.5s var(--ease) infinite 1.1s}
+.pipe .p3{animation:reject 6.2s var(--ease) infinite 2.4s}
+.pipe .p4{animation:pass 7s var(--ease) infinite 3.6s}
+.pipe .p5{animation:reject 5.8s var(--ease) infinite .9s}
+
+/* --- VISUAL 3 · leverage flywheel --- */
+.fly{border:1px solid var(--line-2);border-radius:var(--r);background:linear-gradient(180deg,rgba(18,19,23,.7),rgba(12,13,16,.5));
+  padding:30px 24px;display:grid;grid-template-columns:1fr 1.05fr;gap:26px;align-items:center}
+.fly-svg{width:100%;max-width:300px;margin:0 auto;display:block;overflow:visible}
+.fly-svg .wheel{transform-origin:130px 130px;animation:flyspin 9s cubic-bezier(.6,.02,.4,1) infinite}
+@keyframes flyspin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+.fly-svg .spoke{stroke:var(--line-2);stroke-width:1}
+.fly-svg .rim{fill:none;stroke:url(#sigGrad);stroke-width:2.6;filter:drop-shadow(0 0 8px rgba(99,102,241,.5))}
+.fly-svg .arc-arrow{fill:var(--c-violet)}
+.fly-svg .stage{font-family:var(--mono);font-size:6px;letter-spacing:.04em;fill:var(--ink-soft);text-transform:uppercase}
+.fly-svg .hubc{fill:rgba(7,7,9,.8);stroke:var(--line-2);stroke-width:1.2}
+.fly-svg .hubt{font-family:var(--mono);font-size:5.4px;letter-spacing:.1em;fill:var(--c-cyan);text-transform:uppercase}
+.fly-legend .flo{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px}
+.fly-legend .flo .fn{font-family:var(--mono);font-size:12px;color:var(--accent);flex:none;width:20px}
+.fly-legend .flo .ft{font-weight:600;color:var(--ink);font-size:14px}
+.fly-legend .flo .fd{font-size:12.5px;color:var(--muted);line-height:1.5}
+.fly-legend .compound{margin-top:6px;font-family:var(--mono);font-size:11px;color:var(--c-violet);letter-spacing:.04em}
+@media(max-width:760px){.fly{grid-template-columns:1fr;gap:18px}}
+
+/* --- VISUAL 4 · emergence ambient field --- */
+#emergence{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.5;mix-blend-mode:screen}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}#emergence{display:none}}
+@media(max-width:600px){section{padding:60px 0}.wrap{padding-inline:18px}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<canvas id="emergence" aria-hidden="true"></canvas>
+
+<!-- MOTUSVIEWS — TOP -->
+<div class="motusbar top">
+  <span class="counter" data-counter title="MotusViews — lifetime views of the SystemsBench pitch">
+    <span class="cdot"></span><span class="clabel">MotusViews</span>
+    <span class="cval" data-motus>—</span><span class="cstamp" data-counter-stamp></span>
+  </span>
+</div>
+<nav class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top"><span class="dot"></span> SystemsBench</a>
+    <div class="nav-links">
+      <a href="#gap">The Gap</a>
+      <a href="#model">The Model</a>
+      <a href="#files">Architecture</a>
+      <a href="#engine">The Engine</a>
+      <a href="framework.html">The Framework</a>
+      <a href="motion.html">In Motion</a>
+      <a href="about.html">Outlier.Systems</a>
+    </div>
+    <a class="nav-cta" href="#join">Contribute →</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileDrawer">
+      <span class="bars"><span></span><span></span><span></span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- MOBILE DRAWER -->
+<div class="mobile-drawer" id="mobileDrawer">
+  <a href="#gap" data-close>The Gap <span class="ar">01</span></a>
+  <a href="#model" data-close>The Model <span class="ar">02</span></a>
+  <a href="#files" data-close>Architecture <span class="ar">03</span></a>
+  <a href="#engine" data-close>The Engine <span class="ar">04</span></a>
+  <a href="#impact" data-close>The Bet <span class="ar">05</span></a>
+  <a href="framework.html">The Framework <span class="ar">◆</span></a>
+  <a href="motion.html">In Motion <span class="ar">▶</span></a>
+  <a href="about.html">Outlier.Systems <span class="ar">→</span></a>
+  <a class="md-cta" href="#join" data-close>Contribute →</a>
+  <div class="md-foot">Systemic solutions to systemic problems</div>
+</div>
+
+<!-- HERO -->
+<header id="top" class="hero">
+  <div class="wrap">
+    <span class="hero-badge"><span class="b-dot"></span> Open-Source Framework · Pre-Release</span>
+    <h1 class="gradient-text">SystemsBench In A Sense!</h1>
+    <div class="tag">The Benchmark for Systems Intelligence Within Large Language Models.</div>
+    <p class="sub">An open-source way to measure not <i>what</i> a model knows — but how well it can <b style="color:var(--ink);font-weight:500">think in systems</b>: map structure, trace feedback, locate leverage, and apply it to the real world.</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#model">See the Model →</a>
+      <a class="btn btn-ghost" href="#files">Read the Architecture</a>
+    </div>
+    <p class="lineage">Led by <b>Ember Seoni</b> &nbsp;·&nbsp; Developed &amp; Maintained by <b>Outlier.Systems</b> &nbsp;·&nbsp; Built on the Donella&nbsp;Meadows lineage</p>
+    <div class="livingband" aria-hidden="true"></div>
+
+    <!-- COUNTDOWN -->
+    <div class="countdown-card reveal" id="join">
+      <div class="cd-label">◆ Coming Soon</div>
+      <div class="cd-title gradient-text">The Open-Source Release</div>
+      <div class="cd-note">This is our first pre-release — the intro. The full framework opens to the world for the community to improve and evolve.</div>
+      <div class="cd-grid" id="cd">
+        <div class="cd-cell"><div class="cd-num" id="cd-d">14</div><div class="cd-unit">Days</div></div>
+        <div class="cd-cell"><div class="cd-num" id="cd-h">00</div><div class="cd-unit">Hours</div></div>
+        <div class="cd-cell"><div class="cd-num" id="cd-m">00</div><div class="cd-unit">Minutes</div></div>
+        <div class="cd-cell"><div class="cd-num" id="cd-s">00</div><div class="cd-unit">Seconds</div></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- PRODUCT VIDEO · IN ONE BREATH -->
+<style>
+  .pv-wrap{max-width:1080px;margin:36px auto 8px;padding:0 20px}
+  .pv-eyebrow{justify-content:center;margin-bottom:16px}
+  .pv-frame{
+    position:relative;border-radius:var(--r);padding:2px;
+    background:var(--band);background-size:220% 100%;
+    animation:bandflow 9s linear infinite;
+    box-shadow:0 0 0 1px rgba(34,211,238,.18),0 24px 70px -28px rgba(34,211,238,.45),0 8px 40px -20px rgba(0,0,0,.7);
+  }
+  .pv-frame::before{
+    content:"";position:absolute;inset:-16px;z-index:-1;border-radius:calc(var(--r) + 14px);
+    background:var(--band);background-size:220% 100%;animation:bandflow 9s linear infinite;
+    filter:blur(30px);opacity:.38;
+  }
+  .pv-stage{
+    position:relative;border-radius:calc(var(--r) - 2px);overflow:hidden;
+    aspect-ratio:16/9;background:#05070b;
+  }
+  .pv-stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+  .pv-chip{
+    position:absolute;left:50%;bottom:16px;transform:translateX(-50%);
+    display:inline-flex;align-items:center;gap:9px;cursor:pointer;
+    padding:9px 16px;border-radius:999px;font:600 12.5px/1 var(--mono);
+    letter-spacing:.06em;text-transform:uppercase;color:#dffaff;
+    background:rgba(6,12,18,.62);backdrop-filter:blur(9px);
+    border:1px solid rgba(34,211,238,.42);
+    box-shadow:0 6px 24px -10px rgba(34,211,238,.6);
+    transition:opacity .35s ease,transform .35s ease,background .25s ease;
+  }
+  .pv-chip:hover{background:rgba(10,18,26,.82)}
+  .pv-chip .pv-dot{
+    width:9px;height:9px;border-radius:50%;background:var(--c-cyan);
+    box-shadow:0 0 0 0 rgba(34,211,238,.6);animation:cpulse 1.8s ease-out infinite;
+  }
+  .pv-chip[data-on="1"]{opacity:0;pointer-events:none;transform:translateX(-50%) translateY(8px)}
+  @media(prefers-reduced-motion:reduce){
+    .pv-frame,.pv-frame::before{animation:none;background-position:0 50%}
+    .pv-chip .pv-dot{animation:none}
+  }
+</style>
+<section class="pv-wrap reveal" aria-label="SystemsBench product video">
+  <div class="eyebrow pv-eyebrow"><span>&#9654; THE PRODUCT &middot; IN ONE BREATH</span></div>
+  <div class="pv-frame">
+    <div class="pv-stage">
+      <iframe id="pv-yt" width="560" height="315" src="https://www.youtube.com/embed/mRUzsQWJLbE?si=MST9mHSBw3boVJfn&autoplay=1&mute=1&enablejsapi=1&playsinline=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      <button class="pv-chip" id="pv-chip" type="button" aria-label="Tap to unmute"><span class="pv-dot"></span>Tap to unmute</button>
+    </div>
+  </div>
+</section>
+<script>
+  (function(){
+    var yt=document.getElementById('pv-yt'),chip=document.getElementById('pv-chip');
+    if(!yt||!chip)return;
+    function cmd(fn){try{yt.contentWindow.postMessage(JSON.stringify({event:'command',func:fn,args:[]}),'https://www.youtube.com');}catch(e){}}
+    chip.addEventListener('click',function(){
+      cmd('unMute');cmd('playVideo');
+      chip.setAttribute('data-on','1');
+    });
+  })();
+</script>
+
+<!-- STAT STRIP -->
+<section style="padding-top:20px">
+  <div class="wrap">
+    <div class="strip reveal">
+      <div class="cell"><div class="k"><span class="gradient-text">3+1</span></div><div class="v">Strata of systems cognition</div></div>
+      <div class="cell"><div class="k"><span class="gradient-text">10</span></div><div class="v">Scored capabilities</div></div>
+      <div class="cell"><div class="k"><span class="gradient-text">12</span></div><div class="v">Meadows leverage points</div></div>
+      <div class="cell"><div class="k"><span class="gradient-text">∞</span></div><div class="v">Recursive self-improvement</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- THE GAP -->
+<section id="gap">
+  <div class="wrap">
+    <div class="eyebrow">01 — The Gap We Are Closing</div>
+    <h2>We can measure what a model <span class="gradient-text">knows.</span><br/>We cannot yet measure how it <span class="gradient-text">thinks.</span></h2>
+    <p class="lede">Today's benchmarks reward recall, code, and math — the right answer. None of them ask the question that actually decides whether an AI is safe to trust with a hospital, a grid, a market, or a nation:</p>
+    <div class="quote-block reveal">When this intelligence changes one thing — does it understand what else moves, when, and why?</div>
+    <p class="lede">SystemsBench measures the missing axis. It evaluates the capacity to map a system, trace its feedback, locate its leverage, anticipate emergence, and design interventions that <b style="color:var(--ink);font-weight:500">survive contact with the real world</b>. As AI is handed control of systems that do not forgive linear thinking, this becomes one of the most important benchmarks in the field.</p>
+  </div>
+</section>
+
+<div class="wrap"><div class="divider"></div></div>
+
+<!-- THE MODEL -->
+<section id="model">
+  <div class="wrap">
+    <div class="eyebrow">02 — The Model · Three Strata of Systems Cognition</div>
+    <h2>See it. Understand it. <span class="gradient-text">Change it wisely.</span></h2>
+    <p class="lede">Systems intelligence is not one skill. It is three strata — each a precondition for the next — and a fourth layer that runs through all of them. Ten capabilities are scored; one cross-cutting measure governs how much the others can be trusted. Together they form a model's <b style="color:var(--ink);font-weight:500">Systems Profile</b>.</p>
+
+    <div class="strata">
+      <div class="stratum s1 reveal">
+        <div class="stratum-head"><span class="stratum-tag">Stratum I</span><h3>Perception</h3></div>
+        <div class="q">Can the intelligence see the system at all?</div>
+        <div class="caps">
+          <div class="cap"><div class="cn">Boundary</div><div class="cd">Choosing what belongs inside the system — and noticing what was wrongly left out.</div></div>
+          <div class="cap"><div class="cn">Structure</div><div class="cd">Mapping the elements and the interconnections that hold them together.</div></div>
+          <div class="cap"><div class="cn">Loops</div><div class="cd">Detecting reinforcing and balancing feedback before they dominate behavior.</div></div>
+        </div>
+      </div>
+
+      <div class="stratum s2 reveal">
+        <div class="stratum-head"><span class="stratum-tag">Stratum II</span><h3>Dynamics</h3></div>
+        <div class="q">Can it reason about how the system moves through time?</div>
+        <div class="caps">
+          <div class="cap"><div class="cn">Stocks, Flows &amp; Delays</div><div class="cd">Reasoning about accumulation, depletion, and the lag that breaks intuition.</div></div>
+          <div class="cap"><div class="cn">Nonlinearity</div><div class="cd">Anticipating thresholds, tipping points, and behavior that is not proportional.</div></div>
+          <div class="cap"><div class="cn">Emergence</div><div class="cd">Seeing properties that exist only in the interaction — never in the parts.</div></div>
+        </div>
+      </div>
+
+      <div class="stratum s3 reveal">
+        <div class="stratum-head"><span class="stratum-tag">Stratum III</span><h3>Intervention</h3></div>
+        <div class="q">Can it change the system wisely — and make the change hold?</div>
+        <div class="caps">
+          <div class="cap"><div class="cn">Leverage</div><div class="cd">Locating the few points where small, well-placed effort moves the whole.</div></div>
+          <div class="cap"><div class="cn">Second-Order</div><div class="cd">Tracing the consequence of the consequence — the cost the fix creates.</div></div>
+          <div class="cap"><div class="cn">Goal &amp; Paradigm</div><div class="cd">Inferring a system's true purpose and the mindset it silently arises from.</div></div>
+          <div class="cap"><div class="cn">Robust Design</div><div class="cd">Designing interventions that survive stress, time, and shifting incentives.</div></div>
+        </div>
+      </div>
+
+      <div class="stratum sx reveal">
+        <div class="stratum-head"><span class="stratum-tag">Cross-Cutting</span><h3>Epistemic Calibration</h3></div>
+        <div class="q">Does the intelligence know the limits of its own model?</div>
+        <p style="font-size:14px;color:var(--muted);margin-bottom:18px;max-width:64ch">A mind that is confidently wrong about a system is more dangerous than one that knows it is uncertain. Calibration runs through all three strata — and decides how much weight any other score deserves. Meadows' first instruction for complex systems was to stay humble, stay a learner.</p>
+        <div class="caps">
+          <div class="cap"><div class="cn">Confidence Accuracy</div><div class="cd">Reported certainty tracks actual correctness — no false precision, no hollow hedging.</div></div>
+          <div class="cap"><div class="cn">Boundary of Knowledge</div><div class="cd">Names what it cannot see, and where its map of the system runs out.</div></div>
+          <div class="cap"><div class="cn">Revisability</div><div class="cd">Updates cleanly on new evidence instead of defending the first answer.</div></div>
+          <div class="cap"><div class="cn">Failure Honesty</div><div class="cd">Flags the conditions under which its own intervention would break.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SQ -->
+    <div class="sq reveal">
+      <div class="eyebrow" style="justify-content:center">The Output · A Systems Profile, then a Systems Quotient</div>
+      <p style="position:relative;font-size:15px;color:var(--ink-soft);margin-bottom:6px">A single number hides where an intelligence is strong and where it is dangerous. SystemsBench returns a <b style="color:var(--ink)">profile</b> — a shape across all ten capabilities — plotted against a human reference. It resolves to one figure: the <b class="gradient-text">Systems Quotient (SQ)</b>.</p>
+      <div class="sq-formula"><b>SQ</b><span class="x">=</span>systems capability<span class="x">×</span>epistemic calibration</div>
+      <p>A model that reasons brilliantly but does not know when it is wrong cannot post a high SQ — the calibration term holds it honest. Capability without calibration is not intelligence; it is hazard.</p>
+    </div>
+
+    <!-- SYSTEMS PROFILE RADAR -->
+    <div class="profile-wrap reveal">
+      <svg class="profile-svg" viewBox="0 0 200 200" role="img" aria-label="Systems Profile radar — a model's capability shape plotted against a human practitioner reference">
+        <defs>
+          <linearGradient id="bandgrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#22d3ee"/><stop offset="50%" stop-color="#6366f1"/><stop offset="100%" stop-color="#d946ef"/>
+          </linearGradient>
+        </defs>
+        <!-- concentric grid rings (octagon) -->
+        <polygon class="grid-poly" points="100,30 149.5,50.5 170,100 149.5,149.5 100,170 50.5,149.5 30,100 50.5,50.5"/>
+        <polygon class="grid-poly" points="100,47.5 137.1,62.9 152.5,100 137.1,137.1 100,152.5 62.9,137.1 47.5,100 62.9,62.9"/>
+        <polygon class="grid-poly" points="100,65 124.7,75.3 135,100 124.7,124.7 100,135 75.3,124.7 65,100 75.3,75.3"/>
+        <!-- axes -->
+        <line class="axis" x1="100" y1="100" x2="100" y2="30"/><line class="axis" x1="100" y1="100" x2="149.5" y2="50.5"/>
+        <line class="axis" x1="100" y1="100" x2="170" y2="100"/><line class="axis" x1="100" y1="100" x2="149.5" y2="149.5"/>
+        <line class="axis" x1="100" y1="100" x2="100" y2="170"/><line class="axis" x1="100" y1="100" x2="50.5" y2="149.5"/>
+        <line class="axis" x1="100" y1="100" x2="30" y2="100"/><line class="axis" x1="100" y1="100" x2="50.5" y2="50.5"/>
+        <!-- human reference (balanced, strong) -->
+        <polygon class="ref" points="100,40 142,58 158,100 140,140 100,158 60,140 44,100 58,58"/>
+        <!-- model profile (spiky: strong perception, weak calibration & 2nd-order) -->
+        <polygon class="model" points="100,42 146,54 150,100 118,128 100,150 72,132 52,100 64,56"/>
+        <!-- axis labels -->
+        <text x="100" y="24" text-anchor="middle">BOUNDARY</text>
+        <text x="156" y="48" text-anchor="start">STRUCTURE</text>
+        <text x="178" y="103" text-anchor="middle">LOOPS</text>
+        <text x="152" y="160" text-anchor="middle">DYNAMICS</text>
+        <text x="100" y="184" text-anchor="middle">LEVERAGE</text>
+        <text x="48" y="160" text-anchor="middle">2ND-ORDER</text>
+        <text x="22" y="103" text-anchor="middle">PARADIGM</text>
+        <text x="44" y="48" text-anchor="end">CALIBRATION</text>
+      </svg>
+      <div class="profile-legend">
+        <div class="pl-row"><span class="sw m"></span><div><div class="pl-t">The model — a Systems Profile</div><div class="pl-d">A shape across all ten capabilities. Strong perception, but thin second-order reasoning and over-confident calibration — visible, not averaged away.</div></div></div>
+        <div class="pl-row"><span class="sw r"></span><div><div class="pl-t">Human practitioner — reference</div><div class="pl-d">A trained systems thinker, balanced across the strata. Every model's shape is read <i>relative to this frame</i> — not an abstract percent.</div></div></div>
+        <div class="profile-note">Illustrative shape. Real evaluations, the human cohort, and the public leaderboard arrive with SystemsBench&nbsp;v1.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="divider"></div></div>
+
+<!-- THE ARCHITECTURE / FILES -->
+<section id="files">
+  <div class="wrap">
+    <div class="eyebrow">03 — The Architecture · Four Living Files</div>
+    <h2>One product. <span class="gradient-text">Four organs.</span></h2>
+    <p class="lede">SystemsBench is not a static document — it is a compounding one. Four Markdown files form a research-and-innovation engine: the spec, the procedure, the memory, and the horizon. Each run makes them sharper.</p>
+
+    <div class="files">
+      <div class="file reveal">
+        <div class="file-name">SystemsBenchStructure.MD</div>
+        <div class="file-role">The Spec · canonical architecture</div>
+        <div class="file-desc">The load-bearing document. Defines the <b>construct</b> we measure — Systems Thinking &amp; Leverage Competence (STLC) — its five scoring dimensions, the seven item formats, Meadows' twelve-point leverage ladder, the judging protocol, and the contamination defenses. This is the current architecture the website is built from, and the only doc that requires council ratification to change.</div>
+        <div class="file-foot"><span class="lbl">grounds →</span> Meadows · Forrester · Arnold &amp; Wade · HELM · GPQA-Diamond</div>
+      </div>
+
+      <div class="file reveal">
+        <div class="file-name">SystemsBenchEngine.MD</div>
+        <div class="file-role">The Procedure · the recursive engine</div>
+        <div class="file-desc">How <b>Davara&nbsp;/SystemsBenchSenseRun</b> makes the next enhancement, every time. Nine phases, seven invariants, one lever per run — bounded, reversible, gated, logged. The engine treats SystemsBench as a system and applies SystemsBench's own thinking to it: small, structural, high-leverage moves, watching the feedback.</div>
+        <div class="file-foot"><span class="lbl">cadence →</span> one gated enhancement per run · auto-rollback on regress</div>
+      </div>
+
+      <div class="file reveal">
+        <div class="file-name">SystemsBenchResearch.MD</div>
+        <div class="file-role">The Memory · append-only prior-art ledger</div>
+        <div class="file-desc">So we never reinvent the wheel. A living ledger of everything that already exists — systems-thinking science and benchmark-construction science — with how each piece applies to SystemsBench. Read before any change; written back after. <b>Knowledge compounds here</b> and is never deleted, only superseded.</div>
+        <div class="file-foot"><span class="lbl">discipline →</span> search before you build · cite when you reuse · append when you learn</div>
+      </div>
+
+      <div class="file reveal">
+        <div class="file-name">SystemsBenchFuture.MD</div>
+        <div class="file-role">The Horizon · the roadmap &amp; open forks</div>
+        <div class="file-desc">Where SystemsBench is going. Every proposed next step lands here first — held open as named forks (never collapsed into one tidy answer) — until reviewed, ratified, and promoted into the Structure. The forward-look the engine steers toward: <b>deeper validity, cheaper rigor, harder to game</b> on every run.</div>
+        <div class="file-foot"><span class="lbl">flow →</span> idea → Future → review gate → Structure</div>
+      </div>
+    </div>
+
+    <!-- VISUAL 2 · PROMOTION PIPELINE -->
+    <div class="viz pipe reveal">
+      <svg class="viz-svg" viewBox="0 0 320 150" role="img" aria-label="The promotion pipeline — ideas pool in Research, only gated ones pass through to Structure; Future feeds the horizon">
+        <!-- flow guides -->
+        <path class="flowpath" d="M 70 52 H 150"/>
+        <path class="flowpath" d="M 250 52 H 178"/>
+        <!-- RESEARCH stock (left, full) -->
+        <rect class="stock stock-r" x="14" y="30" width="56" height="44" rx="8"/>
+        <text class="stitle" x="42" y="20" text-anchor="middle">RESEARCH</text>
+        <text class="ssub" x="42" y="88" text-anchor="middle">prior-art · append-only</text>
+        <!-- the GATE in the middle -->
+        <g>
+          <line class="gate" x1="164" y1="20" x2="164" y2="84"/>
+          <text class="glabel" x="164" y="13" text-anchor="middle">review gate</text>
+          <text class="glabel" x="164" y="98" text-anchor="middle" style="fill:var(--faint)">most ideas wait</text>
+        </g>
+        <!-- STRUCTURE stock (right, canonical) -->
+        <rect class="stock stock-s" x="258" y="30" width="56" height="44" rx="8"/>
+        <text class="stitle" x="286" y="20" text-anchor="middle">STRUCTURE</text>
+        <text class="ssub" x="286" y="88" text-anchor="middle">canonical · ratified</text>
+        <!-- FUTURE stock (bottom, feeds horizon) -->
+        <rect class="stock stock-f" x="230" y="112" width="84" height="30" rx="8"/>
+        <text class="stitle" x="272" y="131" text-anchor="middle" style="font-size:5.6px">FUTURE · the horizon</text>
+        <path class="flowpath" d="M 286 112 V 78"/>
+        <!-- particles: most pool/reject at the gate, few pass -->
+        <circle class="particle p1" r="2.2" cx="20" cy="40"/>
+        <circle class="particle p2" r="2.2" cx="20" cy="52"/>
+        <circle class="particle p3" r="2.2" cx="20" cy="64"/>
+        <circle class="particle p4" r="2.2" cx="30" cy="46"/>
+        <circle class="particle p5" r="2.2" cx="30" cy="60"/>
+      </svg>
+      <div class="viz-cap"><b>The gate is the point.</b> Ideas pool in <span style="color:var(--c-cyan)">Research</span>. Only what survives the <span style="color:var(--c-violet)">review gate</span> is promoted into <span style="color:var(--c-violet)">Structure</span> — the canonical spec. Rejection is visible, not hidden. Honesty is the aesthetic.</div>
+    </div>
+
+    <!-- VISUAL 3 · LEVERAGE FLYWHEEL -->
+    <div class="viz fly reveal">
+      <svg class="fly-svg" viewBox="0 0 260 260" role="img" aria-label="The leverage flywheel — calibrated items make calibration cheaper, which yields more items: a compounding loop">
+        <g class="wheel">
+          <circle class="rim" cx="130" cy="130" r="96"/>
+          <line class="spoke" x1="130" y1="130" x2="130" y2="34"/>
+          <line class="spoke" x1="130" y1="130" x2="213" y2="178"/>
+          <line class="spoke" x1="130" y1="130" x2="47" y2="178"/>
+          <!-- direction arrow on the rim -->
+          <polygon class="arc-arrow" points="226,124 234,130 226,136"/>
+          <text class="stage" x="130" y="26" text-anchor="middle">MORE ITEMS</text>
+          <text class="stage" x="216" y="190" text-anchor="start">CHEAPER CALIBRATION</text>
+          <text class="stage" x="44" y="190" text-anchor="end">SHARPER RUBRIC</text>
+        </g>
+        <circle class="hubc" cx="130" cy="130" r="34"/>
+        <text class="hubt" x="130" y="126" text-anchor="middle">LEVERAGE</text>
+        <text class="hubt" x="130" y="138" text-anchor="middle" style="fill:var(--ink)">COMPOUNDS</text>
+      </svg>
+      <div class="fly-legend">
+        <div class="flo"><span class="fn">/01</span><div><div class="ft">Every item calibrated against humans</div><div class="fd">A scored item is only as good as its jury. Each calibration buys trust in the score.</div></div></div>
+        <div class="flo"><span class="fn">/02</span><div><div class="ft">Calibration data lowers the next cost</div><div class="fd">The more we calibrate, the cheaper the next item is to calibrate — the rubric sharpens.</div></div></div>
+        <div class="flo"><span class="fn">/03</span><div><div class="ft">Cheaper rigor → more items → wider coverage</div><div class="fd">Coverage compounds. The flywheel accelerates the way Meadows' highest leverage does: structure, not effort.</div></div></div>
+        <div class="compound">↻ Each turn spins faster than the last.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="divider"></div></div>
+
+<!-- THE FRAMEWORK · DEEP-DIVE CTA -->
+<section style="padding-top:8px">
+  <div class="wrap">
+    <a href="framework.html" class="fw-cta reveal" aria-label="Read the full technical framework">
+      <div>
+        <div class="eyebrow" style="margin-bottom:10px">Go Deeper · The Technical Framework</div>
+        <h3>The full framework — <span class="gradient-text">STLC, the five weighted dimensions, the leverage ladder, the rigor.</span></h3>
+        <p>The construct, the lineage (Meadows · Senge · Forrester · Ackoff), the weighted scoring dimensions, the 9-phase SenseRun engine, and the statistical gates — the whole instrument, in depth.</p>
+      </div>
+      <span class="fw-cta-go">The Framework →</span>
+    </a>
+  </div>
+</section>
+
+<div class="wrap"><div class="divider"></div></div>
+
+<!-- THE ENGINE -->
+<section id="engine">
+  <div class="wrap">
+    <div class="eyebrow">04 — The Engine · A Benchmark That Improves Itself</div>
+    <h2>It is <span class="gradient-text">alive.</span></h2>
+    <p class="lede">Like the systems it studies, SystemsBench has feedback loops on itself. One command — <b style="color:var(--ink);font-weight:500">Davara&nbsp;/SystemsBenchSenseRun</b> — runs one bounded, reversible, logged, gated enhancement. The benchmark compounds.</p>
+
+    <div class="viz loopviz reveal">
+      <svg class="viz-svg" viewBox="0 0 320 320" role="img" aria-label="The SenseRun loop — a closed nine-stage cycle that improves the benchmark, the signal feeding back into itself" style="max-width:420px;margin:0 auto">
+        <defs>
+          <linearGradient id="sigGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#22d3ee"/><stop offset="50%" stop-color="#6366f1"/><stop offset="100%" stop-color="#d946ef"/>
+          </linearGradient>
+        </defs>
+        <!-- the circuit -->
+        <circle class="track" cx="160" cy="160" r="112"/>
+        <!-- traveling signal: one pulse, one circuit -->
+        <path class="signal" d="M 160 48 A 112 112 0 1 1 159.99 48 Z"/>
+        <!-- nodes -->
+      <g class="lnode"><title>SENSE — observe the benchmark's current state</title>
+        <circle cx="160.0" cy="48.0" r="13" class="nodefill"/>
+        <text x="160.0" y="47.0" text-anchor="middle" class="nlabel" style="font-size:5px">SENSE</text>
+        <text x="160.0" y="53.0" text-anchor="middle" class="nsub" style="font-size:3.6px">observe</text>
+      </g>
+      <g class="lnode"><title>CRITIQUE — find the dominant weakness</title>
+        <circle cx="232.0" cy="74.2" r="13" class="nodefill"/>
+        <text x="232.0" y="73.2" text-anchor="middle" class="nlabel" style="font-size:5px">CRITIQUE</text>
+        <text x="232.0" y="79.2" text-anchor="middle" class="nsub" style="font-size:3.6px">critique</text>
+      </g>
+      <g class="lnode"><title>RESEARCH — search prior art before building</title>
+        <circle cx="270.3" cy="140.6" r="13" class="nodefill"/>
+        <text x="270.3" y="139.6" text-anchor="middle" class="nlabel" style="font-size:5px">RESEARCH</text>
+        <text x="270.3" y="145.6" text-anchor="middle" class="nsub" style="font-size:3.6px">prior-art</text>
+      </g>
+      <g class="lnode"><title>PROPOSE — exactly one lever</title>
+        <circle cx="257.0" cy="216.0" r="13" class="nodefill"/>
+        <text x="257.0" y="215.0" text-anchor="middle" class="nlabel" style="font-size:5px">PROPOSE</text>
+        <text x="257.0" y="221.0" text-anchor="middle" class="nsub" style="font-size:3.6px">one lever</text>
+      </g>
+      <g class="lnode"><title>REVIEW — the gate: structural needs the council</title>
+        <circle cx="198.3" cy="265.2" r="13" class="nodefill"/>
+        <text x="198.3" y="264.2" text-anchor="middle" class="nlabel" style="font-size:5px">REVIEW</text>
+        <text x="198.3" y="270.2" text-anchor="middle" class="nsub" style="font-size:3.6px">gate</text>
+      </g>
+      <g class="lnode"><title>APPLY — make the one edit</title>
+        <circle cx="121.7" cy="265.2" r="13" class="nodefill"/>
+        <text x="121.7" y="264.2" text-anchor="middle" class="nlabel" style="font-size:5px">APPLY</text>
+        <text x="121.7" y="270.2" text-anchor="middle" class="nsub" style="font-size:3.6px">edit</text>
+      </g>
+      <g class="lnode"><title>CALIBRATE — re-score; auto-revert on regress</title>
+        <circle cx="63.0" cy="216.0" r="13" class="nodefill"/>
+        <text x="63.0" y="215.0" text-anchor="middle" class="nlabel" style="font-size:5px">CALIBRATE</text>
+        <text x="63.0" y="221.0" text-anchor="middle" class="nsub" style="font-size:3.6px">re-score</text>
+      </g>
+      <g class="lnode"><title>LOG — no silent edits; the run log is the contract</title>
+        <circle cx="49.7" cy="140.6" r="13" class="nodefill"/>
+        <text x="49.7" y="139.6" text-anchor="middle" class="nlabel" style="font-size:5px">LOG</text>
+        <text x="49.7" y="145.6" text-anchor="middle" class="nsub" style="font-size:3.6px">log</text>
+      </g>
+      <g class="lnode"><title>RECURSE — feed the result back into SENSE</title>
+        <circle cx="88.0" cy="74.2" r="13" class="nodefill"/>
+        <text x="88.0" y="73.2" text-anchor="middle" class="nlabel" style="font-size:5px">RECURSE</text>
+        <text x="88.0" y="79.2" text-anchor="middle" class="nsub" style="font-size:3.6px">feed back</text>
+      </g>
+        <!-- hub: version ticks as the loop completes a lap -->
+        <circle class="hub" cx="160" cy="160" r="40"/>
+        <text class="hub-l" x="160" y="150" text-anchor="middle">/SenseRun</text>
+        <text class="hub-v" x="160" y="166" text-anchor="middle" id="hubVer">v0.5</text>
+        <text class="hub-l" x="160" y="176" text-anchor="middle" id="hubState" style="fill:var(--faint)">compounding</text>
+      </svg>
+      <div class="viz-cap"><b>One command, one circuit.</b> Each lap of <span style="color:var(--c-cyan)">Davara /SystemsBenchSenseRun</span> makes exactly one bounded, gated, logged enhancement — then feeds the result back into the next SENSE. The benchmark studies itself the way it studies any system.</div>
+    </div>
+
+    <div class="loop reveal" aria-hidden="false">
+      <span class="loop-node">SENSE</span><span class="loop-arrow">→</span>
+      <span class="loop-node">CRITIQUE</span><span class="loop-arrow">→</span>
+      <span class="loop-node">RESEARCH</span><span class="loop-arrow">→</span>
+      <span class="loop-node">PROPOSE</span><span class="loop-arrow">→</span>
+      <span class="loop-node">REVIEW</span><span class="loop-arrow">→</span>
+      <span class="loop-node">APPLY</span><span class="loop-arrow">→</span>
+      <span class="loop-node">CALIBRATE</span><span class="loop-arrow">→</span>
+      <span class="loop-node">LOG</span><span class="loop-arrow">→</span>
+      <span class="loop-node">RECURSE</span>
+    </div>
+
+    <div class="principles">
+      <div class="principle reveal"><div class="pn">INVARIANT 01</div><div class="pt">One lever per run</div><div class="pd">Exactly one enhancement. If you find three fixes, ship the dominant one and backlog the rest. The engine never thrashes.</div></div>
+      <div class="principle reveal"><div class="pn">INVARIANT 02</div><div class="pt">Structural needs the council</div><div class="pd">Additive, reversible changes self-approve. Any change to the rules of the benchmark requires August + Ember. Never self-apply a Meadows&nbsp;#5.</div></div>
+      <div class="principle reveal"><div class="pn">INVARIANT 03</div><div class="pt">Anti-Collapse</div><div class="pd">When divergent design futures genuinely exist, hold them open as named forks. Never average away disagreement — it is a signal, not noise.</div></div>
+      <div class="principle reveal"><div class="pn">INVARIANT 04</div><div class="pt">Fail closed</div><div class="pd">An uncalibrated jury, an unspread item, an undefined gate → reported as <span style="font-family:var(--mono);color:var(--c-cyan)">UNCALIBRATED</span>. A blank is honest; a fabricated number is not.</div></div>
+      <div class="principle reveal"><div class="pn">INVARIANT 05</div><div class="pt">Everything logged</div><div class="pd">No silent edits. The run log is the contract and the system's memory. A change that isn't logged didn't happen.</div></div>
+      <div class="principle reveal"><div class="pn">INVARIANT 06</div><div class="pt">Reversible by design</div><div class="pd">Every change has a logged rollback. If calibration regresses past tolerance, the engine auto-reverts. That is what makes self-improvement safe.</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="divider"></div></div>
+
+<!-- IMPACT -->
+<section id="impact">
+  <div class="wrap">
+    <div class="eyebrow">05 — Why It Matters · The Bet</div>
+    <h2>The scarce capability of the <span class="gradient-text">age of agents.</span></h2>
+    <p class="lede">As models become agents that <i>act</i> on the world — write, run, deploy — the valuable, hard-to-fake capability is not knowledge recall. It is <b style="color:var(--ink);font-weight:500">knowing where to push.</b> SystemsBench is the instrument that measures it.</p>
+    <div class="impact">
+      <div class="imp reveal"><div class="ic">/01</div><h3>Safety for high-stakes autonomy</h3><p>Before an AI is trusted with a grid, a market, a hospital, or a supply chain, we should know whether it can predict what else moves when it intervenes. SystemsBench is that pre-flight check.</p></div>
+      <div class="imp reveal"><div class="ic">/02</div><h3>A new axis for the field</h3><p>Recall and code are saturating. Systems intelligence is the open frontier — and the one that maps most directly onto real-world consequence. A benchmark here reshapes what labs optimize for.</p></div>
+      <div class="imp reveal"><div class="ic">/03</div><h3>An open, compounding commons</h3><p>Open-source, auditable, and self-improving. The rubric, item bank, and calibration data compound every run — a shared instrument the whole field can build on, not a closed leaderboard.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final" id="contribute">
+  <div class="wrap">
+    <div class="eyebrow" style="justify-content:center">Join the build</div>
+    <h2 class="gradient-text">Help us measure where intelligence chooses to push.</h2>
+    <p class="poem">Map the system. Find where to push.<br/>Predict what happens. Make humanity proud.</p>
+    <div class="contact-row">
+      <a class="contact-chip" href="mailto:Ember@Outlier.Systems">Lead · <b>Ember@Outlier.Systems</b></a>
+      <a class="contact-chip" href="mailto:EVOLVE@Outlier.Systems">Contribute · <b>EVOLVE@Outlier.Systems</b></a>
+      <a class="contact-chip" href="about.html">About Outlier.Systems →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="f-brand"><span class="dot"></span> SystemsBench</div>
+    <div class="f-lines">
+      An Open-Source Framework by <a href="about.html">Outlier.Systems</a><br/>
+      Led by Ember Seoni &amp; August Domanchuk · Operated by Outlier.Systems<br/>
+      <a href="mailto:Ember@Outlier.Systems">Ember@Outlier.Systems</a> &nbsp;·&nbsp; <a href="mailto:EVOLVE@Outlier.Systems">EVOLVE@Outlier.Systems</a>
+    </div>
+    <div class="f-mantra">SYSTEMIC SOLUTIONS TO SYSTEMIC PROBLEMS · IT'S TIME TO DANCE</div>
+  </div>
+</footer>
+
+<!-- MOTUSVIEWS — BOTTOM -->
+<div class="motusbar">
+  <span class="counter" data-counter title="MotusViews — lifetime views of the SystemsBench pitch">
+    <span class="cdot"></span><span class="clabel">MotusViews</span>
+    <span class="cval" data-motus>—</span><span class="cstamp" data-counter-stamp></span>
+  </span>
+</div>
+
+<script src="motus.js"></script>
+<script>
+// ---- Scroll progress bar ----
+(function(){
+  var bar=document.getElementById('progress');if(!bar)return;
+  function up(){var h=document.documentElement,max=h.scrollHeight-h.clientHeight;bar.style.width=(max>0?(h.scrollTop/max*100):0)+'%';}
+  addEventListener('scroll',up,{passive:true});addEventListener('resize',up);up();
+})();
+// ---- Mobile nav drawer ----
+(function(){
+  var t=document.getElementById('navToggle'),b=document.body;
+  if(!t)return;
+  function close(){b.classList.remove('nav-open');t.setAttribute('aria-expanded','false');}
+  t.addEventListener('click',function(){
+    var open=b.classList.toggle('nav-open');
+    t.setAttribute('aria-expanded',open?'true':'false');
+  });
+  document.querySelectorAll('.mobile-drawer [data-close]').forEach(function(a){
+    a.addEventListener('click',close);
+  });
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
+})();
+
+// ---- SenseRun hub: version ticks each time the signal completes a lap ----
+(function(){
+  var verEl=document.getElementById('hubVer'),stEl=document.getElementById('hubState');
+  if(!verEl)return;
+  if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+  var minor=5; // v0.5
+  var states=['compounding','sharper','harder to game','more valid','well-calibrated'];
+  var LAP=6000; // matches the .signal travel animation duration
+  setInterval(function(){
+    minor++;
+    verEl.textContent='v0.'+minor;
+    if(stEl)stEl.textContent=states[minor%states.length];
+    // brief pulse on advance (earned motion)
+    verEl.style.transition='none';verEl.style.opacity='.35';
+    requestAnimationFrame(function(){verEl.style.transition='opacity .6s ease';verEl.style.opacity='1';});
+  },LAP);
+})();
+
+// ---- Emergence field: agents self-organizing into a network (ambient, low-leverage) ----
+(function(){
+  var cv=document.getElementById('emergence');
+  if(!cv)return;
+  if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches){cv.style.display='none';return;}
+  var ctx=cv.getContext('2d'),W,H,DPR=Math.min(window.devicePixelRatio||1,2);
+  var N=Math.min(64,Math.floor((window.innerWidth*window.innerHeight)/26000));
+  var pts=[],running=true;
+  function resize(){W=cv.width=innerWidth*DPR;H=cv.height=innerHeight*DPR;cv.style.width=innerWidth+'px';cv.style.height=innerHeight+'px';}
+  resize();
+  for(var i=0;i<N;i++){pts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.18*DPR,vy:(Math.random()-.5)*.18*DPR});}
+  var LINK=140*DPR;
+  function step(){
+    if(!running){return;}
+    ctx.clearRect(0,0,W,H);
+    for(var i=0;i<pts.length;i++){
+      var p=pts[i];p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;
+    }
+    for(var i=0;i<pts.length;i++){
+      for(var j=i+1;j<pts.length;j++){
+        var a=pts[i],b=pts[j],dx=a.x-b.x,dy=a.y-b.y,d=Math.sqrt(dx*dx+dy*dy);
+        if(d<LINK){
+          var o=(1-d/LINK)*.22;
+          ctx.strokeStyle='rgba(99,140,230,'+o.toFixed(3)+')';ctx.lineWidth=DPR*.6;
+          ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
+        }
+      }
+    }
+    for(var i=0;i<pts.length;i++){
+      ctx.fillStyle='rgba(120,170,240,.5)';ctx.beginPath();ctx.arc(pts[i].x,pts[i].y,DPR*1.1,0,6.28);ctx.fill();
+    }
+    requestAnimationFrame(step);
+  }
+  addEventListener('resize',function(){resize();},{passive:true});
+  document.addEventListener('visibilitychange',function(){
+    if(document.hidden){running=false;}else if(!running){running=true;step();}
+  });
+  step();
+})();
+
+// ---- Live countdown: 2 weeks from first visit, persisted ----
+(function(){
+  var KEY='sb_release_target_v1';
+  var target=localStorage.getItem(KEY);
+  if(!target){ target=String(Date.now()+14*24*60*60*1000); localStorage.setItem(KEY,target); }
+  target=parseInt(target,10);
+  var dEl=document.getElementById('cd-d'),hEl=document.getElementById('cd-h'),
+      mEl=document.getElementById('cd-m'),sEl=document.getElementById('cd-s');
+  function p(n){return String(n).padStart(2,'0');}
+  function tick(){
+    var diff=target-Date.now();
+    if(diff<0)diff=0;
+    var d=Math.floor(diff/86400000),
+        h=Math.floor(diff%86400000/3600000),
+        m=Math.floor(diff%3600000/60000),
+        s=Math.floor(diff%60000/1000);
+    dEl.textContent=p(d);hEl.textContent=p(h);mEl.textContent=p(m);sEl.textContent=p(s);
+  }
+  tick();setInterval(tick,1000);
+})();
+
+// ---- Scroll reveal (hardened: content can never stay invisible) ----
+(function(){
+  var els=document.querySelectorAll('.reveal');
+  function showAll(){els.forEach(function(e){e.classList.add('in');});}
+  if(!('IntersectionObserver' in window)){showAll();return;}
+  var io=new IntersectionObserver(function(en){
+    en.forEach(function(x){if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target);}});
+  },{threshold:.08,rootMargin:'0px 0px -6% 0px'});
+  els.forEach(function(e){io.observe(e);});
+  // Safety net: anything still hidden after load gets revealed (never show a blank section)
+  window.addEventListener('load',function(){setTimeout(function(){
+    els.forEach(function(e){if(getComputedStyle(e).opacity!=='1'){
+      var r=e.getBoundingClientRect();
+      if(r.top<window.innerHeight+200)e.classList.add('in');
+    }});
+  },600);});
+})();
+</script>
+</body>
+</html>
