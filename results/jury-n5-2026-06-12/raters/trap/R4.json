@@ -1,0 +1,23 @@
+{
+ "rater": "R4",
+ "scores": {
+  "A1": 0.0,
+  "A2": 0.0,
+  "A3": 0.0,
+  "A4": 0.0,
+  "B1": 0.0,
+  "B2": 0.0,
+  "C1": 0.0,
+  "C2": 0.0,
+  "C3": 0.0,
+  "C4": 0.0,
+  "C5": 0.0,
+  "D1": 0.0,
+  "D2": 0.0,
+  "D3": 0.0,
+  "E1": 0.0,
+  "E2": 0.0,
+  "E3": 0.0
+ },
+ "improvement": "Map the dominant reinforcing loop (deadline pressure \u2192 senior onboarding/firefighting load \u2192 quality drop \u2192 rework \u2192 more missed deadlines) before prescribing, because every proposed move \u2014 more hires, firmer dates, bigger bonuses \u2014 pushes that loop in the wrong direction; replace them with a structural rule change (WIP limits, predictability-and-quality incentives, visible flow/debt metrics)."
+}

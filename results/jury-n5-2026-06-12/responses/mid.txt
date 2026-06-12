@@ -1,0 +1,15 @@
+The deadline misses aren't an effort problem — they're self-reinforcing. The backlog
+keeps growing, the team is under pressure, and adding people mid-crunch tends to slow
+things down before it speeds them up, because existing engineers lose time onboarding
+the new ones. So "hire more and push harder" is unlikely to fix it and may deepen the
+hole.
+
+What I'd actually do: cap work-in-progress. Limit how many features are in flight per
+team so things get *finished* instead of all being 80% done. Make the real state visible
+— a board showing WIP, cycle time, and the growing pile of bugs/rework so leadership can
+see flow instead of just due dates. Stop starting, start finishing. Over a few cycles the
+backlog should drain and predictability should improve as the team stops thrashing
+between half-done work.
+
+This is a process-design problem more than a staffing one. Get the workflow and the
+metrics right and the deadline pressure takes care of itself.

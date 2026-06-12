@@ -1,0 +1,23 @@
+{
+ "rater": "R2",
+ "scores": {
+  "A1": 0.5,
+  "A2": 0.5,
+  "A3": 0.5,
+  "A4": 0.0,
+  "B1": 0.5,
+  "B2": 1.0,
+  "C1": 0.5,
+  "C2": 0.5,
+  "C3": 1.0,
+  "C4": 0.5,
+  "C5": 0.5,
+  "D1": 1.0,
+  "D2": 0.0,
+  "D3": 0.0,
+  "E1": 0.5,
+  "E2": 0.5,
+  "E3": 0.5
+ },
+ "improvement": "Go one rung higher on the ladder: explicitly change the goal/incentive structure (drop date-hitting bonuses, reward predictability and quality), rank it against the WIP-limit move on Meadows' hierarchy, and predict the leadership/manager resistance that rule change will provoke."
+}

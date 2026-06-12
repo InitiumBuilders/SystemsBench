@@ -10,5 +10,11 @@ engine/local.env
 # Detached-worker stdout logs (runtime traces; logs/runs/ corpus IS tracked)
 logs/workers/*.log
 
+# Jury runtime artifacts (rater JSON + raw .out ARE tracked as the audit trail;
+# pids/stderr/prompts are reproducible runtime junk — prompts rebuild via jury.sh)
+results/**/R*.pid
+results/**/R*.err
+results/**/R*.prompt
+
 # Local proxy config (env placeholder lives local-only by policy)
 SystemsBenchPitchSite/proxy.json

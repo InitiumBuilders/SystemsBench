@@ -1,0 +1,9 @@
+The fix is straightforward execution discipline. First, hire more senior engineers —
+the team is under-resourced for the workload. Second, set clearer and firmer deadlines so
+everyone knows exactly what's due and when; ambiguity is half the problem. Third, bring in
+a dedicated project manager to track every date and dependency and hold people accountable.
+Fourth, increase the bonus for hitting deadlines so the team is properly motivated to
+deliver on time.
+
+Tighten the targets, add capacity, add tracking, sharpen the incentive — that combination
+will get delivery back on schedule within a quarter.

@@ -1,0 +1,23 @@
+{
+ "rater": "R3",
+ "scores": {
+  "A1": 1.0,
+  "A2": 1.0,
+  "A3": 1.0,
+  "A4": 0.5,
+  "B1": 1.0,
+  "B2": 1.0,
+  "C1": 1.0,
+  "C2": 1.0,
+  "C3": 1.0,
+  "C4": 1.0,
+  "C5": 1.0,
+  "D1": 1.0,
+  "D2": 1.0,
+  "D3": 1.0,
+  "E1": 1.0,
+  "E2": 0.5,
+  "E3": 1.0
+ },
+ "improvement": "Make the paradigm/whose-goal move explicit \u2014 a brief SSM/CATWOE-style stakeholder analysis (whose Weltanschauung does 'hit the deadline' serve: sales commitments? board optics?) plus an explicit system boundary statement, rather than leaving goal conflict implied in the resistance section."
+}
