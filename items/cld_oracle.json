@@ -1,0 +1,116 @@
+{
+  "_meta": {
+    "what": "Machine-readable structural oracle for the CLD format — the validation set for engine/cld-score.py.",
+    "source_items": "items/seed_CLD_causalloops.md (5 L3 reference solutions seeded SenseRun #7)",
+    "convention": "A loop's polarity = product of its signed edges; positive product -> Reinforcing (R), negative -> Balancing (B). A loop is encoded as an ordered cycle of nodes; edge signs are looked up from required_edges (nodes[i]->nodes[i+1], and last->first).",
+    "scoring": "Deterministic structural sub-score only. The completeness/quality (jury) sub-score is UNCALIBRATED -- not scored (no CLD gold; fail-closed, Structure 5.1). This oracle scores NO jury number.",
+    "date": "2026-06-13",
+    "senserun": 8
+  },
+  "items": {
+    "CLD-FISH-001": {
+      "domain": "ecology/fisheries",
+      "variables": ["FishPopulation", "CatchRate", "FleetSize", "ProfitPerBoat", "Investment"],
+      "required_edges": [
+        {"from": "FishPopulation", "to": "CatchRate", "sign": "+"},
+        {"from": "CatchRate", "to": "FishPopulation", "sign": "-"},
+        {"from": "CatchRate", "to": "ProfitPerBoat", "sign": "+"},
+        {"from": "ProfitPerBoat", "to": "Investment", "sign": "+"},
+        {"from": "Investment", "to": "FleetSize", "sign": "+", "delay": true},
+        {"from": "FleetSize", "to": "CatchRate", "sign": "+"}
+      ],
+      "loops": [
+        {"id": "B1", "type": "B", "nodes": ["FishPopulation", "CatchRate"]},
+        {"id": "R1", "type": "R", "nodes": ["CatchRate", "ProfitPerBoat", "Investment", "FleetSize"]}
+      ],
+      "dominant_loop": "R1",
+      "dominant_shift": true,
+      "delay_is_key": false,
+      "trap": "Mapping only the depletion balancing loop and predicting smooth equilibrium at MSY -- mislabeling the system as purely balancing, missing R1 + the fleet-entry delay (overshoot-and-collapse)."
+    },
+    "CLD-EPI-002": {
+      "domain": "public-health/epidemiology",
+      "variables": ["Susceptible", "Infected", "Recovered", "InfectionRate", "RecoveryRate", "ContactRate", "PublicConcern"],
+      "required_edges": [
+        {"from": "Infected", "to": "InfectionRate", "sign": "+"},
+        {"from": "Susceptible", "to": "InfectionRate", "sign": "+"},
+        {"from": "InfectionRate", "to": "Infected", "sign": "+"},
+        {"from": "InfectionRate", "to": "Susceptible", "sign": "-"},
+        {"from": "Infected", "to": "RecoveryRate", "sign": "+"},
+        {"from": "RecoveryRate", "to": "Infected", "sign": "-"},
+        {"from": "Infected", "to": "PublicConcern", "sign": "+", "delay": true},
+        {"from": "PublicConcern", "to": "ContactRate", "sign": "-"},
+        {"from": "ContactRate", "to": "InfectionRate", "sign": "+"}
+      ],
+      "loops": [
+        {"id": "R1", "type": "R", "nodes": ["Infected", "InfectionRate"]},
+        {"id": "B1", "type": "B", "nodes": ["InfectionRate", "Susceptible"]},
+        {"id": "B2", "type": "B", "nodes": ["Infected", "RecoveryRate"]},
+        {"id": "B3", "type": "B", "nodes": ["Infected", "PublicConcern", "ContactRate", "InfectionRate"]}
+      ],
+      "dominant_loop": "R1",
+      "dominant_shift": true,
+      "delay_is_key": false,
+      "trap": "Predicting monotone growth until everyone is infected -- omitting the susceptible-depletion balancing loop (B1) / herd effect, or ignoring the behavioral delay that generates the peak and second wave."
+    },
+    "CLD-ORG-003": {
+      "domain": "organizations/service-ops",
+      "variables": ["ActualResponseTime", "Target", "Gap", "PressureToImprove", "CorrectiveAction", "PressureToLowerStandard"],
+      "required_edges": [
+        {"from": "ActualResponseTime", "to": "Gap", "sign": "+"},
+        {"from": "Target", "to": "Gap", "sign": "-"},
+        {"from": "Gap", "to": "PressureToImprove", "sign": "+"},
+        {"from": "PressureToImprove", "to": "CorrectiveAction", "sign": "+", "delay": true},
+        {"from": "CorrectiveAction", "to": "ActualResponseTime", "sign": "-"},
+        {"from": "Gap", "to": "PressureToLowerStandard", "sign": "+"},
+        {"from": "PressureToLowerStandard", "to": "Target", "sign": "+"}
+      ],
+      "loops": [
+        {"id": "B1", "type": "B", "nodes": ["Gap", "PressureToImprove", "CorrectiveAction", "ActualResponseTime"]},
+        {"id": "B2", "type": "B", "nodes": ["Gap", "PressureToLowerStandard", "Target"]}
+      ],
+      "dominant_loop": "B2",
+      "dominant_shift": false,
+      "delay_is_key": true,
+      "trap": "Seeing two balancing loops and concluding the system self-corrects to good performance -- missing that B2 'corrects' by eroding the goal and that B1's delay hands dominance to B2. (Also: labeling B2 reinforcing -- it is balancing on the Gap.)"
+    },
+    "CLD-INFRA-004": {
+      "domain": "software/SRE",
+      "variables": ["OpenIncidents", "FirefightingEffort", "ImprovementTime", "ProcessQuality", "IncidentArrivalRate"],
+      "required_edges": [
+        {"from": "OpenIncidents", "to": "FirefightingEffort", "sign": "+"},
+        {"from": "FirefightingEffort", "to": "OpenIncidents", "sign": "-"},
+        {"from": "FirefightingEffort", "to": "ImprovementTime", "sign": "-"},
+        {"from": "ImprovementTime", "to": "ProcessQuality", "sign": "+", "delay": true},
+        {"from": "ProcessQuality", "to": "IncidentArrivalRate", "sign": "-"},
+        {"from": "IncidentArrivalRate", "to": "OpenIncidents", "sign": "+"}
+      ],
+      "loops": [
+        {"id": "B1", "type": "B", "nodes": ["OpenIncidents", "FirefightingEffort"]},
+        {"id": "R1", "type": "R", "nodes": ["OpenIncidents", "FirefightingEffort", "ImprovementTime", "ProcessQuality", "IncidentArrivalRate"]}
+      ],
+      "dominant_loop": "R1",
+      "dominant_shift": true,
+      "delay_is_key": false,
+      "trap": "Judging firefighting effective because B1 keeps the open queue low -- missing the delayed reinforcing erosion (R1) the firefighting itself causes by consuming improvement time. A mislabel of R1 as balancing also fails."
+    },
+    "CLD-MKT-005": {
+      "domain": "economics/commodity-markets",
+      "variables": ["Price", "Profitability", "Investment", "ProductionCapacity", "Supply"],
+      "required_edges": [
+        {"from": "Price", "to": "Profitability", "sign": "+"},
+        {"from": "Profitability", "to": "Investment", "sign": "+"},
+        {"from": "Investment", "to": "ProductionCapacity", "sign": "+", "delay": true},
+        {"from": "ProductionCapacity", "to": "Supply", "sign": "+"},
+        {"from": "Supply", "to": "Price", "sign": "-"}
+      ],
+      "loops": [
+        {"id": "B1", "type": "B", "nodes": ["Price", "Profitability", "Investment", "ProductionCapacity", "Supply"]}
+      ],
+      "dominant_loop": "B1",
+      "dominant_shift": false,
+      "delay_is_key": true,
+      "trap": "Assuming the balancing loop drives the system to a stable equilibrium price -- ignoring the long construction delay, which converts a balancing loop into a sustained oscillation (the hog cycle)."
+    }
+  }
+}
