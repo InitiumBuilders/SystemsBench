@@ -16,7 +16,7 @@ ecology · economics/markets · organizations · public-health · software/infra
 | Format | L1 | L2 | L3 | L4 |
 |---|---|---|---|---|
 | SF    | 1 | 2 | 2 | 0 |
-| CLD   | 0 | 0 | 0 | 0 |
+| CLD   | 0 | 0 | **5** | 0 |
 | LEV   | 0 | 0 | 1 | 0 |
 | DYN   | 0 | 0 | 0 | 0 |
 | ARC   | 0 | 0 | 0 | 0 |
@@ -32,6 +32,11 @@ ecology · economics/markets · organizations · public-health · software/infra
 | SF-CO2-003 | SF | L3 | public-health/climate | A, D, inflow>outflow | 2026-05-31 | items/seed_SF_stockflow.md |
 | SF-INV-004 | SF | L2 | operations | A (integrate flows) | 2026-05-31 | items/seed_SF_stockflow.md |
 | SF-TRUST-005 | SF | L3 | social/behavioral | A, D, nonlinearity, delay | 2026-05-31 | items/seed_SF_stockflow.md |
+| CLD-FISH-001 | CLD | L3 | ecology/fisheries | A (loops/polarity/delay), B, D (dominant-loop shift) | 2026-06-13 | items/seed_CLD_causalloops.md · jury portion UNCALIBRATED; structural oracle live |
+| CLD-EPI-002 | CLD | L3 | public-health | A, B, D (R1→B1+B3 shift, 2nd wave) | 2026-06-13 | items/seed_CLD_causalloops.md · jury portion UNCALIBRATED; structural oracle live |
+| CLD-ORG-003 | CLD | L3 | organizations | A, B (eroding-goals; two balancing loops) | 2026-06-13 | items/seed_CLD_causalloops.md · jury portion UNCALIBRATED; structural oracle live |
+| CLD-INFRA-004 | CLD | L3 | software/infra | A, B, D (capability trap; B1 short / R1 long) | 2026-06-13 | items/seed_CLD_causalloops.md · jury portion UNCALIBRATED; structural oracle live |
+| CLD-MKT-005 | CLD | L3 | economics/markets | A, D (delay-driven oscillation; hog cycle) | 2026-06-13 | items/seed_CLD_causalloops.md · jury portion UNCALIBRATED; structural oracle live |
 
-## Holes flagged (genesis)
-Nearly everything — this is a seed. Backlog item #4 (seed bank to threshold) is the standing coverage fill. The SenseRun fills the highest-leverage hole each run.
+## Holes flagged (post-SenseRun #7)
+**CLD L3 cleared** (0 → 5 across 5 domains, SenseRun #7) — CLD's **deterministic structural path** meets the §3.3 ≥5-per-format×L3 go-live threshold; its **jury/completeness path stays `UNCALIBRATED — not scored`** until a CLD gold set clears §3.1/§4.0 (fail-closed). Still empty: **DYN, ARC, TRAP, BRIEF** (zero items); **LEV** at 1/5 L3. SF L3 thin (2/5). No format yet at the ≥20-item IRT-stable count. Backlog #4 (seed bank to threshold) remains the standing coverage fill; the SenseRun fills the highest-leverage hole each run.

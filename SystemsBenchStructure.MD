@@ -5,7 +5,7 @@
 > **Led by Ember Seoni & August Domanchuk. Operated by Outlier.Systems** (R&D DAO).
 > A living, recursive, self-improving evaluation engine.
 
-**Version:** v0.5.0 (Genesis+) · **Status:** living document · **Maintainers:** Davara (EI) + Outlier.Systems council
+**Version:** v0.5.2 (Genesis+) · **Status:** living document · **Maintainers:** Davara (EI) + Outlier.Systems council
 **Cadence:** evolves every `Davara /SystemsBenchSenseRun`. Every change is logged in `/logs/` and `CHANGELOG.md`. Forward-look in `SystemsBenchFuture.MD`.
 
 ---

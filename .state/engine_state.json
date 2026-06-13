@@ -1,23 +1,24 @@
 {
-  "spec_version": "v0.5.0",
-  "last_senserun": 6,
-  "last_run_log": "logs/runs/2026-05-31_run-6.md",
-  "last_run_date": "2026-05-31",
+  "spec_version": "v0.5.2",
+  "last_senserun": 7,
+  "last_run_log": "logs/runs/2026-06-13_run-7.md",
+  "last_run_date": "2026-06-13",
   "operator": "Davara (EI)",
   "lineage": "Led by Ember Seoni & August Domanchuk. Operated by Outlier.Systems.",
-  "binding_constraint_next": "STRUCTURAL, needs August + Ember: harden the §3.1(b) bootstrap accept-rule at small N. SenseRun #6 proved it near-unfalsifiable at N=3 on a 3-point scale (pigeonhole -> >=2 of 3 always within one band; 51/51 sub-criteria accepted; AMBIGUOUS-ANCHOR can't fire). It's currently a presence check, not an agreement check. Three candidate hardenings held open as forks (BACKLOG #0, SystemsBenchFuture.MD). ADDITIVE work that may proceed in parallel: replace synthetic raters with real human-council labels on LEV-ORG-001; populate LEV toward its >=30 floor. Also PENDING: Ember countersign on the SenseRun #5 accept-rule ratification (currently trust-delegated by August).",
+  "binding_constraint_next": "STILL PARKED (structural, Meadows #5, needs August + Ember — NOT self-applicable): harden the §3.1(b) bootstrap accept-rule at small N. Phase-4 N=5 evidence brief is on their desk (results/jury-n5-2026-06-12/EVIDENCE-BRIEF.md: base rule still 51/51 ACCEPT even at N=5; fork-1 identical-labels fired 4/51 on MID; fork-3 never fired; evidence-backed option = fork1 + N=5, not a ruling). Also PENDING: Ember countersign on the SenseRun #5 accept-rule ratification (trust-delegated by August). DOMINANT ADDITIVE next lever (re-sense first): BACKLOG #2 programmatic CLD scorer — NOW FEASIBLE since SenseRun #7 seeded 5 CLD L3 items + machine-checkable structural-oracle specs (loop sign = product of signed edges, verified 11/11) as its validation set; Meadows #6, turns the CLD structural path into a running auto-grader. Alternative: seed DYN to its L3 threshold (next deterministic trajectory-match judge-independent path).",
   "scoring_paths": {
-    "deterministic": "SF (5 items, L1-L3) — live, no jury, no gate",
-    "jury_open": "LEV/BRIEF/open-CLD/DYN — SPECIFIED & GATED (§5.1) with a RUNNABLE accept-rule (§3.1, v0.2); LEV-ORG-001 CALIBRATED-provisional (synthetic raters) -> still UNCERTIFIED until real human labels (fail-closed)"
+    "deterministic": "SF (5 items, L1-L3) live, no jury. CLD (5 items, L3) structural sub-score live (loop polarity = product of signed edges; required-edge + loop-sign + dominant-loop checks) — second judge-independent path as of SenseRun #7; programmatic scorer not yet built (BACKLOG #2).",
+    "jury_open": "LEV/BRIEF/open-CLD/DYN — SPECIFIED & GATED (§5.1) with a RUNNABLE accept-rule (§3.1, v0.2). LEV-ORG-001 CALIBRATED-provisional (synthetic raters) -> UNCERTIFIED until real human labels. CLD completeness/quality sub-score = UNCALIBRATED - not scored (no CLD gold; jury.sh deliberately not run, fail-closed)."
   },
-  "coverage": {"SF": 5, "LEV": 1, "CLD": 0, "DYN": 0, "ARC": 0, "TRAP": 0, "BRIEF": 0},
-  "gold_set": {"LEV": "1/30 (CALIBRATED-provisional, synthetic raters, full ceiling+mid+trap spread)", "BRIEF": "0/30", "CLD": "0/30", "DYN": "0/30"},
+  "coverage": {"SF": 5, "LEV": 1, "CLD": 5, "DYN": 0, "ARC": 0, "TRAP": 0, "BRIEF": 0},
+  "gold_set": {"LEV": "1/30 (CALIBRATED-provisional, synthetic raters, full ceiling+mid+trap spread)", "BRIEF": "0/30", "CLD": "0/30 (5 L3 items live on the deterministic structural path; no gold-labeled quality-spread yet)", "DYN": "0/30"},
   "run_history": [
     {"run": 1, "version": "v0.2.0", "lever": "added §4.6 Evaluation Run Protocol (executability, Meadows #5)"},
     {"run": 2, "version": "v0.3.0", "lever": "seeded SF deterministic items (first jury-independent score)"},
     {"run": 3, "version": "v0.4.0", "lever": "calibration gold-set protocol + §5.1 fail-closed gate (defensible jury scoring, Meadows #5)"},
     {"run": 4, "version": "v0.4.2", "lever": "bootstrap gold-set pipeline RUN once on LEV-ORG-001; proved per-item alpha accept-rule broken at small N before it cost human labels (Meadows #6/#8); flagged structural fix to August+Ember"},
     {"run": 5, "version": "v0.4.3", "lever": "RESOLVED the accept-rule (Meadows #5): §3.1 bootstrap dual-rule (unanimity + percent-floor) + §3.2 set-level alpha + §4.0 quality-spread. Ratified by August (trust-delegated), Ember pending countersign"},
-    {"run": 6, "version": "v0.5.0", "lever": "ran the new gate end-to-end: authored LEV-ORG-001 mid+trap exemplars -> CALIBRATED-provisional, clean spread 0.94/0.44/0.03; codified THE SENSERUN RITUAL into the Engine doc. Found+held-open the N=3 floor weakness (next structural fork)"}
+    {"run": 6, "version": "v0.5.0", "lever": "ran the new gate end-to-end: authored LEV-ORG-001 mid+trap exemplars -> CALIBRATED-provisional, clean spread 0.94/0.44/0.03; codified THE SENSERUN RITUAL into the Engine doc. Found+held-open the N=3 floor weakness (next structural fork)"},
+    {"run": 7, "version": "v0.5.2", "lever": "COVERAGE (additive, self-approved): seeded CLD 0->5 L3 across 5 domains with deterministic structural oracle (second judge-independent path); jury portion UNCALIBRATED (fail-closed). Unblocks BACKLOG #2 (programmatic CLD scorer). §3.1(b) hardening left PARKED with August+Ember."}
   ]
 }
