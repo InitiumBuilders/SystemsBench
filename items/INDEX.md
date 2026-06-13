@@ -18,7 +18,7 @@ ecology · economics/markets · organizations · public-health · software/infra
 | SF    | 1 | 2 | 2 | 0 |
 | CLD   | 0 | 0 | **5** | 0 |
 | LEV   | 0 | 0 | 1 | 0 |
-| DYN   | 0 | 0 | 0 | 0 |
+| DYN   | 0 | 0 | **5** | 0 |
 | ARC   | 0 | 0 | 0 | 0 |
 | TRAP  | 0 | 0 | 0 | 0 |
 | BRIEF | 0 | 0 | 0 | 0 |
@@ -37,6 +37,12 @@ ecology · economics/markets · organizations · public-health · software/infra
 | CLD-ORG-003 | CLD | L3 | organizations | A, B (eroding-goals; two balancing loops) | 2026-06-13 | items/seed_CLD_causalloops.md · jury portion UNCALIBRATED; structural oracle live |
 | CLD-INFRA-004 | CLD | L3 | software/infra | A, B, D (capability trap; B1 short / R1 long) | 2026-06-13 | items/seed_CLD_causalloops.md · jury portion UNCALIBRATED; structural oracle live |
 | CLD-MKT-005 | CLD | L3 | economics/markets | A, D (delay-driven oscillation; hog cycle) | 2026-06-13 | items/seed_CLD_causalloops.md · jury portion UNCALIBRATED; structural oracle live |
+| DYN-FISH-001 | DYN | L3 | ecology/fisheries | D (overshoot-and-collapse), A (delay), B | 2026-06-13 | items/seed_DYN_dynamics.md · jury portion UNCALIBRATED; trajectory oracle live |
+| DYN-SHOWER-002 | DYN | L3 | personal/behavioral | D (delay-driven oscillation), A | 2026-06-13 | items/seed_DYN_dynamics.md · jury portion UNCALIBRATED; trajectory oracle live |
+| DYN-ADOPT-003 | DYN | L3 | economics/markets | D (S-shaped saturation; limits to growth), A | 2026-06-13 | items/seed_DYN_dynamics.md · jury portion UNCALIBRATED; trajectory oracle live |
+| DYN-CAPTRAP-004 | DYN | L3 | organizations | D (better-before-worse; capability trap), A, B | 2026-06-13 | items/seed_DYN_dynamics.md · jury portion UNCALIBRATED; trajectory oracle live |
+| DYN-CLIMATE-005 | DYN | L3 | public-health/climate | D (delayed-rise-to-plateau; stock-flow), A | 2026-06-13 | items/seed_DYN_dynamics.md · jury portion UNCALIBRATED; trajectory oracle live |
 
-## Holes flagged (post-SenseRun #8)
-**CLD L3 cleared** (0 → 5 across 5 domains, SenseRun #7) — CLD's **deterministic structural path** meets the §3.3 ≥5-per-format×L3 go-live threshold and is now **machine-executable** (`engine/cld-score.py` + `items/cld_oracle.json`, SenseRun #8): loop polarity recomputed as product of signed edges, scored against the 5 reference solutions (self-test 31/31; loop signs 11/11 by code). Its **jury/completeness path stays `UNCALIBRATED — not scored`** until a CLD gold set clears §3.1/§4.0 (fail-closed). Still empty: **DYN, ARC, TRAP, BRIEF** (zero items); **LEV** at 1/5 L3. SF L3 thin (2/5). No format yet at the ≥20-item IRT-stable count. Backlog #4 (seed bank to threshold) remains the standing coverage fill; the SenseRun fills the highest-leverage hole each run.
+## Holes flagged (post-SenseRun #9)
+**DYN L3 cleared** (0 → 5 across 5 domains, SenseRun #9) — DYN's **deterministic trajectory path** meets the §3.3 ≥5-per-format×L3 go-live threshold and is **machine-executable** (`engine/dyn-score.py` + `items/dyn_oracle.json`): the response's behavior mode + features (`overshoot`/`oscillation`/`delay_dominant`/`eventual_direction`) are matched against the 5 reference trajectories (self-test 34/34; oracle mode↔feature consistency 13/13 by code). **First auto-graded surface for Dimension D**, and a **third executable judge-independent path** (cf. SF numeric/shape, CLD structural). Its **jury/mechanism path stays `UNCALIBRATED — not scored`** until a DYN gold set clears §3.1/§4.0 (fail-closed).
+**CLD L3 cleared** (0 → 5 across 5 domains, SenseRun #7) — CLD's **deterministic structural path** is machine-executable (`engine/cld-score.py` + `items/cld_oracle.json`, SenseRun #8): loop polarity recomputed as product of signed edges, scored against the 5 reference solutions (self-test 31/31; loop signs 11/11 by code). Its **jury/completeness path stays `UNCALIBRATED — not scored`** until a CLD gold set clears §3.1/§4.0 (fail-closed). Still empty: **ARC, TRAP, BRIEF** (zero items); **LEV** at 1/5 L3. SF L3 thin (2/5). No format yet at the ≥20-item IRT-stable count. Backlog #4 (seed bank to threshold) remains the standing coverage fill; the SenseRun fills the highest-leverage hole each run.

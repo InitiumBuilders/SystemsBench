@@ -1,25 +1,75 @@
 {
-  "spec_version": "v0.6.0",
-  "last_senserun": 8,
-  "last_run_log": "logs/runs/2026-06-13_run-8.md",
+  "spec_version": "v0.7.0",
+  "last_senserun": 9,
+  "last_run_log": "logs/runs/2026-06-13_run-9.md",
   "last_run_date": "2026-06-13",
   "operator": "Davara (EI)",
   "lineage": "Led by Ember Seoni & August Domanchuk. Operated by Outlier.Systems.",
-  "binding_constraint_next": "STILL PARKED (structural, Meadows #5, needs August + Ember — NOT self-applicable): harden the §3.1(b) bootstrap accept-rule at small N. Phase-4 N=5 evidence brief is on their desk (results/jury-n5-2026-06-12/EVIDENCE-BRIEF.md: base rule still 51/51 ACCEPT even at N=5; fork-1 identical-labels fired 4/51 on MID; fork-3 never fired; evidence-backed option = fork1 + N=5, not a ruling). Also PENDING: Ember countersign on the SenseRun #5 accept-rule ratification (trust-delegated by August). DOMINANT ADDITIVE next lever (re-sense first): now that BACKLOG #2 (programmatic CLD scorer) is DONE (SenseRun #8), the top additive lever is BACKLOG #4 — seed DYN to its L3 threshold (next deterministic trajectory-match judge-independent path, a THIRD executable path, compounds the auto-graded lane). Alternative: BACKLOG #5 — CLD response-parsing / node-alias layer + harness prompt template (robustness step before a live CLD run). Lean DYN for breadth unless a live CLD run is imminent.",
+  "binding_constraint_next": "STILL PARKED (structural, Meadows #5, needs August + Ember \u2014 NOT self-applicable): harden the \u00a73.1(b) bootstrap accept-rule at small N. Phase-4 N=5 evidence brief on their desk (results/jury-n5-2026-06-12/EVIDENCE-BRIEF.md: base rule 51/51 ACCEPT even at N=5; fork-1 identical-labels fired 4/51 on MID; fork-3 never fired; evidence-backed option = fork1 + N=5, not a ruling). Also PENDING: Ember countersign on the SenseRun #5 accept-rule ratification (trust-delegated by August). DOMINANT ADDITIVE next lever (re-sense first): with SF+CLD+DYN now all THREE executable judge-independent paths live (DYN added SenseRun #9, first auto-graded surface for Dimension D), the top additive lever is BACKLOG #4 \u2014 seed the next format that opens a (largely) deterministic path: ARC (archetype recognition; reference-label match auto + jury for the escape), adding Dimension D's archetype sub-criterion (D3). Alternative: BACKLOG #5 \u2014 per-format response-parsing / prompt-template layer (CLD variable aliases + DYN narrative->{behavior_mode,\u2026} mapping) \u2014 the robustness step before any live CLD/DYN run. Lean ARC for breadth unless a live run is imminent. BRIEF stays blocked behind the uncalibrated gate.",
   "scoring_paths": {
-    "deterministic": "SF (5 items, L1-L3) live, no jury. CLD (5 items, L3) structural sub-score live AND AUTO-GRADED as of SenseRun #8 (engine/cld-score.py + items/cld_oracle.json: loop polarity = product of signed edges; required-edge + loop-sign + dominant-loop/delay checks; partial-credit 0.5 for structure-without-insight; trap cap 0.25 for dominant R<->B mislabel). Fail-closed self-test 31/31 (loop signs 11/11 by code; 5 refs round-trip to 1.0). Second EXECUTABLE judge-independent path, end-to-end.",
-    "jury_open": "LEV/BRIEF/open-CLD/DYN — SPECIFIED & GATED (§5.1) with a RUNNABLE accept-rule (§3.1, v0.2). LEV-ORG-001 CALIBRATED-provisional (synthetic raters) -> UNCERTIFIED until real human labels. CLD completeness/quality sub-score = UNCALIBRATED - not scored (no CLD gold; cld-score.py emits no jury number; jury.sh deliberately not run, fail-closed)."
+    "deterministic": "THREE executable judge-independent paths live. SF (5 items, L1-L3) numeric/qualitative-shape oracle, no jury. CLD (5 items, L3) structural sub-score AUTO-GRADED (engine/cld-score.py + items/cld_oracle.json; loop sign = product of signed edges; self-test 31/31, loop signs 11/11 by code). DYN (5 items, L3) trajectory sub-score AUTO-GRADED as of SenseRun #9 (engine/dyn-score.py + items/dyn_oracle.json: behavior mode + features {overshoot,oscillation,delay_dominant,eventual_direction} matched against 5 reference trajectories; base=0.40 mode+0.25 eventual+0.15 overshoot+0.10 oscillation+0.10 delay; partial 0.5 for right-endpoint-wrong-mode; trap cap 0.25 for the FULL named trap trajectory (mode AND endpoint). Fail-closed self-test 34/34 (mode<->feature consistency 13/13 by code; 5 refs round-trip to 1.0). FIRST auto-graded surface for Dimension D (Dynamic Prediction, w=0.18); THIRD executable judge-independent path, end-to-end.",
+    "jury_open": "LEV/BRIEF/open-CLD/open-DYN \u2014 SPECIFIED & GATED (\u00a75.1) with a RUNNABLE accept-rule (\u00a73.1, v0.2). LEV-ORG-001 CALIBRATED-provisional (synthetic raters) -> UNCERTIFIED until real human labels. CLD completeness/quality and DYN mechanism/quality sub-scores = UNCALIBRATED - not scored (no CLD/DYN gold; the scorers emit no jury number; jury.sh deliberately not run, fail-closed)."
   },
-  "coverage": {"SF": 5, "LEV": 1, "CLD": 5, "DYN": 0, "ARC": 0, "TRAP": 0, "BRIEF": 0},
-  "gold_set": {"LEV": "1/30 (CALIBRATED-provisional, synthetic raters, full ceiling+mid+trap spread)", "BRIEF": "0/30", "CLD": "0/30 (5 L3 items live on the deterministic structural path; no gold-labeled quality-spread yet)", "DYN": "0/30"},
+  "coverage": {
+    "SF": 5,
+    "LEV": 1,
+    "CLD": 5,
+    "DYN": 5,
+    "ARC": 0,
+    "TRAP": 0,
+    "BRIEF": 0
+  },
+  "gold_set": {
+    "LEV": "1/30 (CALIBRATED-provisional, synthetic raters, full ceiling+mid+trap spread)",
+    "BRIEF": "0/30",
+    "CLD": "0/30 (5 L3 items live on the deterministic structural path; no gold-labeled quality-spread yet)",
+    "DYN": "0/30 (5 L3 items live on the deterministic trajectory path; no gold-labeled mechanism-spread yet)"
+  },
   "run_history": [
-    {"run": 1, "version": "v0.2.0", "lever": "added §4.6 Evaluation Run Protocol (executability, Meadows #5)"},
-    {"run": 2, "version": "v0.3.0", "lever": "seeded SF deterministic items (first jury-independent score)"},
-    {"run": 3, "version": "v0.4.0", "lever": "calibration gold-set protocol + §5.1 fail-closed gate (defensible jury scoring, Meadows #5)"},
-    {"run": 4, "version": "v0.4.2", "lever": "bootstrap gold-set pipeline RUN once on LEV-ORG-001; proved per-item alpha accept-rule broken at small N before it cost human labels (Meadows #6/#8); flagged structural fix to August+Ember"},
-    {"run": 5, "version": "v0.4.3", "lever": "RESOLVED the accept-rule (Meadows #5): §3.1 bootstrap dual-rule (unanimity + percent-floor) + §3.2 set-level alpha + §4.0 quality-spread. Ratified by August (trust-delegated), Ember pending countersign"},
-    {"run": 6, "version": "v0.5.0", "lever": "ran the new gate end-to-end: authored LEV-ORG-001 mid+trap exemplars -> CALIBRATED-provisional, clean spread 0.94/0.44/0.03; codified THE SENSERUN RITUAL into the Engine doc. Found+held-open the N=3 floor weakness (next structural fork)"},
-    {"run": 7, "version": "v0.5.2", "lever": "COVERAGE (additive, self-approved): seeded CLD 0->5 L3 across 5 domains with deterministic structural oracle (second judge-independent path); jury portion UNCALIBRATED (fail-closed). Unblocks BACKLOG #2 (programmatic CLD scorer). §3.1(b) hardening left PARKED with August+Ember."},
-    {"run": 8, "version": "v0.6.0", "lever": "GRADEABILITY (additive, self-approved): built BACKLOG #2 programmatic CLD scorer (engine/cld-score.py + items/cld_oracle.json) — Meadows #6, makes CLD's deterministic structural path machine-executable end-to-end (second EXECUTABLE judge-independent path). Implements the already-governed §3.1/§4.6 method; loop sign = product of signed edges. Fail-closed self-test 31/31 (loop signs 11/11 by code). CLD jury still UNCALIBRATED. §3.1(b) Meadows-#5 hardening NOT touched (parked with August+Ember)."}
+    {
+      "run": 1,
+      "version": "v0.2.0",
+      "lever": "added \u00a74.6 Evaluation Run Protocol (executability, Meadows #5)"
+    },
+    {
+      "run": 2,
+      "version": "v0.3.0",
+      "lever": "seeded SF deterministic items (first jury-independent score)"
+    },
+    {
+      "run": 3,
+      "version": "v0.4.0",
+      "lever": "calibration gold-set protocol + \u00a75.1 fail-closed gate (defensible jury scoring, Meadows #5)"
+    },
+    {
+      "run": 4,
+      "version": "v0.4.2",
+      "lever": "bootstrap gold-set pipeline RUN once on LEV-ORG-001; proved per-item alpha accept-rule broken at small N before it cost human labels (Meadows #6/#8); flagged structural fix to August+Ember"
+    },
+    {
+      "run": 5,
+      "version": "v0.4.3",
+      "lever": "RESOLVED the accept-rule (Meadows #5): \u00a73.1 bootstrap dual-rule (unanimity + percent-floor) + \u00a73.2 set-level alpha + \u00a74.0 quality-spread. Ratified by August (trust-delegated), Ember pending countersign"
+    },
+    {
+      "run": 6,
+      "version": "v0.5.0",
+      "lever": "ran the new gate end-to-end: authored LEV-ORG-001 mid+trap exemplars -> CALIBRATED-provisional, clean spread 0.94/0.44/0.03; codified THE SENSERUN RITUAL into the Engine doc. Found+held-open the N=3 floor weakness (next structural fork)"
+    },
+    {
+      "run": 7,
+      "version": "v0.5.2",
+      "lever": "COVERAGE (additive, self-approved): seeded CLD 0->5 L3 across 5 domains with deterministic structural oracle (second judge-independent path); jury portion UNCALIBRATED (fail-closed). Unblocks BACKLOG #2 (programmatic CLD scorer). \u00a73.1(b) hardening left PARKED with August+Ember."
+    },
+    {
+      "run": 8,
+      "version": "v0.6.0",
+      "lever": "GRADEABILITY (additive, self-approved): built BACKLOG #2 programmatic CLD scorer (engine/cld-score.py + items/cld_oracle.json) \u2014 Meadows #6, makes CLD's deterministic structural path machine-executable end-to-end (second EXECUTABLE judge-independent path). Implements the already-governed \u00a73.1/\u00a74.6 method; loop sign = product of signed edges. Fail-closed self-test 31/31 (loop signs 11/11 by code). CLD jury still UNCALIBRATED. \u00a73.1(b) Meadows-#5 hardening NOT touched (parked with August+Ember)."
+    },
+    {
+      "run": 9,
+      "version": "v0.7.0",
+      "lever": "COVERAGE + 3rd executable path (additive, self-approved): seeded DYN 0->5 L3 across 5 domains (5 distinct fundamental behavior modes) + built the trajectory-match scorer (engine/dyn-score.py + items/dyn_oracle.json) \u2014 Meadows #6, FIRST auto-graded surface for Dimension D; THIRD executable judge-independent path. Implements the already-governed \u00a73.1/\u00a74.6 'reference trajectory match' method; trap caps the FULL naive trajectory (mode AND endpoint). Fail-closed self-test 34/34 (mode<->feature 13/13 by code). DYN jury UNCALIBRATED. \u00a73.1(b) Meadows-#5 hardening NOT touched (parked with August + Ember)."
+    }
   ]
 }

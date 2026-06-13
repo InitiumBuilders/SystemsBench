@@ -1,0 +1,57 @@
+{
+  "_meta": {
+    "what": "Machine-readable reference-trajectory oracle for the DYN format — the validation set for engine/dyn-score.py.",
+    "source_items": "items/seed_DYN_dynamics.md (5 L3 reference solutions seeded SenseRun #9)",
+    "convention": "Each item declares the qualitative behavior MODE plus features {overshoot, oscillation, delay_dominant, eventual_direction(vs the start: higher|lower|same|collapse)}. A response is graded by matching mode + features (Structure §3.1 'reference trajectory match'). trap_mode = the intuitive wrong trajectory (usually a smooth/monotonic approach); predicting it caps the score low.",
+    "scoring": "Deterministic trajectory sub-score only. The mechanism/quality (jury) sub-score is UNCALIBRATED -- not scored (no DYN gold; fail-closed, Structure 5.1). This oracle scores NO jury number.",
+    "date": "2026-06-13",
+    "senserun": 9
+  },
+  "items": {
+    "DYN-FISH-001": {
+      "domain": "ecology/fisheries",
+      "focal_variable": "FishPopulation (and fleet/catch)",
+      "behavior_mode": "overshoot-and-collapse",
+      "features": {"overshoot": true, "oscillation": false, "delay_dominant": true, "eventual_direction": "collapse"},
+      "trap_mode": "goal-seeking",
+      "trap_features": {"overshoot": false, "oscillation": false, "delay_dominant": false, "eventual_direction": "same"},
+      "trap": "Predicting the fleet and catch rise smoothly to a new sustainable steady state (stock stabilizes at maximum sustainable yield) -- ignoring the boat-entry delay + sunk-cost effort that make the fleet overshoot regeneration and crash the stock."
+    },
+    "DYN-SHOWER-002": {
+      "domain": "personal/behavioral",
+      "focal_variable": "WaterTemperature (deviation from comfortable)",
+      "behavior_mode": "oscillation",
+      "features": {"overshoot": true, "oscillation": true, "delay_dominant": true, "eventual_direction": "same"},
+      "trap_mode": "goal-seeking",
+      "trap_features": {"overshoot": false, "oscillation": false, "delay_dominant": false, "eventual_direction": "same"},
+      "trap": "Predicting temperature converges smoothly (and faster if the person reacts harder) to comfortable -- ignoring that the pipe DELAY plus high reaction gain produces overshoot and oscillation, and that reacting harder makes the oscillation WORSE, not better (wrong-direction intuition)."
+    },
+    "DYN-ADOPT-003": {
+      "domain": "economics/markets",
+      "focal_variable": "CumulativeAdopters",
+      "behavior_mode": "s-shaped",
+      "features": {"overshoot": false, "oscillation": false, "delay_dominant": false, "eventual_direction": "higher"},
+      "trap_mode": "exponential-growth",
+      "trap_features": {"overshoot": false, "oscillation": false, "delay_dominant": false, "eventual_direction": "higher"},
+      "trap": "Predicting growth keeps compounding exponentially ('hockey stick forever') from the marketing blitz -- ignoring the finite addressable market (limits to growth) that bends word-of-mouth growth into an S-curve saturating at market size."
+    },
+    "DYN-CAPTRAP-004": {
+      "domain": "organizations",
+      "focal_variable": "TeamOutput",
+      "behavior_mode": "better-before-worse",
+      "features": {"overshoot": true, "oscillation": false, "delay_dominant": true, "eventual_direction": "lower"},
+      "trap_mode": "goal-seeking",
+      "trap_features": {"overshoot": false, "oscillation": false, "delay_dominant": false, "eventual_direction": "higher"},
+      "trap": "Predicting mandated overtime raises output to a new higher steady state -- ignoring the delayed erosion of capability (burnout, attrition, skill loss) that pulls output back DOWN below where it started (fixes-that-fail / capability trap)."
+    },
+    "DYN-CLIMATE-005": {
+      "domain": "public-health/climate",
+      "focal_variable": "AtmosphericCO2 (stock)",
+      "behavior_mode": "delayed-rise-to-plateau",
+      "features": {"overshoot": false, "oscillation": false, "delay_dominant": true, "eventual_direction": "higher"},
+      "trap_mode": "goal-seeking",
+      "trap_features": {"overshoot": false, "oscillation": false, "delay_dominant": false, "eventual_direction": "same"},
+      "trap": "Predicting that a 50% emissions cut stabilizes (or lowers) atmospheric CO2 at today's level -- the canonical stock-flow misperception: while emissions (inflow) still exceed absorption (outflow), the CO2 STOCK keeps rising (more slowly) toward a higher plateau, and temperature lags further behind."
+    }
+  }
+}
