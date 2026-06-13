@@ -1,0 +1,8 @@
+{
+  "behavior_mode": "oscillation",
+  "overshoot": true,
+  "oscillation": true,
+  "delay_dominant": true,
+  "eventual_direction": "higher",
+  "mechanism": "This is a balancing loop (perceived temperature \u2192 gap from desired \u2192 valve adjustment \u2192 actual temperature) with a long (~20s) transport delay between the valve and the showerhead. The person acts on the temperature they feel NOW, which reflects the valve setting from 20s ago. Feeling cold, they crank hot; but the already-in-transit water keeps arriving, so by the time the hot water reaches them it overshoots warm \u2014 so they crank cold, and the cycle repeats. The delay forces the corrective action to chronically lag the system state, converting a stabilizing loop into an oscillator: temperature swings above and below the target, settling only slowly as they learn to wait out the pipe. It ends higher than the too-cold start, hunting toward (and around) the comfortable target. Reacting MORE aggressively to the gap raises the loop gain on a delayed feedback: each over-correction is larger relative to the lag, so amplitude grows and settling slows \u2014 it can diverge into sustained or worsening oscillation rather than settling faster. The leverage is reducing the gain (gentler adjustments / wait for the pipe), not increasing it."
+}

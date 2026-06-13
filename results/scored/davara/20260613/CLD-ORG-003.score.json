@@ -1,0 +1,29 @@
+{
+  "structural_subscore": 0.1381,
+  "base_structure": 0.1381,
+  "variables_score": 0.3333,
+  "edges_score": 0.1429,
+  "loops_score": 0.0,
+  "loops_matched": "0/2",
+  "edges_matched": "1/7",
+  "vars_matched": "2/6",
+  "dominant_named": false,
+  "insight_present": false,
+  "trap_fired": false,
+  "trap_kind": null,
+  "loop_detail": [
+    [
+      "B1",
+      "B",
+      null,
+      false
+    ],
+    [
+      "B2",
+      "B",
+      null,
+      false
+    ]
+  ],
+  "jury_completeness": "UNCALIBRATED \u2014 not scored"
+}

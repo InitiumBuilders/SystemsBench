@@ -1,0 +1,11 @@
+format	item	agent	subscore	trap	status	seconds
+CLD	CLD-FISH-001	davara	0.04	False	SCORED	40
+CLD	CLD-EPI-002	davara	0.7012	False	SCORED	28
+CLD	CLD-ORG-003	davara	0.1381	False	SCORED	22
+CLD	CLD-INFRA-004	davara	0.1633	False	SCORED	21
+CLD	CLD-MKT-005	davara	0.46	False	SCORED	16
+DYN	DYN-FISH-001	davara	1.0	False	SCORED	18
+DYN	DYN-SHOWER-002	davara	0.5	False	SCORED	13
+DYN	DYN-ADOPT-003	davara	1.0	False	SCORED	12
+DYN	DYN-CAPTRAP-004	davara	1.0	False	SCORED	14
+DYN	DYN-CLIMATE-005	davara	0.5	False	SCORED	20

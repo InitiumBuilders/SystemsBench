@@ -1,0 +1,94 @@
+{
+  "variables": [
+    "FishPopulation",
+    "Regeneration",
+    "Catch",
+    "Profit",
+    "BoatBuilding",
+    "Fleet"
+  ],
+  "edges": [
+    {
+      "from": "Fleet",
+      "to": "Catch",
+      "sign": "+"
+    },
+    {
+      "from": "Catch",
+      "to": "Profit",
+      "sign": "+"
+    },
+    {
+      "from": "Profit",
+      "to": "BoatBuilding",
+      "sign": "+"
+    },
+    {
+      "from": "BoatBuilding",
+      "to": "Fleet",
+      "sign": "+",
+      "delay": true
+    },
+    {
+      "from": "Catch",
+      "to": "FishPopulation",
+      "sign": "-"
+    },
+    {
+      "from": "FishPopulation",
+      "to": "Catch",
+      "sign": "+"
+    },
+    {
+      "from": "FishPopulation",
+      "to": "Regeneration",
+      "sign": "+"
+    },
+    {
+      "from": "Regeneration",
+      "to": "FishPopulation",
+      "sign": "+",
+      "delay": true
+    }
+  ],
+  "loops": [
+    {
+      "id": "R1",
+      "type": "R",
+      "nodes": [
+        "Fleet",
+        "Catch",
+        "Profit",
+        "BoatBuilding"
+      ]
+    },
+    {
+      "id": "B1",
+      "type": "B",
+      "nodes": [
+        "Catch",
+        "FishPopulation"
+      ]
+    },
+    {
+      "id": "R2",
+      "type": "R",
+      "nodes": [
+        "FishPopulation",
+        "Regeneration"
+      ]
+    }
+  ],
+  "dominant_loop": "R1",
+  "names_dominant_shift": true,
+  "delays": [
+    [
+      "BoatBuilding",
+      "Fleet"
+    ],
+    [
+      "Regeneration",
+      "FishPopulation"
+    ]
+  ]
+}

@@ -201,3 +201,10 @@ loop into a sustained oscillation.
   or omitting a balancing/reinforcing loop) — trap-rate is itself a leverage-profile signal.
 - These five reference solutions are the **validation inputs for BACKLOG #2** (programmatic CLD scorer): the
   signed-edge lists + loop-sign expectations are directly machine-checkable.
+- **Partition-robust grading (scorer v2, 2026-06-13):** the structural scorer matches loops by **topology +
+  sign (loop polarity = product of signed edges), not by node name** — so a valid *re-partition* (collapsing
+  or renaming nodes, e.g. `ImprovementTime`+`ProcessQuality` → one `ReliabilityWork` node, or `OpenIncidents`
+  → `OpenIncidentQueue`) that preserves the feedback structure is graded as correct systems thinking. This
+  operationalizes Meadows' "structure > elements" and "boundaries are pragmatic" lessons: the item tests the
+  *loop structure* (the invariant); variable names are surface. (Scorer + re-score evidence:
+  `engine/cld-score.py`, `results/CLD-V2-RESCORE-2026-06-13.md`.)

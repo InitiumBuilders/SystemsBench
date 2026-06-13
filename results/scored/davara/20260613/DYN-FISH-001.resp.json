@@ -1,0 +1,8 @@
+{
+  "behavior_mode": "overshoot-and-collapse",
+  "overshoot": true,
+  "oscillation": false,
+  "delay_dominant": true,
+  "eventual_direction": "collapse",
+  "mechanism": "The subsidy ignites a reinforcing loop: cheap boats -> profit -> more boats -> more catch. A two-season building delay means fleet capacity keeps growing on the strength of past high catches, blowing past the sustainable yield before the feedback that catches are falling can register. Because boats don't exit when catches drop (asymmetric, sticky effort stock), fishing pressure stays high even as the fish stock falls. The balancing loop (less fish -> less catch) is too slow and too weak to brake the fleet in time, so the population is drawn down past the regeneration threshold. Below that threshold regeneration collapses nonlinearly \u2014 the stock's own reinforcing recovery loop reverses into a death spiral \u2014 and the fishery crashes to a low or depleted state well below today's healthy level."
+}

@@ -1,0 +1,21 @@
+```json
+{
+  "variables": ["IncidentArrivalRate", "OpenIncidents", "Firefighting", "ReliabilityWork", "EngineerCapacity"],
+  "edges": [
+    {"from": "IncidentArrivalRate", "to": "OpenIncidents", "sign": "+"},
+    {"from": "OpenIncidents", "to": "Firefighting", "sign": "+"},
+    {"from": "Firefighting", "to": "OpenIncidents", "sign": "-"},
+    {"from": "Firefighting", "to": "ReliabilityWork", "sign": "-"},
+    {"from": "ReliabilityWork", "to": "IncidentArrivalRate", "sign": "-", "delay": true},
+    {"from": "EngineerCapacity", "to": "Firefighting", "sign": "+"},
+    {"from": "EngineerCapacity", "to": "ReliabilityWork", "sign": "+"}
+  ],
+  "loops": [
+    {"id": "B1", "type": "B", "nodes": ["OpenIncidents", "Firefighting"]},
+    {"id": "R1", "type": "R", "nodes": ["Firefighting", "ReliabilityWork", "IncidentArrivalRate", "OpenIncidents"]}
+  ],
+  "dominant_loop": "R1",
+  "names_dominant_shift": true,
+  "delays": [["ReliabilityWork", "IncidentArrivalRate"]]
+}
+```

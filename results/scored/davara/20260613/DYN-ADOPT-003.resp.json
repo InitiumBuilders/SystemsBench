@@ -1,0 +1,8 @@
+{
+  "behavior_mode": "s-shaped",
+  "overshoot": false,
+  "oscillation": false,
+  "delay_dominant": false,
+  "eventual_direction": "higher",
+  "mechanism": "Cumulative adopters is a stock that fills via a reinforcing word-of-mouth loop (more adopters -> more contacts who convert -> more adopters) braked by a balancing constraint (the pool of non-adopters is finite and shrinks as adoption rises). This is the classic logistic/Bass diffusion structure. Early on the reinforcing loop dominates, so growth accelerates roughly exponentially; as the remaining market depletes, the balancing loop takes over and growth decelerates, producing the S-curve that asymptotes at the fixed addressable market. The one-time marketing blitz seeds a chunk of adopters up front, which raises the initial base feeding the word-of-mouth loop \u2014 it shifts the curve earlier (steeper, sooner inflection) but does not raise the ceiling. Because cumulative adoption is a one-way filling stock with no exit, it rises monotonically: no overshoot above the saturation level and no oscillation. The dominant feature is the loop-dominance handoff (R -> B) at the saturation limit, not any time delay; adoption ends far higher than the start, plateauing at the market size."
+}

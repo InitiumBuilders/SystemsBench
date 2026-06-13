@@ -1,0 +1,10 @@
+```json
+{
+  "behavior_mode": "overshoot-and-collapse",
+  "overshoot": true,
+  "oscillation": false,
+  "delay_dominant": true,
+  "eventual_direction": "collapse",
+  "mechanism": "The subsidy fires a reinforcing economic loop: cheap boats raise fishing effort, but the build/crew delay means the fleet keeps growing for a couple of seasons past the point where catch exceeds regeneration. Fish is a stock drained by catch and refilled by regeneration; because boats don't exit when catches fall (a missing/weak balancing outflow on effort), effort stays high while the stock is drawn down. The normally balancing regeneration loop has a nonlinear threshold — once population drops below it, regeneration collapses rather than recovering, so the eroding stock can't refill. The combination of the build delay, the no-exit ratchet on the fleet, and the threshold loss of regeneration drives the population to overshoot its sustainable level and crash toward collapse, with the fleet stranded above a depleted resource."
+}
+```

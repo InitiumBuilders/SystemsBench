@@ -1,0 +1,8 @@
+{
+  "behavior_mode": "slowed-but-continued-accumulation",
+  "overshoot": false,
+  "oscillation": false,
+  "delay_dominant": false,
+  "eventual_direction": "higher",
+  "mechanism": "Atmospheric CO2 is a stock governed by the difference between its inflow (emissions) and its outflow (natural sink absorption). The stock rises whenever inflow exceeds outflow. The 50% cut reduces the inflow but \u2014 by the problem's own statement \u2014 leaves it STILL ABOVE the absorption rate, so the net flow into the stock remains positive. A stock cannot fall, or even hold steady, while its net flow is positive: it can only keep rising. So the concentration does not drop or plateau \u2014 it continues to accumulate, just at a slower rate than before (the curve bends to a gentler upward slope, not downward). This is the classic stock-flow misperception trap: people read 'halve emissions' as 'CO2 falls,' but halving the inflow while it still exceeds the outflow only slows the climb. To stop the rise, emissions must fall to the absorption rate; to reduce CO2, they must fall below it. Temperature is a second, slower stock downstream of CO2: the planet's thermal inertia (oceans) means warming lags the concentration by years-to-decades, so global temperature keeps climbing toward equilibrium with the elevated CO2 even after the cut \u2014 and since CO2 itself is still rising, temperature ends meaningfully higher than today. The dominant driver here is stock accumulation under a still-positive net flow, not a transport delay (though the CO2\u2192temperature lag adds a real secondary delay)."
+}

@@ -1,0 +1,41 @@
+{
+  "structural_subscore": 0.7012,
+  "base_structure": 0.7012,
+  "variables_score": 0.7143,
+  "edges_score": 0.6667,
+  "loops_score": 0.75,
+  "loops_matched": "3/4",
+  "edges_matched": "6/9",
+  "vars_matched": "5/7",
+  "dominant_named": true,
+  "insight_present": true,
+  "trap_fired": false,
+  "trap_kind": null,
+  "loop_detail": [
+    [
+      "R1",
+      "R",
+      "R",
+      true
+    ],
+    [
+      "B1",
+      "B",
+      "B",
+      true
+    ],
+    [
+      "B2",
+      "B",
+      "B",
+      true
+    ],
+    [
+      "B3",
+      "B",
+      null,
+      false
+    ]
+  ],
+  "jury_completeness": "UNCALIBRATED \u2014 not scored"
+}

@@ -1,0 +1,10 @@
+```json
+{
+  "behavior_mode": "continued-accumulation (slower rise, no peak)",
+  "overshoot": false,
+  "oscillation": false,
+  "delay_dominant": false,
+  "eventual_direction": "higher",
+  "mechanism": "This is Meadows' bathtub: CO2 is a stock whose level changes by inflow (emissions) minus outflow (natural sink uptake). The stock falls only when outflow exceeds inflow. Cutting emissions 50% halves the inflow but the problem states it is STILL above the absorption rate, so inflow > outflow remains true — the net flow into the bathtub stays positive. Therefore atmospheric CO2 KEEPS RISING; it merely rises more slowly. The common error is to read 'cut emissions' as 'reduce CO2,' confusing a flow with a stock — but a reduced-yet-still-excess inflow only slows the fill, it does not drain the tub. CO2 ends HIGHER than today and keeps climbing until emissions are cut all the way down to (or below) the sink rate; only then does the stock stabilize or decline. No overshoot and no oscillation: with sustained net-positive inflow the stock climbs monotonically. Layered on top is a second, separate lag — global temperature responds to CO2 with a long ocean-thermal-inertia delay, so warming continues to track upward behind the rising (and still-not-falling) CO2, committing further temperature increase even after the cut. The dominant driver is the stock-flow imbalance itself, not a time delay; the temperature delay is a secondary lag riding on an already-rising stock."
+}
+```

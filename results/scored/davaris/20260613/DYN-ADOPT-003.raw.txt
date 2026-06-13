@@ -1,0 +1,10 @@
+```json
+{
+  "behavior_mode": "s-shaped",
+  "overshoot": false,
+  "oscillation": false,
+  "delay_dominant": false,
+  "eventual_direction": "higher",
+  "mechanism": "Cumulative adopters is a stock filled by an adoption flow and drained by nothing (adoption is one-way), so it can only rise or hold — never overshoot or oscillate. The flow is the product of two factors: a reinforcing word-of-mouth loop (more active users → more contacts → more new adopters → still more users) and the shrinking pool of remaining non-adopters in the fixed market. Early on the untapped market is large, so the reinforcing loop dominates and growth accelerates roughly exponentially. As the stock approaches the finite ceiling, the remaining-pool term goes to zero, a balancing constraint takes over, and the flow decays to nothing — growth decelerates and the curve flattens into a plateau at (near) full market saturation. The product of an accelerating reinforcing phase and a decelerating saturation phase is the classic S-curve (logistic/Bass diffusion). The one-time blitz doesn't change the mode: it converts a chunk of the market up front, raising the starting stock and seeding the word-of-mouth engine, which shifts the whole S-curve earlier in time (faster takeoff) but lands at the same ceiling. No transport delay drives the shape — the dynamics come from the stock-driven loop dominance shift, not a lag."
+}
+```

@@ -1,0 +1,20 @@
+```json
+{
+  "variables": ["ActualResponseTime", "Target", "PerformanceGap", "ProcessImprovement", "RebaselinePressure"],
+  "edges": [
+    {"from": "ActualResponseTime", "to": "PerformanceGap", "sign": "+"},
+    {"from": "Target", "to": "PerformanceGap", "sign": "-"},
+    {"from": "PerformanceGap", "to": "ProcessImprovement", "sign": "+"},
+    {"from": "ProcessImprovement", "to": "ActualResponseTime", "sign": "-", "delay": true},
+    {"from": "PerformanceGap", "to": "RebaselinePressure", "sign": "+"},
+    {"from": "RebaselinePressure", "to": "Target", "sign": "+"}
+  ],
+  "loops": [
+    {"id": "B1", "type": "B", "nodes": ["ActualResponseTime", "PerformanceGap", "ProcessImprovement"]},
+    {"id": "B2", "type": "B", "nodes": ["PerformanceGap", "RebaselinePressure", "Target"]}
+  ],
+  "dominant_loop": "B2",
+  "names_dominant_shift": true,
+  "delays": [["ProcessImprovement", "ActualResponseTime"]]
+}
+```

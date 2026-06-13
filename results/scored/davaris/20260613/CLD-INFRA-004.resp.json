@@ -1,0 +1,70 @@
+{
+  "variables": [
+    "OpenIncidentQueue",
+    "Firefighting",
+    "ReliabilityWork",
+    "IncidentArrivalRate",
+    "EngineerCapacity"
+  ],
+  "edges": [
+    {
+      "from": "OpenIncidentQueue",
+      "to": "Firefighting",
+      "sign": "+"
+    },
+    {
+      "from": "Firefighting",
+      "to": "OpenIncidentQueue",
+      "sign": "-"
+    },
+    {
+      "from": "EngineerCapacity",
+      "to": "Firefighting",
+      "sign": "+"
+    },
+    {
+      "from": "Firefighting",
+      "to": "ReliabilityWork",
+      "sign": "-"
+    },
+    {
+      "from": "ReliabilityWork",
+      "to": "IncidentArrivalRate",
+      "sign": "-",
+      "delay": true
+    },
+    {
+      "from": "IncidentArrivalRate",
+      "to": "OpenIncidentQueue",
+      "sign": "+"
+    }
+  ],
+  "loops": [
+    {
+      "id": "B1",
+      "type": "B",
+      "nodes": [
+        "OpenIncidentQueue",
+        "Firefighting"
+      ]
+    },
+    {
+      "id": "R1",
+      "type": "R",
+      "nodes": [
+        "Firefighting",
+        "ReliabilityWork",
+        "IncidentArrivalRate",
+        "OpenIncidentQueue"
+      ]
+    }
+  ],
+  "dominant_loop": "R1",
+  "names_dominant_shift": true,
+  "delays": [
+    [
+      "ReliabilityWork",
+      "IncidentArrivalRate"
+    ]
+  ]
+}

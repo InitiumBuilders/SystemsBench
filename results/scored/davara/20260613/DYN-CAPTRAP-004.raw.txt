@@ -1,0 +1,10 @@
+```json
+{
+  "behavior_mode": "better-before-worse",
+  "overshoot": true,
+  "oscillation": false,
+  "delay_dominant": true,
+  "eventual_direction": "lower",
+  "mechanism": "Overtime is an immediate lever on weekly output: hours-per-engineer rises, so in the first weeks output jumps above its starting level via a fast, direct link (more hours -> more output). But that same overtime feeds three slow, delayed balancing loops that erode the productive workforce and its per-hour effectiveness: (1) sustained fatigue accumulates as a stock, raising the error/rework rate so each hour yields less net output; (2) attrition — the best engineers quit, draining the stock of skilled labor; (3) replacement onboarding diverts senior capacity into training rather than production, a further drain that also carries its own hiring/ramp delay. These effects 'build up only gradually,' so for a while the fast output gain dominates and masks them. Over months the delayed loops compound — fewer and more tired engineers, seniors absorbed in onboarding, rising rework — and overtake the initial boost. Because the delay is what lets output rise before the damage registers, the delay is the dominant driver of the shape. With no exit valve (the mandate persists), the workforce stock and effective productivity spiral down, leaving weekly output a year later BELOW where it started — the short-term heroics were borrowed against a degraded long-term capacity. The leverage was never more hours; it was protecting the stocks of rested, skilled engineers that actually produce the output."
+}
+```

@@ -1,0 +1,26 @@
+```json
+{
+  "variables": ["Susceptible", "Infected", "Recovered", "InfectionRate", "RecoveryRate", "Awareness", "Contacts"],
+  "edges": [
+    {"from": "Susceptible", "to": "InfectionRate", "sign": "+"},
+    {"from": "Infected", "to": "InfectionRate", "sign": "+"},
+    {"from": "Contacts", "to": "InfectionRate", "sign": "+"},
+    {"from": "InfectionRate", "to": "Infected", "sign": "+"},
+    {"from": "InfectionRate", "to": "Susceptible", "sign": "-"},
+    {"from": "Infected", "to": "RecoveryRate", "sign": "+", "delay": true},
+    {"from": "RecoveryRate", "to": "Infected", "sign": "-"},
+    {"from": "RecoveryRate", "to": "Recovered", "sign": "+"},
+    {"from": "Infected", "to": "Awareness", "sign": "+", "delay": true},
+    {"from": "Awareness", "to": "Contacts", "sign": "-"}
+  ],
+  "loops": [
+    {"id": "R1", "type": "R", "nodes": ["Infected", "InfectionRate"]},
+    {"id": "B1", "type": "B", "nodes": ["Susceptible", "InfectionRate"]},
+    {"id": "B2", "type": "B", "nodes": ["Infected", "Awareness", "Contacts", "InfectionRate"]},
+    {"id": "B3", "type": "B", "nodes": ["Infected", "RecoveryRate"]}
+  ],
+  "dominant_loop": "R1",
+  "names_dominant_shift": true,
+  "delays": [["Infected", "Awareness"], ["Infected", "RecoveryRate"]]
+}
+```

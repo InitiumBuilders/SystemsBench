@@ -1,0 +1,105 @@
+{
+  "agent": "davaris",
+  "n_items": 10,
+  "n_scored": 10,
+  "n_parse_error": 0,
+  "n_no_reply": 0,
+  "n_trap_fired": 0,
+  "cld_mean": 0.3056,
+  "cld_n": 5,
+  "dyn_mean": 0.8,
+  "dyn_n": 5,
+  "overall_mean": 0.5528,
+  "rows": [
+    {
+      "format": "CLD",
+      "item": "CLD-FISH-001",
+      "agent": "davaris",
+      "subscore": "0.5",
+      "trap": "False",
+      "status": "SCORED",
+      "seconds": "19"
+    },
+    {
+      "format": "CLD",
+      "item": "CLD-EPI-002",
+      "agent": "davaris",
+      "subscore": "0.7012",
+      "trap": "False",
+      "status": "SCORED",
+      "seconds": "34"
+    },
+    {
+      "format": "CLD",
+      "item": "CLD-ORG-003",
+      "agent": "davaris",
+      "subscore": "0.0667",
+      "trap": "False",
+      "status": "SCORED",
+      "seconds": "23"
+    },
+    {
+      "format": "CLD",
+      "item": "CLD-INFRA-004",
+      "agent": "davaris",
+      "subscore": "0.04",
+      "trap": "False",
+      "status": "SCORED",
+      "seconds": "21"
+    },
+    {
+      "format": "CLD",
+      "item": "CLD-MKT-005",
+      "agent": "davaris",
+      "subscore": "0.22",
+      "trap": "False",
+      "status": "SCORED",
+      "seconds": "10"
+    },
+    {
+      "format": "DYN",
+      "item": "DYN-FISH-001",
+      "agent": "davaris",
+      "subscore": "1.0",
+      "trap": "False",
+      "status": "SCORED",
+      "seconds": "14"
+    },
+    {
+      "format": "DYN",
+      "item": "DYN-SHOWER-002",
+      "agent": "davaris",
+      "subscore": "0.5",
+      "trap": "False",
+      "status": "SCORED",
+      "seconds": "13"
+    },
+    {
+      "format": "DYN",
+      "item": "DYN-ADOPT-003",
+      "agent": "davaris",
+      "subscore": "1.0",
+      "trap": "False",
+      "status": "SCORED",
+      "seconds": "14"
+    },
+    {
+      "format": "DYN",
+      "item": "DYN-CAPTRAP-004",
+      "agent": "davaris",
+      "subscore": "1.0",
+      "trap": "False",
+      "status": "SCORED",
+      "seconds": "24"
+    },
+    {
+      "format": "DYN",
+      "item": "DYN-CLIMATE-005",
+      "agent": "davaris",
+      "subscore": "0.5",
+      "trap": "False",
+      "status": "SCORED",
+      "seconds": "15"
+    }
+  ]
+}

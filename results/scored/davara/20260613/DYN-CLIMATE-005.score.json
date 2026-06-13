@@ -1,0 +1,17 @@
+{
+  "trajectory_subscore": 0.5,
+  "base_match": 0.5,
+  "mode_expected": "delayedrisetoplateau",
+  "mode_got": "continuedaccumulationslowerrisenopeak",
+  "mode_match": false,
+  "eventual_expected": "higher",
+  "eventual_got": "higher",
+  "eventual_match": true,
+  "overshoot_match": true,
+  "oscillation_match": true,
+  "delay_match": false,
+  "insight_present": false,
+  "trap_fired": false,
+  "trap_kind": null,
+  "jury_mechanism": "UNCALIBRATED \u2014 not scored"
+}

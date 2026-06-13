@@ -1,0 +1,10 @@
+```json
+{
+  "behavior_mode": "better-before-worse",
+  "overshoot": true,
+  "oscillation": false,
+  "delay_dominant": true,
+  "eventual_direction": "lower",
+  "mechanism": "Weekly output is driven by effective productive capacity = (hours worked) × (workforce size and skill) × (1 − error/rework rate). The overtime mandate yields an immediate, near-frictionless gain on the first factor: more hours per engineer → output clearly rises in the first weeks. But that lever activates a set of slow, balancing/eroding processes whose effects accumulate only with delay. Fatigue builds as a stock — sustained long hours raise the mistake rate, so more output is consumed by rework rather than net progress. Attrition is a delayed drain: the best engineers don't quit on week one; morale erodes over weeks and the strongest (most mobile) leave first, removing the highest-skill capacity. Replacing them adds a second-order tax — onboarding diverts senior time into training instead of production, so the remaining experienced capacity falls further still. Because all three damaging effects (fatigue, attrition, onboarding drag) are delayed relative to the instant hours boost, the system shows the classic better-before-worse signature: a real early peak above the starting level, then a sustained decline as the slow loops dominate. Over the following year output overshoots its baseline briefly, then falls below where it started — the team is smaller, less senior, and burning effort on rework and training, so the long-run level ends lower than before the mandate. The delay between pulling the hours lever and the arrival of its hidden costs is what makes the policy look like a win precisely when it is digging the hole."
+}
+```

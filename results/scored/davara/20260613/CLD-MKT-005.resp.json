@@ -1,0 +1,58 @@
+{
+  "variables": [
+    "Price",
+    "MiningProfit",
+    "Investment",
+    "ProductionCapacity",
+    "Supply"
+  ],
+  "edges": [
+    {
+      "from": "Price",
+      "to": "MiningProfit",
+      "sign": "+"
+    },
+    {
+      "from": "MiningProfit",
+      "to": "Investment",
+      "sign": "+"
+    },
+    {
+      "from": "Investment",
+      "to": "ProductionCapacity",
+      "sign": "+",
+      "delay": true
+    },
+    {
+      "from": "ProductionCapacity",
+      "to": "Supply",
+      "sign": "+"
+    },
+    {
+      "from": "Supply",
+      "to": "Price",
+      "sign": "-"
+    }
+  ],
+  "loops": [
+    {
+      "id": "B1",
+      "type": "B",
+      "nodes": [
+        "Price",
+        "MiningProfit",
+        "Investment",
+        "ProductionCapacity",
+        "Supply"
+      ]
+    }
+  ],
+  "dominant_loop": "B1",
+  "names_dominant_shift": false,
+  "delays": [
+    [
+      "Investment",
+      "ProductionCapacity"
+    ]
+  ]
+}

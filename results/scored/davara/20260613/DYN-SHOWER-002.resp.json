@@ -1,0 +1,8 @@
+{
+  "behavior_mode": "oscillation",
+  "overshoot": true,
+  "oscillation": true,
+  "delay_dominant": true,
+  "eventual_direction": "higher",
+  "mechanism": "This is Meadows' canonical shower: a balancing loop (feel temperature -> compare to desired -> adjust valve) wrapped around a ~20-second transport delay between valve and showerhead. The person reacts to a stale signal \u2014 the cold they feel now reflects a valve setting from 20s ago \u2014 so they keep cranking hot well after enough hot is already in the pipe. When that slug of hot water finally arrives it overshoots into scalding; they yank it back toward cold, and 20s later that over-correction arrives as a cold shock. The delay converts a simple goal-seeking loop into a series of over-corrections that swing past the target in both directions. Eventual direction is 'higher' (warmer) than the too-cold start, settling toward the desired setpoint as the swings damp \u2014 IF the gain is moderate. Crucially, reacting MORE aggressively to the gap does NOT settle faster: higher loop gain on a delayed balancing loop amplifies each overshoot, turning damped oscillation into sustained or growing swings (instability). The leverage is not a stronger hand on the valve but a shorter delay (shorter pipe) or a slower, delay-aware hand \u2014 wait for the water to respond before adjusting again."
+}

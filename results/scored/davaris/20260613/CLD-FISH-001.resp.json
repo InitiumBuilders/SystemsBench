@@ -1,0 +1,87 @@
+{
+  "variables": [
+    "FishPopulation",
+    "CatchRate",
+    "Profit",
+    "FleetSize",
+    "Regeneration"
+  ],
+  "edges": [
+    {
+      "from": "FishPopulation",
+      "to": "CatchRate",
+      "sign": "+"
+    },
+    {
+      "from": "FleetSize",
+      "to": "CatchRate",
+      "sign": "+"
+    },
+    {
+      "from": "CatchRate",
+      "to": "Profit",
+      "sign": "+"
+    },
+    {
+      "from": "Profit",
+      "to": "FleetSize",
+      "sign": "+",
+      "delay": true
+    },
+    {
+      "from": "CatchRate",
+      "to": "FishPopulation",
+      "sign": "-"
+    },
+    {
+      "from": "FishPopulation",
+      "to": "Regeneration",
+      "sign": "+"
+    },
+    {
+      "from": "Regeneration",
+      "to": "FishPopulation",
+      "sign": "+",
+      "delay": true
+    }
+  ],
+  "loops": [
+    {
+      "id": "R1",
+      "type": "R",
+      "nodes": [
+        "Profit",
+        "FleetSize",
+        "CatchRate"
+      ]
+    },
+    {
+      "id": "B1",
+      "type": "B",
+      "nodes": [
+        "CatchRate",
+        "FishPopulation"
+      ]
+    },
+    {
+      "id": "R2",
+      "type": "R",
+      "nodes": [
+        "FishPopulation",
+        "Regeneration"
+      ]
+    }
+  ],
+  "dominant_loop": "R1",
+  "names_dominant_shift": true,
+  "delays": [
+    [
+      "Profit",
+      "FleetSize"
+    ],
+    [
+      "Regeneration",
+      "FishPopulation"
+    ]
+  ]
+}

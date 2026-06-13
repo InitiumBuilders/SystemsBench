@@ -1,0 +1,17 @@
+{
+  "trajectory_subscore": 0.5,
+  "base_match": 0.75,
+  "mode_expected": "oscillation",
+  "mode_got": "oscillation",
+  "mode_match": true,
+  "eventual_expected": "same",
+  "eventual_got": "higher",
+  "eventual_match": false,
+  "overshoot_match": true,
+  "oscillation_match": true,
+  "delay_match": true,
+  "insight_present": false,
+  "trap_fired": false,
+  "trap_kind": null,
+  "jury_mechanism": "UNCALIBRATED \u2014 not scored"
+}
