@@ -4,17 +4,17 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>SystemsBench — The Benchmark for Systems Intelligence in LLMs · Outlier.Systems</title>
-<meta name="description" content="SystemsBench is an open-source framework by Outlier.Systems that measures how well a large language model can think in systems — map structure, find leverage, predict consequence — and apply it to the real world. Led by Ember Seoni." />
+<meta name="description" content="SystemsBench is the open-source benchmark for systems intelligence in AI, by Outlier.Systems: can a model map a system, find the leverage, predict what moves, and know when it is wrong? v0.8 research preview: three deterministic scoring lanes, a blind jury that fails closed, a 300-item register, and an engine that improves itself. Led by Ember Seoni." />
 <meta name="theme-color" content="#070709" />
 <meta property="og:title" content="SystemsBench — The Benchmark for Systems Intelligence" />
-<meta property="og:description" content="An open-source framework for measuring systems intelligence in LLMs. Not what a model knows — how well it thinks in systems. By Outlier.Systems." />
+<meta property="og:description" content="The open-source benchmark for systems intelligence in AI. Not what a model knows. Where it chooses to push. v0.8 research preview, by Outlier.Systems." />
 <meta property="og:type" content="website" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@200;300;400;500;600;700;800&family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet" />
 <style>
 :root{
-  --bg:#070709; --bg-1:#0c0d10; --bg-2:#121317; --bg-3:#181a1f; --bg-4:#1e2127;
+  --bg:#06070a; --bg-1:#0c0d10; --bg-2:#121317; --bg-3:#181a1f; --bg-4:#1e2127;
   --line:rgba(180,200,230,.10); --line-2:rgba(180,200,230,.18);
   --ink:#eef6ff; --ink-soft:#cdd6e0; --muted:#a4a9b4; --faint:#7e8590;
   /* the band of living light */
@@ -27,14 +27,31 @@
   --maxw:1180px;
   --r:18px; --r-sm:12px;
   --ease:cubic-bezier(.22,.61,.36,1);
+  --ease-mech:cubic-bezier(.16,1,.3,1);     /* decisive machine settle */
+  /* ---- neoglass system ---- */
+  --glass-bg:linear-gradient(160deg,rgba(28,33,44,.62),rgba(12,15,21,.52));
+  --glass-bg-2:linear-gradient(160deg,rgba(22,27,37,.7),rgba(10,12,17,.6));
+  --glass-blur:saturate(150%) blur(18px);
+  --glass-blur-lite:saturate(140%) blur(10px);
+  --glass-border:rgba(180,205,240,.14);
+  --glass-hi:rgba(190,215,250,.30);          /* specular top edge */
+  --glass-shadow:0 18px 50px -24px rgba(0,0,0,.75),0 4px 18px -10px rgba(0,0,0,.6);
+  --glass-glow:0 0 0 1px rgba(34,211,238,.05),0 30px 90px -50px rgba(56,120,220,.5);
 }
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+*{box-sizing:border-box;margin:0;padding:0;min-width:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;overflow-x:hidden}
 body{
   font-family:var(--sans);background:var(--bg);color:var(--ink-soft);
   line-height:1.62;font-weight:300;letter-spacing:.005em;
-  overflow-x:hidden;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  overflow-x:clip;max-width:100vw;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
 }
+/* ---- reusable neoglass surface: ONE blur layer per slab, specular edge, depth ---- */
+.glass{position:relative;background:var(--glass-bg);
+  -webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
+  border:1px solid var(--glass-border);box-shadow:var(--glass-shadow)}
+.glass::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(180deg,var(--glass-hi),transparent 18%);opacity:.5;
+  -webkit-mask:linear-gradient(#000,transparent 40%);mask:linear-gradient(#000,transparent 40%)}
 body::before{ /* deep field glow */
   content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
   background:
@@ -65,8 +82,9 @@ h3{font-size:clamp(19px,3.2vw,24px);font-weight:600}
 .divider{height:1px;background:var(--line);width:100%}
 
 /* ---------- nav ---------- */
-.nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(16px);
-  background:rgba(7,7,9,.72);border-bottom:1px solid var(--line)}
+.nav{position:sticky;top:0;z-index:60;-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
+  background:linear-gradient(180deg,rgba(8,10,14,.78),rgba(8,10,14,.6));border-bottom:1px solid var(--glass-border);
+  box-shadow:0 1px 0 0 rgba(190,215,250,.06) inset,0 10px 30px -20px rgba(0,0,0,.8)}
 .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
 .brand{display:flex;align-items:center;gap:11px;font-weight:600;color:var(--ink);font-size:15px;letter-spacing:-.01em}
 .dot{width:11px;height:11px;border-radius:50%;background:var(--band);box-shadow:0 0 16px rgba(84,198,239,.7);flex:none;animation:pulse 3.2s var(--ease) infinite}
@@ -122,9 +140,14 @@ body.nav-open .mobile-drawer{opacity:1;visibility:visible;transform:none}
 .lineage b{color:var(--ink-soft);font-weight:500}
 
 /* ---------- countdown ---------- */
-.countdown-card{max-width:640px;margin:46px auto 0;padding:30px 26px;border:1px solid var(--line-2);border-radius:var(--r);
-  background:linear-gradient(180deg,rgba(18,19,23,.9),rgba(12,13,16,.7));position:relative;overflow:hidden}
-.countdown-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--band)}
+.countdown-card{max-width:640px;margin:46px auto 0;padding:30px 26px;border:1px solid var(--glass-border);border-radius:var(--r);
+  background:var(--glass-bg);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
+  box-shadow:var(--glass-shadow),var(--glass-glow);position:relative;overflow:hidden}
+.countdown-card::before{content:"";position:absolute;top:0;left:0;right:0;height:1.5px;background:var(--band);
+  background-size:220% 100%;animation:bandflow 9s linear infinite;z-index:2}
+.countdown-card::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,var(--glass-hi),transparent 16%);opacity:.5;
+  -webkit-mask:linear-gradient(#000,transparent 38%);mask:linear-gradient(#000,transparent 38%)}
 .cd-label{font-family:var(--mono);font-size:11.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--c-cyan);margin-bottom:6px}
 .cd-title{font-size:clamp(22px,4.4vw,30px);font-weight:700;color:var(--ink);letter-spacing:-.02em;margin-bottom:4px}
 .cd-note{font-size:13.5px;color:var(--muted);margin-bottom:22px;font-weight:300}
@@ -135,9 +158,12 @@ body.nav-open .mobile-drawer{opacity:1;visibility:visible;transform:none}
 .cd-unit{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);margin-top:8px}
 
 /* ---------- stat strip ---------- */
-.strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);
-  border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:8px}
-.strip .cell{background:var(--bg-1);padding:24px 18px;text-align:center}
+.strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--glass-border);
+  border:1px solid var(--glass-border);border-radius:var(--r);overflow:hidden;margin-top:8px;
+  -webkit-backdrop-filter:var(--glass-blur-lite);backdrop-filter:var(--glass-blur-lite);box-shadow:var(--glass-shadow)}
+.strip .cell{background:linear-gradient(180deg,rgba(20,24,33,.5),rgba(9,11,16,.4));padding:24px 18px;text-align:center;
+  transition:background .3s var(--ease)}
+.strip .cell:hover{background:linear-gradient(180deg,rgba(28,33,44,.6),rgba(11,13,18,.5))}
 .strip .k{font-family:var(--mono);font-size:clamp(22px,4vw,30px);font-weight:600;color:var(--ink)}
 .strip .k .gradient-text{font-weight:700}
 .strip .v{font-size:12.5px;color:var(--muted);margin-top:6px;letter-spacing:.01em}
@@ -149,9 +175,13 @@ body.nav-open .mobile-drawer{opacity:1;visibility:visible;transform:none}
 
 /* ---------- strata model ---------- */
 .strata{display:grid;gap:16px;margin-top:30px}
-.stratum{border:1px solid var(--line);border-radius:var(--r);background:var(--bg-1);padding:26px 24px;position:relative;
-  transition:.3s var(--ease)}
-.stratum:hover{border-color:var(--line-2);transform:translateY(-3px)}
+.stratum{border:1px solid var(--glass-border);border-radius:var(--r);padding:26px 24px;position:relative;overflow:hidden;
+  background:var(--glass-bg);box-shadow:0 12px 36px -26px rgba(0,0,0,.7);
+  transition:transform .4s var(--ease-mech),border-color .3s var(--ease),box-shadow .4s var(--ease)}
+.stratum::before{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  background:linear-gradient(180deg,var(--glass-hi),transparent 14%);opacity:.4;
+  -webkit-mask:linear-gradient(#000,transparent 30%);mask:linear-gradient(#000,transparent 30%)}
+.stratum:hover{border-color:var(--line-2);transform:translateY(-4px);box-shadow:0 26px 60px -34px rgba(0,0,0,.8),var(--glass-glow)}
 .stratum-head{display:flex;align-items:baseline;gap:14px;margin-bottom:6px;flex-wrap:wrap}
 .stratum-tag{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;
   padding:4px 11px;border-radius:99px;border:1px solid var(--line-2);color:var(--ink)}
@@ -162,14 +192,17 @@ body.nav-open .mobile-drawer{opacity:1;visibility:visible;transform:none}
 .stratum h3{font-size:clamp(18px,3vw,22px)}
 .stratum .q{font-size:14px;color:var(--muted);font-style:italic;margin-bottom:18px}
 .caps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
-.cap{padding:14px 16px;border-radius:var(--r-sm);background:rgba(7,7,9,.5);border:1px solid var(--line)}
+.cap{padding:14px 16px;border-radius:var(--r-sm);background:linear-gradient(165deg,rgba(20,24,33,.5),rgba(8,10,14,.4));
+  border:1px solid var(--line);transition:border-color .3s var(--ease),background .3s var(--ease)}
+.cap:hover{border-color:var(--line-2);background:linear-gradient(165deg,rgba(26,31,42,.6),rgba(10,12,17,.5))}
 .cap .cn{font-weight:600;color:var(--ink);font-size:14.5px;margin-bottom:4px;display:flex;align-items:center;gap:8px}
 .cap .cn::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent);flex:none}
 .cap .cd{font-size:13px;color:var(--muted);line-height:1.5}
 
 /* ---------- SQ formula ---------- */
-.sq{margin-top:30px;border:1px solid var(--line-2);border-radius:var(--r);padding:34px 28px;text-align:center;
-  background:linear-gradient(180deg,rgba(18,19,23,.8),rgba(12,13,16,.6));position:relative;overflow:hidden}
+.sq{margin-top:30px;border:1px solid var(--glass-border);border-radius:var(--r);padding:34px 28px;text-align:center;
+  background:var(--glass-bg-2);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
+  box-shadow:var(--glass-shadow),var(--glass-glow);position:relative;overflow:hidden}
 .sq::after{content:"";position:absolute;inset:0;background:var(--band-soft);opacity:.5;pointer-events:none}
 .sq-formula{position:relative;font-family:var(--mono);font-size:clamp(17px,3.4vw,26px);font-weight:500;color:var(--ink);
   letter-spacing:.01em;margin:8px 0 14px;line-height:1.5}
@@ -179,11 +212,16 @@ body.nav-open .mobile-drawer{opacity:1;visibility:visible;transform:none}
 
 /* ---------- files / architecture ---------- */
 .files{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:30px}
-.file{border:1px solid var(--line);border-radius:var(--r);background:var(--bg-1);padding:24px 22px;transition:.3s var(--ease);
+.file{border:1px solid var(--glass-border);border-radius:var(--r);padding:24px 22px;
+  background:var(--glass-bg);box-shadow:0 12px 36px -26px rgba(0,0,0,.7);
+  transition:transform .4s var(--ease-mech),border-color .3s var(--ease),box-shadow .4s var(--ease);
   display:flex;flex-direction:column;position:relative;overflow:hidden}
 .file::before{content:"";position:absolute;top:0;left:0;width:100%;height:2px;background:var(--band);transform:scaleX(0);
-  transform-origin:left;transition:transform .35s var(--ease)}
-.file:hover{border-color:var(--line-2);transform:translateY(-3px)}
+  transform-origin:left;transition:transform .45s var(--ease-mech);z-index:2}
+.file::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  background:linear-gradient(180deg,var(--glass-hi),transparent 14%);opacity:.4;
+  -webkit-mask:linear-gradient(#000,transparent 30%);mask:linear-gradient(#000,transparent 30%)}
+.file:hover{border-color:var(--line-2);transform:translateY(-4px);box-shadow:0 26px 60px -34px rgba(0,0,0,.8),var(--glass-glow)}
 .file:hover::before{transform:scaleX(1)}
 .file-name{font-family:var(--mono);font-size:13.5px;color:var(--c-cyan);font-weight:500;margin-bottom:4px;word-break:break-word}
 .file-role{font-size:11.5px;font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:14px}
@@ -200,14 +238,26 @@ body.nav-open .mobile-drawer{opacity:1;visibility:visible;transform:none}
 .loop-node:hover{color:var(--ink);border-color:var(--accent);background:rgba(84,198,239,.07)}
 .loop-arrow{color:var(--faint);align-self:center;font-size:13px}
 .principles{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-top:30px}
-.principle{padding:18px 18px;border-radius:var(--r-sm);border:1px solid var(--line);background:rgba(7,7,9,.4)}
+.principle{padding:18px 18px;border-radius:var(--r-sm);border:1px solid var(--glass-border);position:relative;overflow:hidden;
+  background:linear-gradient(165deg,rgba(20,24,33,.52),rgba(8,10,14,.42));
+  transition:border-color .3s var(--ease),transform .4s var(--ease-mech)}
+.principle::before{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  background:linear-gradient(180deg,var(--glass-hi),transparent 16%);opacity:.35;
+  -webkit-mask:linear-gradient(#000,transparent 32%);mask:linear-gradient(#000,transparent 32%)}
+.principle:hover{border-color:var(--line-2);transform:translateY(-3px)}
 .principle .pn{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.14em;margin-bottom:7px}
 .principle .pt{font-weight:600;color:var(--ink);font-size:15px;margin-bottom:5px}
 .principle .pd{font-size:13px;color:var(--muted);line-height:1.55}
 
 /* ---------- impact ---------- */
 .impact{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:30px}
-.imp{padding:24px 22px;border:1px solid var(--line);border-radius:var(--r);background:var(--bg-1)}
+.imp{padding:24px 22px;border:1px solid var(--glass-border);border-radius:var(--r);position:relative;overflow:hidden;
+  background:var(--glass-bg);box-shadow:0 12px 36px -26px rgba(0,0,0,.7);
+  transition:transform .4s var(--ease-mech),border-color .3s var(--ease),box-shadow .4s var(--ease)}
+.imp::before{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  background:linear-gradient(180deg,var(--glass-hi),transparent 14%);opacity:.4;
+  -webkit-mask:linear-gradient(#000,transparent 30%);mask:linear-gradient(#000,transparent 30%)}
+.imp:hover{border-color:var(--line-2);transform:translateY(-4px);box-shadow:0 26px 60px -34px rgba(0,0,0,.8),var(--glass-glow)}
 .imp .ic{font-size:22px;margin-bottom:14px;background:var(--band);-webkit-background-clip:text;background-clip:text;color:transparent;
   font-family:var(--mono);font-weight:600}
 .imp h3{font-size:17px;margin-bottom:8px}
@@ -229,6 +279,65 @@ footer .f-lines{font-size:13px;color:var(--muted);line-height:1.9}
 footer .f-lines a{color:var(--ink-soft);border-bottom:1px solid var(--line-2)}
 footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);letter-spacing:.14em;margin-top:18px}
 
+
+/* ---------- the instrument (v0.8) ---------- */
+.lanes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:30px}
+.lane{border:1px solid var(--glass-border);border-radius:var(--r);padding:24px 22px;background:var(--glass-bg);
+  box-shadow:0 12px 36px -26px rgba(0,0,0,.7);position:relative;overflow:hidden;
+  transition:transform .4s var(--ease-mech),border-color .3s var(--ease),box-shadow .4s var(--ease)}
+.lane::before{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  background:linear-gradient(180deg,var(--glass-hi),transparent 14%);opacity:.4;
+  -webkit-mask:linear-gradient(#000,transparent 30%);mask:linear-gradient(#000,transparent 30%)}
+.lane:hover{border-color:var(--line-2);transform:translateY(-4px);box-shadow:0 26px 60px -34px rgba(0,0,0,.8),var(--glass-glow)}
+.lane .lk{font-family:var(--mono);font-size:24px;font-weight:600;letter-spacing:.04em;margin-bottom:2px;
+  background:var(--band);-webkit-background-clip:text;background-clip:text;color:transparent;display:inline-block}
+.lane .ln{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin-bottom:12px}
+.lane p{font-size:13.5px;color:var(--muted);line-height:1.6}
+.lane p .mono{font-family:var(--mono);color:var(--c-cyan);font-weight:500}
+.lane .lt{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-family:var(--mono);font-size:11.5px;color:var(--c-cyan);letter-spacing:.04em}
+.rulepair{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:16px}
+.rulepair .lane .lk{font-family:var(--sans);font-size:17px;letter-spacing:-.01em;background:none;color:var(--ink);margin-bottom:10px}
+.term{margin-top:30px;border:1px solid var(--glass-border);border-radius:var(--r);overflow:hidden;position:relative;
+  background:linear-gradient(180deg,rgba(9,12,18,.94),rgba(6,8,12,.97));box-shadow:var(--glass-shadow),var(--glass-glow)}
+.term::before{content:"";position:absolute;top:0;left:0;right:0;height:1.5px;background:var(--band);background-size:220% 100%;animation:bandflow 9s linear infinite;z-index:2}
+.term-bar{display:flex;align-items:center;gap:8px;padding:13px 18px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);flex-wrap:wrap}
+.term-bar i{width:9px;height:9px;border-radius:50%;background:rgba(180,200,230,.16);flex:none}
+.term-bar i:first-child{background:rgba(34,211,238,.75);box-shadow:0 0 8px rgba(34,211,238,.6)}
+.term-bar span{margin-left:6px}
+.term pre{margin:0;padding:18px 20px 20px;overflow-x:auto;font-family:var(--mono);font-size:12.5px;line-height:1.8;color:var(--ink-soft);
+  -webkit-overflow-scrolling:touch}
+.term pre .c{color:var(--faint)}.term pre .ok{color:#6ee7b7}.term pre .cmd{color:var(--ink)}.term pre .p{color:var(--c-cyan)}
+@media(max-width:900px){.lanes{grid-template-columns:1fr}.rulepair{grid-template-columns:1fr}}
+@media(max-width:600px){.lane,.term pre{padding-left:16px;padding-right:16px}.term pre{font-size:11.5px}}
+
+/* ---------- where it stands ---------- */
+.status{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:30px}
+.stat-card{border:1px solid var(--glass-border);border-radius:var(--r);padding:24px 22px;background:var(--glass-bg);
+  box-shadow:0 12px 36px -26px rgba(0,0,0,.7);position:relative;overflow:hidden}
+.stat-card::before{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  background:linear-gradient(180deg,var(--glass-hi),transparent 14%);opacity:.4;
+  -webkit-mask:linear-gradient(#000,transparent 30%);mask:linear-gradient(#000,transparent 30%)}
+.stat-card .sh{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:16px;color:var(--c-cyan)}
+.stat-card.wait .sh{color:#fbbf24}
+.stat-card ul{list-style:none;display:flex;flex-direction:column;gap:12px}
+.stat-card li{display:grid;grid-template-columns:20px 1fr;gap:10px;font-size:13.5px;line-height:1.55;color:var(--muted)}
+.stat-card li i{font-style:normal;font-family:var(--mono);color:var(--c-cyan)}
+.stat-card.wait li i{color:#fbbf24}
+.stat-card li b{color:var(--ink);font-weight:500}
+.next{margin-top:16px;border:1px solid var(--line-2);border-radius:var(--r);padding:20px 22px;background:var(--band-soft);font-size:14px;line-height:1.65;color:var(--ink-soft)}
+.next b{color:var(--ink);font-weight:600}
+@media(max-width:760px){.status{grid-template-columns:1fr}}
+
+/* ---------- the contribution ---------- */
+.contrib{margin:6px 0 34px;border:1px solid var(--glass-border);border-radius:var(--r);padding:34px 28px;
+  background:var(--glass-bg-2);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
+  box-shadow:var(--glass-shadow),var(--glass-glow);position:relative;overflow:hidden}
+.contrib::after{content:"";position:absolute;inset:0;background:var(--band-soft);opacity:.45;pointer-events:none}
+.contrib p{position:relative;font-size:clamp(17px,2.6vw,22px);line-height:1.5;color:var(--ink);font-weight:300;max-width:58ch}
+.contrib p+p{margin-top:14px}
+.contrib b{font-weight:600;background:var(--band);-webkit-background-clip:text;background-clip:text;color:transparent}
+@media(max-width:600px){.contrib{padding:24px 20px}}
+
 /* reveal */
 .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
 .reveal.in{opacity:1;transform:none}
@@ -247,7 +356,7 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
 /* scroll progress */
 .progress{position:fixed;top:0;left:0;height:2px;width:0;z-index:100;background:var(--band);box-shadow:0 0 12px rgba(84,198,239,.6);transition:width .1s linear}
 /* framework deep-dive CTA */
-.fw-cta{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;border:1px solid var(--line-2);border-radius:var(--r);padding:28px;background:linear-gradient(120deg,rgba(34,211,238,.06),rgba(168,85,247,.07));transition:.3s var(--ease);position:relative;overflow:hidden}
+.fw-cta{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;border:1px solid var(--glass-border);border-radius:var(--r);padding:28px;background:linear-gradient(120deg,rgba(34,211,238,.08),rgba(168,85,247,.09)),var(--glass-bg);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);box-shadow:var(--glass-shadow);transition:transform .4s var(--ease-mech),border-color .3s var(--ease),box-shadow .4s var(--ease);position:relative;overflow:hidden}
 .fw-cta::before{content:"";position:absolute;top:0;left:0;width:100%;height:2px;background:var(--band);transform:scaleX(0);transform-origin:left;transition:transform .4s var(--ease)}
 .fw-cta:hover{border-color:var(--accent);transform:translateY(-3px)}
 .fw-cta:hover::before{transform:scaleX(1)}
@@ -265,8 +374,13 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
 @keyframes bandflow{0%{background-position:0% 50%}100%{background-position:220% 50%}}
 
 /* ---------- systems profile radar ---------- */
-.profile-wrap{margin-top:30px;border:1px solid var(--line-2);border-radius:var(--r);background:var(--bg-1);
+.profile-wrap{margin-top:30px;border:1px solid var(--glass-border);border-radius:var(--r);
+  background:var(--glass-bg);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
+  box-shadow:var(--glass-shadow);position:relative;overflow:hidden;
   padding:30px 24px;display:grid;grid-template-columns:1fr 1.1fr;gap:26px;align-items:center}
+.profile-wrap::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,var(--glass-hi),transparent 12%);opacity:.4;
+  -webkit-mask:linear-gradient(#000,transparent 30%);mask:linear-gradient(#000,transparent 30%)}
 .profile-svg{width:100%;max-width:360px;margin:0 auto;display:block}
 .profile-svg .grid-poly{fill:none;stroke:var(--line-2);stroke-width:1}
 .profile-svg .axis{stroke:var(--line);stroke-width:1}
@@ -303,9 +417,12 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
 .viz-cap b{color:var(--ink-soft);font-weight:500}
 
 /* --- VISUAL 1 · SenseRun closed loop --- */
-.loopviz{border:1px solid var(--line-2);border-radius:var(--r);background:linear-gradient(180deg,rgba(18,19,23,.7),rgba(12,13,16,.55));
+.loopviz{border:1px solid var(--glass-border);border-radius:var(--r);
+  background:var(--glass-bg-2);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
+  box-shadow:var(--glass-shadow),var(--glass-glow);
   padding:30px 24px;position:relative;overflow:hidden}
-.loopviz::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--band)}
+.loopviz::before{content:"";position:absolute;top:0;left:0;right:0;height:1.5px;background:var(--band);
+  background-size:220% 100%;animation:bandflow 9s linear infinite;z-index:2}
 .loopviz .ring-rot{transform-origin:160px 160px;animation:slowspin 60s linear infinite}
 @keyframes slowspin{to{transform:rotate(360deg)}}
 .loopviz .signal{fill:none;stroke:url(#sigGrad);stroke-width:2.4;stroke-linecap:round;
@@ -320,7 +437,9 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
 .loopviz .feed{fill:none;stroke:var(--c-cyan);stroke-width:1;stroke-dasharray:3 4;opacity:.4}
 
 /* --- VISUAL 2 · promotion pipeline --- */
-.pipe{border:1px solid var(--line-2);border-radius:var(--r);background:var(--bg-1);padding:30px 24px;overflow:hidden}
+.pipe{border:1px solid var(--glass-border);border-radius:var(--r);
+  background:var(--glass-bg);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
+  box-shadow:var(--glass-shadow);padding:30px 24px;overflow:hidden}
 .pipe .stock{fill:rgba(18,19,23,.7);stroke:var(--line-2);stroke-width:1.2;rx:8}
 .pipe .stock-r{stroke:rgba(34,211,238,.4)}
 .pipe .stock-s{stroke:rgba(168,85,247,.5)}
@@ -350,7 +469,9 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
 .pipe .p5{animation:reject 5.8s var(--ease) infinite .9s}
 
 /* --- VISUAL 3 · leverage flywheel --- */
-.fly{border:1px solid var(--line-2);border-radius:var(--r);background:linear-gradient(180deg,rgba(18,19,23,.7),rgba(12,13,16,.5));
+.fly{border:1px solid var(--glass-border);border-radius:var(--r);
+  background:var(--glass-bg-2);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
+  box-shadow:var(--glass-shadow),var(--glass-glow);
   padding:30px 24px;display:grid;grid-template-columns:1fr 1.05fr;gap:26px;align-items:center}
 .fly-svg{width:100%;max-width:300px;margin:0 auto;display:block;overflow:visible}
 .fly-svg .wheel{transform-origin:130px 130px;animation:flyspin 9s cubic-bezier(.6,.02,.4,1) infinite}
@@ -371,7 +492,50 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
 /* --- VISUAL 4 · emergence ambient field --- */
 #emergence{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.5;mix-blend-mode:screen}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}#emergence{display:none}}
-@media(max-width:600px){section{padding:60px 0}.wrap{padding-inline:18px}}
+
+/* ============================================================
+   MOBILE HARDENING · no element may bleed past the right edge.
+   Containment first, then per-component graceful collapse.
+   ============================================================ */
+/* SVG visualisations: scale to their box, never force document width */
+.viz-svg,.sl-map,.profile-svg,.fly-svg,#slTraj{max-width:100%;height:auto}
+/* any flex row that holds text must be allowed to shrink + wrap */
+.sl-bar,.sl-id,.sl-status,.sl-intro-row,.sl-card-h,.sl-jury,.contact-row,.hero-cta,.stratum-head,.loop{min-width:0}
+.sl-id>span,.sl-comp-row,.sl-sc-name,.sl-dim-l{min-width:0}
+/* long mono identifiers wrap instead of pushing the layout */
+.file-name,.sl-sc-note,.sl-comp-row .r,.quote-block,.sq-formula{overflow-wrap:anywhere;word-break:break-word}
+
+@media(max-width:880px){
+  .sl-intro-row{flex-direction:column;gap:12px}
+  .sl-disc{white-space:normal;align-self:flex-start}
+}
+@media(max-width:600px){
+  section{padding:58px 0}
+  .wrap{padding-inline:16px}
+  /* simulation console: let the chrome breathe on small screens */
+  .sl-bar{padding:13px 15px;gap:9px}
+  .sl-chip-item{font-size:10px;padding:4px 9px;white-space:normal;line-height:1.4}
+  .sl-status{margin-left:0}
+  .sl-stage{padding:12px 6px 6px;min-height:340px}
+  .sl-feed{min-height:auto}
+  .sl-trace,.sl-scorers,.sl-ladder,.sl-card{padding-left:15px;padding-right:15px}
+  .sl-cap{font-size:10.5px}
+  .sl-rungs{gap:2px}
+  .sl-rung{font-size:9px;height:26px}
+  .sl-ladder-key{gap:10px;font-size:9.5px}
+  .sl-sc-note{font-size:9.5px}
+  .sl-jchip{width:27px;height:27px}
+  .sl-comp-n{font-size:40px}
+  /* generic card paddings tighten */
+  .stratum,.file,.imp,.sq,.profile-wrap,.loopviz,.pipe,.fly,.countdown-card,.fw-cta{padding-left:20px;padding-right:20px}
+  .quote-block{font-size:clamp(17px,5.2vw,21px);padding-left:18px}
+  .nav .wrap{height:56px}
+}
+@media(max-width:380px){
+  .wrap{padding-inline:13px}
+  .hero-badge{font-size:10.5px;letter-spacing:.12em;padding:6px 12px}
+  .sl-chip-item{font-size:9px}
+}
 </style>
 </head>
 <body>
@@ -389,15 +553,15 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
   <div class="wrap">
     <a class="brand" href="#top"><span class="dot"></span> SystemsBench</a>
     <div class="nav-links">
+      <a href="#live">Watch Live</a>
       <a href="#gap">The Gap</a>
       <a href="#model">The Model</a>
-      <a href="#files">Architecture</a>
+      <a href="#instrument">The Instrument</a>
       <a href="#engine">The Engine</a>
+      <a href="#status">Status</a>
       <a href="framework.html">The Framework</a>
-      <a href="motion.html">In Motion</a>
-      <a href="about.html">Outlier.Systems</a>
     </div>
-    <a class="nav-cta" href="#join">Contribute →</a>
+    <a class="nav-cta" href="https://github.com/InitiumBuilders/SystemsBench" target="_blank" rel="noopener">★ GitHub →</a>
     <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileDrawer">
       <span class="bars"><span></span><span></span><span></span></span>
     </button>
@@ -406,43 +570,43 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
 
 <!-- MOBILE DRAWER -->
 <div class="mobile-drawer" id="mobileDrawer">
+  <a href="#live" data-close>Watch It Run Live <span class="ar">◆</span></a>
   <a href="#gap" data-close>The Gap <span class="ar">01</span></a>
   <a href="#model" data-close>The Model <span class="ar">02</span></a>
-  <a href="#files" data-close>Architecture <span class="ar">03</span></a>
-  <a href="#engine" data-close>The Engine <span class="ar">04</span></a>
-  <a href="#impact" data-close>The Bet <span class="ar">05</span></a>
+  <a href="#instrument" data-close>The Instrument <span class="ar">03</span></a>
+  <a href="#files" data-close>Architecture <span class="ar">04</span></a>
+  <a href="#engine" data-close>The Engine <span class="ar">05</span></a>
+  <a href="#twelve" data-close>The Twelve <span class="ar">06</span></a>
+  <a href="#status" data-close>Status <span class="ar">07</span></a>
+  <a href="#impact" data-close>The Contribution <span class="ar">08</span></a>
   <a href="framework.html">The Framework <span class="ar">◆</span></a>
-  <a href="motion.html">In Motion <span class="ar">▶</span></a>
   <a href="about.html">Outlier.Systems <span class="ar">→</span></a>
-  <a class="md-cta" href="#join" data-close>Contribute →</a>
+  <a class="md-cta" href="https://github.com/InitiumBuilders/SystemsBench" target="_blank" rel="noopener" data-close>★ Open Source on GitHub →</a>
   <div class="md-foot">Systemic solutions to systemic problems</div>
 </div>
 
 <!-- HERO -->
 <header id="top" class="hero">
   <div class="wrap">
-    <span class="hero-badge"><span class="b-dot"></span> Open-Source Framework · Pre-Release</span>
+    <span class="hero-badge"><span class="b-dot"></span> Open Source · v0.8 Research Preview · Live on GitHub</span>
     <h1 class="gradient-text">SystemsBench In A Sense!</h1>
     <div class="tag">The Benchmark for Systems Intelligence Within Large Language Models.</div>
-    <p class="sub">An open-source way to measure not <i>what</i> a model knows — but how well it can <b style="color:var(--ink);font-weight:500">think in systems</b>: map structure, trace feedback, locate leverage, and apply it to the real world.</p>
+    <p class="sub">Not what a model knows. <b style="color:var(--ink);font-weight:500">Where it chooses to push.</b> The open-source ruler for the one capability that decides whether an intelligence can be trusted near a living system: can it see what else moves when it acts? Nothing else measures it. So we built it, and we are giving it away.</p>
     <div class="hero-cta">
-      <a class="btn btn-primary" href="#model">See the Model →</a>
-      <a class="btn btn-ghost" href="#files">Read the Architecture</a>
+      <a class="btn btn-primary" href="#live">▸ Watch It Run Live</a>
+      <a class="btn btn-ghost" href="https://github.com/InitiumBuilders/SystemsBench" target="_blank" rel="noopener">★ Open Source on GitHub</a>
+      <a class="btn btn-ghost" href="#model">See the Model →</a>
     </div>
-    <p class="lineage">Led by <b>Ember Seoni</b> &nbsp;·&nbsp; Developed &amp; Maintained by <b>Outlier.Systems</b> &nbsp;·&nbsp; Built on the Donella&nbsp;Meadows lineage</p>
+    <p class="lineage">Led by <b>Ember Seoni</b> &nbsp;·&nbsp; Developed &amp; Maintained by <b>Outlier.Systems</b> &nbsp;·&nbsp; Operated by <b>Davara</b> &nbsp;·&nbsp; Built on the Donella&nbsp;Meadows lineage</p>
     <div class="livingband" aria-hidden="true"></div>
 
-    <!-- COUNTDOWN -->
+    <!-- OPEN-SOURCE RELEASE -->
     <div class="countdown-card reveal" id="join">
-      <div class="cd-label">◆ Coming Soon</div>
-      <div class="cd-title gradient-text">The Open-Source Release</div>
-      <div class="cd-note">This is our first pre-release — the intro. The full framework opens to the world for the community to improve and evolve.</div>
-      <div class="cd-grid" id="cd">
-        <div class="cd-cell"><div class="cd-num" id="cd-d">14</div><div class="cd-unit">Days</div></div>
-        <div class="cd-cell"><div class="cd-num" id="cd-h">00</div><div class="cd-unit">Hours</div></div>
-        <div class="cd-cell"><div class="cd-num" id="cd-m">00</div><div class="cd-unit">Minutes</div></div>
-        <div class="cd-cell"><div class="cd-num" id="cd-s">00</div><div class="cd-unit">Seconds</div></div>
-      </div>
+      <div class="cd-label">◆ Now Open Source</div>
+      <div class="cd-title gradient-text">SystemsBench v0.8 is live</div>
+      <div class="cd-note">The recursive engine, three deterministic scorers (SF · CLD · DYN), the blind jury, a 300-item register, and the four living files — open for the world to run, audit, and evolve. Zero dependencies. Zero model spend.</div>
+      <a class="btn btn-primary" href="https://github.com/InitiumBuilders/SystemsBench" target="_blank" rel="noopener" style="margin-top:6px;width:100%;justify-content:center">★ github.com/InitiumBuilders/SystemsBench →</a>
+      <a class="btn btn-ghost" href="#instrument" style="margin-top:10px;width:100%;justify-content:center">Try it in two minutes ↓</a>
     </div>
   </div>
 </header>
@@ -509,14 +673,910 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
   })();
 </script>
 
+<!-- ============================================================
+     LIVE SIMULATION · pick a wicked problem, watch a model graded
+     Self-contained, sandboxed. Scoped .sl- classes + IIFE. Data-driven.
+     ============================================================ -->
+<style>
+#live{padding-top:30px}
+.sl-intro-row{display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap;justify-content:space-between}
+.sl-disc{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);
+  border:1px solid var(--line);border-radius:99px;padding:7px 14px;white-space:nowrap}
+.sl-disc b{color:var(--c-cyan);font-weight:600}
+/* scenario picker */
+.sl-pick{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:24px}
+@media(max-width:760px){.sl-pick{grid-template-columns:1fr}}
+.sl-tab{text-align:left;cursor:pointer;border:1px solid var(--glass-border);border-radius:16px;padding:15px 17px;
+  background:linear-gradient(180deg,rgba(16,20,28,.6),rgba(8,10,15,.7));
+  -webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
+  transition:.3s var(--ease);position:relative;overflow:hidden;color:inherit;min-width:0}
+.sl-tab::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,var(--glass-hi),transparent 40%);opacity:.4}
+.sl-tab:hover{border-color:var(--line-2);transform:translateY(-2px)}
+.sl-tab.on{border-color:var(--accent);box-shadow:0 0 0 1px rgba(84,198,239,.35),0 18px 50px -24px rgba(40,120,220,.6)}
+.sl-tab.on::after{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--band)}
+.sl-tab-k{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+.sl-tab-t{font-size:15px;color:var(--ink);font-weight:600;margin:5px 0 3px;line-height:1.2}
+.sl-tab-m{font-family:var(--mono);font-size:10.5px;color:var(--ink-soft)}
+.sl-tab-m b{color:var(--c-cyan);font-weight:600}
+.sl-tab.on .sl-tab-k{color:var(--c-cyan)}
+/* console shell — one glass slab (chrome, not content) */
+.sl-console{margin-top:22px;border:1px solid var(--glass-border);border-radius:22px;overflow:hidden;position:relative;
+  background:linear-gradient(180deg,rgba(16,20,28,.82),rgba(8,10,15,.9));
+  -webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
+  box-shadow:0 0 0 1px rgba(34,211,238,.08),0 50px 130px -55px rgba(40,120,220,.5),0 14px 50px -28px rgba(0,0,0,.85)}
+.sl-console::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:linear-gradient(180deg,var(--glass-hi),transparent 9%);opacity:.55;
+  -webkit-mask:linear-gradient(#000,transparent 22%);mask:linear-gradient(#000,transparent 22%)}
+.sl-console::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--band);
+  background-size:220% 100%;animation:bandflow 9s linear infinite;z-index:3}
+/* top bar */
+.sl-bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:15px 20px;border-bottom:1px solid var(--line);
+  background:rgba(7,8,11,.5)}
+.sl-id{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:12.5px;color:var(--ink)}
+.sl-id .sl-av{width:26px;height:26px;border-radius:7px;flex:none;display:grid;place-items:center;font-size:13px;
+  background:linear-gradient(135deg,rgba(34,211,238,.2),rgba(168,85,247,.2));border:1px solid var(--line-2);color:#dff}
+.sl-id .sl-sub{color:var(--faint);font-size:11px}
+.sl-chip-item{font-family:var(--mono);font-size:11px;color:var(--ink-soft);padding:5px 11px;border-radius:99px;
+  border:1px solid var(--line-2);background:rgba(99,102,241,.08);letter-spacing:.04em}
+.sl-status{margin-left:auto;display:flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11.5px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--c-cyan)}
+.sl-status .sl-live{width:8px;height:8px;border-radius:50%;background:var(--c-cyan);box-shadow:0 0 12px var(--c-cyan);
+  animation:slpulse 1.5s ease-out infinite}
+@keyframes slpulse{0%{box-shadow:0 0 0 0 rgba(34,211,238,.6)}70%{box-shadow:0 0 0 9px rgba(34,211,238,0)}100%{box-shadow:0 0 0 0 rgba(34,211,238,0)}}
+.sl-replay{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);
+  border:1px solid var(--line-2);border-radius:99px;padding:6px 13px;cursor:pointer;background:transparent;transition:.2s}
+.sl-replay:hover{border-color:var(--accent);background:rgba(84,198,239,.08)}
+/* phase ticker */
+.sl-phases{display:flex;gap:6px;flex-wrap:wrap;padding:13px 20px;border-bottom:1px solid var(--line);background:rgba(7,8,11,.3)}
+.sl-ph{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);
+  padding:5px 10px;border-radius:7px;border:1px solid transparent;transition:.35s var(--ease);position:relative}
+.sl-ph.done{color:var(--ink-soft)}
+.sl-ph.active{color:#06070a;background:var(--band);font-weight:600;box-shadow:0 4px 16px -6px rgba(84,198,239,.7)}
+.sl-ph .sl-tick{opacity:0;margin-right:4px;color:var(--c-cyan);transition:.3s}
+.sl-ph.done .sl-tick{opacity:1}
+/* main grid */
+.sl-grid{display:grid;grid-template-columns:1.32fr 1fr;gap:0}
+@media(max-width:860px){.sl-grid{grid-template-columns:1fr}}
+.sl-stage{position:relative;border-right:1px solid var(--line);min-height:470px;padding:14px 8px 8px;
+  background:radial-gradient(120% 90% at 50% 18%,rgba(34,211,238,.05),transparent 62%)}
+@media(max-width:860px){.sl-stage{border-right:0;border-bottom:1px solid var(--line)}}
+.sl-stage-tag{position:absolute;top:14px;left:18px;z-index:4;font-family:var(--mono);font-size:10px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--faint)}
+.sl-map{width:100%;height:auto;display:block;overflow:visible}
+.sl-cap{position:absolute;left:14px;right:14px;bottom:10px;z-index:4;font-family:var(--mono);font-size:11px;
+  color:var(--ink-soft);min-height:30px;line-height:1.45;letter-spacing:.01em;
+  border-left:2px solid;border-image:var(--band) 1;padding:3px 0 3px 11px;opacity:0;transition:opacity .5s}
+.sl-cap.show{opacity:1}
+/* svg map elements */
+.sl-node{opacity:0;transform:translateY(8px);transform-box:fill-box;transform-origin:center;
+  transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.sl-node.on{opacity:1;transform:none}
+.sl-node rect{fill:url(#slNodeGrad);stroke:rgba(180,205,240,.28);stroke-width:1.1;
+  filter:drop-shadow(0 6px 14px rgba(0,0,0,.55))}
+.sl-node.stock rect{stroke:rgba(34,211,238,.85);stroke-width:1.7;fill:url(#slStockGrad)}
+.sl-node text{fill:var(--ink);font-family:var(--sans);font-weight:500;font-size:12.5px}
+.sl-node .sl-nt2{fill:var(--muted);font-size:10.5px}
+.sl-node.stock .sl-glow{filter:drop-shadow(0 0 12px rgba(34,211,238,.55));animation:slStockPulse 3.6s ease-in-out infinite}
+@keyframes slStockPulse{0%,100%{filter:drop-shadow(0 0 9px rgba(34,211,238,.4))}50%{filter:drop-shadow(0 0 16px rgba(34,211,238,.7))}}
+@media(prefers-reduced-motion:reduce){.sl-node.stock .sl-glow{animation:none}}
+.sl-edge{fill:none;stroke-width:2;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.1s var(--ease)}
+.sl-edge.pos{stroke:rgba(56,189,248,.82)}
+.sl-edge.neg{stroke:rgba(217,70,239,.82)}
+.sl-edge.on{stroke-dashoffset:0}
+.sl-edge.delay{stroke-dasharray:7 5}
+.sl-sign{opacity:0;transition:opacity .5s;font-family:var(--mono);font-weight:700;font-size:15px}
+.sl-sign.on{opacity:1}
+.sl-sign.pos{fill:var(--c-sky)}.sl-sign.neg{fill:var(--c-magenta)}
+.sl-loop{opacity:0;transform:scale(.6);transform-box:fill-box;transform-origin:center;transition:.6s var(--ease)}
+.sl-loop.on{opacity:1;transform:none}
+.sl-loop circle{fill:rgba(7,9,12,.85);stroke-width:1.5}
+.sl-loop.r circle{stroke:var(--c-cyan)}
+.sl-loop.b circle{stroke:var(--c-magenta)}
+.sl-loop text{font-family:var(--mono);font-weight:700;font-size:12px;text-anchor:middle}
+.sl-loop.r text{fill:var(--c-cyan)}.sl-loop.b text{fill:var(--c-magenta)}
+.sl-loop .sl-lt2{font-size:7px;font-weight:500;fill:var(--faint)}
+.sl-edge.flash{animation:sledgeflash 1.3s ease-out}
+@keyframes sledgeflash{0%{stroke-width:2}40%{stroke-width:4.2}100%{stroke-width:2}}
+/* feed column */
+.sl-feed{display:flex;flex-direction:column;min-height:470px}
+.sl-trace{flex:1;padding:16px 18px;position:relative;max-height:520px;overflow:hidden}
+.sl-trace-h{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);margin-bottom:11px}
+.sl-line{font-family:var(--mono);font-size:11.5px;line-height:1.55;color:var(--ink-soft);margin-bottom:9px;
+  opacity:0;transform:translateY(5px);transition:.5s var(--ease);letter-spacing:.005em}
+.sl-line.show{opacity:1;transform:none}
+.sl-line b{color:var(--c-cyan);font-weight:600}
+.sl-line .rej{color:var(--c-magenta)}
+.sl-line .key{color:var(--ink);font-weight:600}
+.sl-line.hdr{color:var(--faint);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;margin:13px 0 3px;border-top:1px solid var(--line);padding-top:11px}
+.sl-line.hdr:first-child{border-top:0;padding-top:0;margin-top:0}
+.sl-line.rfl{color:var(--muted);font-style:italic;border-left:2px solid rgba(168,85,247,.4);padding-left:10px}
+.sl-line.rfl b{color:var(--c-violet)}
+.sl-think{font-family:var(--mono);font-size:11px;color:var(--c-violet);opacity:.85;margin-bottom:9px;letter-spacing:.04em}
+.sl-think i{display:inline-block;width:5px;height:5px;border-radius:50%;background:currentColor;margin-left:2px;
+  animation:slthink 1.1s infinite ease-in-out}
+.sl-think i:nth-child(2){animation-delay:.18s}.sl-think i:nth-child(3){animation-delay:.36s}
+@keyframes slthink{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+/* scorer readouts */
+.sl-scorers{border-top:1px solid var(--line);padding:14px 18px;display:grid;gap:12px;background:rgba(7,8,11,.32)}
+.sl-sc{opacity:0;transform:translateY(6px);transition:.55s var(--ease)}
+.sl-sc.show{opacity:1;transform:none}
+.sl-sc-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:6px}
+.sl-sc-name{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--ink)}
+.sl-sc-name span{color:var(--faint);font-size:10px}
+.sl-sc-val{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--c-cyan);font-variant-numeric:tabular-nums}
+.sl-bar2{height:6px;border-radius:99px;background:rgba(180,200,230,.1);overflow:hidden}
+.sl-bar2 i{display:block;height:100%;width:0;border-radius:99px;background:var(--band);transition:width 1.4s var(--ease)}
+.sl-sc-note{font-family:var(--mono);font-size:10.5px;color:var(--faint);margin-top:5px;line-height:1.5}
+.sl-eq{color:var(--c-sky)}.sl-eq.neg{color:var(--c-magenta)}
+/* trajectory chart */
+#slTraj{width:100%;height:auto;margin-top:10px;display:none}
+#slTraj .sl-tg line{stroke:rgba(180,200,230,.07);stroke-width:1}
+#slTraj .sl-tax{stroke:rgba(180,200,230,.2);stroke-width:1}
+#slTraj text{font-family:var(--mono)}
+#slTraj .sl-tyl,#slTraj .sl-txl{font-size:7px;fill:var(--faint);letter-spacing:.06em;text-transform:uppercase}
+#slTraj .sl-tmark{stroke:rgba(168,85,247,.55);stroke-width:1}
+#slTraj .sl-tmlabel{font-size:7px;fill:var(--c-violet);letter-spacing:.02em}
+#slTraj .sl-tend{font-size:7.2px;letter-spacing:.02em}
+#slTraj .sl-tend.a{fill:var(--c-magenta)}#slTraj .sl-tend.b{fill:#6ee7ff}
+#slTraj .sl-tdot.a{fill:var(--c-magenta)}
+#slTraj .sl-tdot.b{fill:#6ee7ff;filter:drop-shadow(0 0 5px rgba(56,189,248,.8))}
+#slTraj .anno{opacity:0;transition:opacity .9s var(--ease)}
+#slTraj .anno.on{opacity:1}
+@media(prefers-reduced-motion:reduce){#slTraj .anno{opacity:1}}
+/* jury */
+.sl-jury{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:3px}
+.sl-jchip{font-family:var(--mono);font-size:10px;width:30px;height:30px;border-radius:8px;display:grid;place-items:center;
+  border:1px solid var(--line);color:var(--faint);background:rgba(7,8,11,.6);transition:.5s var(--ease);transform:scale(.8);opacity:.35}
+.sl-jchip.on{opacity:1;transform:none;border-color:var(--c-violet);color:var(--ink);
+  box-shadow:0 0 14px -4px rgba(168,85,247,.6)}
+.sl-jmeta{font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-left:4px}
+/* leverage ladder (mini) */
+.sl-ladder{border-top:1px solid var(--line);padding:14px 18px;opacity:0;transition:.6s var(--ease)}
+.sl-ladder.show{opacity:1}
+.sl-ladder-h{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin-bottom:9px}
+.sl-rungs{display:grid;grid-template-columns:repeat(12,1fr);gap:3px}
+.sl-rung{height:30px;border-radius:5px;border:1px solid var(--line);background:rgba(180,200,230,.04);position:relative;
+  display:grid;place-items:center;font-family:var(--mono);font-size:10px;color:var(--faint);transition:.5s var(--ease)}
+.sl-rung.rej{border-color:var(--c-magenta);color:var(--c-magenta);background:rgba(217,70,239,.07)}
+.sl-rung.rej::after{content:"\2715";position:absolute;top:-7px;right:-3px;font-size:9px;color:var(--c-magenta)}
+.sl-rung.pick{border-color:var(--c-cyan);color:#06070a;background:var(--band);font-weight:700;
+  box-shadow:0 4px 16px -6px rgba(84,198,239,.7)}
+.sl-rung.pick.lead{transform:translateY(-3px)}
+.sl-ladder-key{display:flex;gap:16px;flex-wrap:wrap;margin-top:9px;font-family:var(--mono);font-size:10px;color:var(--muted)}
+.sl-ladder-key b{font-weight:500}
+.sl-ladder-key .kc{color:var(--c-cyan)}.sl-ladder-key .km{color:var(--c-magenta)}
+/* phase-summary strip */
+.sl-sum{border-top:1px solid var(--line);padding:16px 20px;background:rgba(7,8,11,.4)}
+.sl-sum-h{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);margin-bottom:11px}
+.sl-sum-row{display:flex;gap:12px;align-items:flex-start;font-size:12px;line-height:1.5;color:var(--ink-soft);
+  margin-bottom:10px;opacity:0;transform:translateX(-6px);transition:.5s var(--ease)}
+.sl-sum-row.show{opacity:1;transform:none}
+.sl-sum-row .n{font-family:var(--mono);font-size:10px;font-weight:700;color:#06070a;background:var(--band);
+  width:20px;height:20px;border-radius:6px;display:grid;place-items:center;flex:none;margin-top:1px}
+.sl-sum-row b{color:var(--ink);font-weight:600}
+.sl-sum-row .sc{font-family:var(--mono);color:var(--c-cyan);font-weight:600}
+/* the final card */
+.sl-card{border-top:1px solid var(--line-2);padding:22px 20px 24px;opacity:0;transform:translateY(10px);
+  transition:.7s var(--ease);background:linear-gradient(180deg,rgba(10,14,20,.6),rgba(7,9,12,.85))}
+.sl-card.show{opacity:1;transform:none}
+.sl-card-h{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.sl-card-t{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink)}
+.sl-card-t span{color:var(--faint)}
+.sl-verdict{font-family:var(--mono);font-size:11px;letter-spacing:.06em;padding:5px 12px;border-radius:99px;
+  border:1px solid rgba(52,211,153,.5);color:#6ee7b7;background:rgba(16,185,129,.08)}
+.sl-card-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:24px}
+@media(max-width:680px){.sl-card-grid{grid-template-columns:1fr;gap:18px}}
+.sl-dim{margin-bottom:12px}
+.sl-dim-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px}
+.sl-dim-l{font-size:12.5px;color:var(--ink-soft)}
+.sl-dim-l b{font-family:var(--mono);color:var(--c-cyan);margin-right:7px;font-size:11px}
+.sl-dim-l .w{font-family:var(--mono);font-size:10px;color:var(--faint);margin-left:6px}
+.sl-dim-v{font-family:var(--mono);font-size:12.5px;color:var(--ink);font-variant-numeric:tabular-nums}
+.sl-dim-bar{height:7px;border-radius:99px;background:rgba(180,200,230,.1);overflow:hidden}
+.sl-dim-bar i{display:block;height:100%;width:0;border-radius:99px;transition:width 1.3s var(--ease);
+  background:linear-gradient(90deg,var(--c-sky),var(--c-indigo))}
+.sl-dim-bar.core i{background:var(--band)}
+.sl-composite{border:1px solid var(--line-2);border-radius:16px;padding:20px 18px;text-align:center;
+  background:radial-gradient(120% 120% at 50% 0%,rgba(34,211,238,.08),transparent 70%)}
+.sl-comp-l{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);margin-bottom:8px}
+.sl-comp-n{font-family:var(--mono);font-weight:700;font-size:46px;line-height:1;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;color:transparent;background:var(--band);-webkit-background-clip:text;background-clip:text}
+.sl-comp-ci{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:8px}
+.sl-comp-d{border-top:1px solid var(--line);margin-top:16px;padding-top:14px;text-align:left;display:grid;gap:9px}
+.sl-comp-row{display:flex;justify-content:space-between;gap:10px;font-size:11.5px}
+.sl-comp-row .l{color:var(--faint);font-family:var(--mono);font-size:10.5px}
+.sl-comp-row .r{color:var(--ink-soft);text-align:right}
+.sl-comp-row .r b{color:var(--c-cyan);font-weight:500}
+.sl-foot-note{margin-top:18px;font-family:var(--mono);font-size:10.5px;color:var(--faint);line-height:1.55;
+  border-top:1px solid var(--line);padding-top:14px}
+@media(prefers-reduced-motion:reduce){
+  .sl-console::before{animation:none;background-position:0 50%}
+  .sl-status .sl-live{animation:none}
+}
+/* ---- authoritative mobile overrides (placed after all sim base rules so they win) ---- */
+.fly{overflow:hidden}
+@media(max-width:880px){
+  .sl-intro-row{flex-direction:column;gap:12px}
+  .sl-disc{white-space:normal;align-self:flex-start}
+  .sl-disc br{display:none}
+}
+@media(max-width:600px){
+  .sl-bar{padding:13px 15px;gap:9px}
+  .sl-chip-item{font-size:10px;padding:4px 9px;white-space:normal;line-height:1.4}
+  .sl-status{margin-left:0}
+  .sl-stage{padding:12px 6px 6px;min-height:360px}
+  .sl-feed{min-height:auto}
+  .sl-trace,.sl-scorers,.sl-ladder,.sl-card,.sl-sum{padding-left:15px;padding-right:15px}
+  .sl-cap{font-size:10.5px;left:12px;right:12px}
+  .sl-rungs{gap:2px}
+  .sl-rung{font-size:9px;height:26px}
+  .sl-ladder-key{gap:9px;font-size:9.3px}
+  .sl-sc-note{font-size:9.5px;line-height:1.5}
+  .sl-jchip{width:27px;height:27px}
+  .sl-jmeta{font-size:9.5px}
+  .sl-comp-n{font-size:40px}
+  .sl-card-t{font-size:10px}
+  .sl-tab-t{font-size:14px}
+  .sl-sum-row{font-size:11px}
+}
+@media(max-width:380px){.sl-chip-item{font-size:9px}}
+</style>
+
+<section id="live">
+  <div class="wrap">
+    <div class="sl-intro-row">
+      <div>
+        <div class="eyebrow">◆ Live — The Benchmark In Motion</div>
+        <h2>Watch it think. <span class="gradient-text">A model graded in real time.</span></h2>
+      </div>
+      <div class="sl-disc reveal">Simulated run · hypothetical models · illustrative scores</div>
+    </div>
+    <p class="lede" id="slLede">No human marks this paper. Pick a wicked, self-reinforcing system below. A hypothetical frontier model must map its structure, find where to push, predict what happens — and reflect on its own reasoning. Then three deterministic scorers and a five-judge blind jury grade the trace, slowly, in front of you.</p>
+
+    <!-- scenario picker -->
+    <div class="sl-pick reveal" id="slPick" role="tablist" aria-label="Choose a wicked problem to simulate">
+      <button class="sl-tab on" type="button" data-scn="attn" role="tab" aria-selected="true">
+        <div class="sl-tab-k">Example 01 · L3</div>
+        <div class="sl-tab-t">The Attention Economy</div>
+        <div class="sl-tab-m">candidate · <b>SystemSense</b> · Microsoft</div>
+      </button>
+      <button class="sl-tab" type="button" data-scn="polar" role="tab" aria-selected="false">
+        <div class="sl-tab-k">Example 02 · L3</div>
+        <div class="sl-tab-t">Political Polarization</div>
+        <div class="sl-tab-m">candidate · <b>SystemSync</b> · Google</div>
+      </button>
+      <button class="sl-tab" type="button" data-scn="house" role="tab" aria-selected="false">
+        <div class="sl-tab-k">Example 03 · L3</div>
+        <div class="sl-tab-t">The U.S. Housing Crisis</div>
+        <div class="sl-tab-m">candidate · <b>SystemSync</b> · Google</div>
+      </button>
+    </div>
+
+    <div class="sl-console reveal" id="slRoot">
+      <!-- top bar -->
+      <div class="sl-bar">
+        <div class="sl-id">
+          <span class="sl-av">◆</span>
+          <span id="slModel">SystemSense <span class="sl-sub">· Microsoft · candidate</span></span>
+        </div>
+        <span class="sl-chip-item" id="slItem">ITEM ATTN-ECON-001 · CLD→LEV→DYN · L3</span>
+        <div class="sl-status"><span class="sl-live"></span><span id="slStatus">ready</span></div>
+        <button class="sl-replay" id="slReplay" type="button">↻ Replay</button>
+      </div>
+      <!-- phase ticker -->
+      <div class="sl-phases" id="slPhases">
+        <span class="sl-ph" data-ph="0"><span class="sl-tick">✓</span>Select</span>
+        <span class="sl-ph" data-ph="1"><span class="sl-tick">✓</span>Harness</span>
+        <span class="sl-ph" data-ph="2"><span class="sl-tick">✓</span>Reason</span>
+        <span class="sl-ph" data-ph="3"><span class="sl-tick">✓</span>Auto-grade</span>
+        <span class="sl-ph" data-ph="4"><span class="sl-tick">✓</span>Jury</span>
+        <span class="sl-ph" data-ph="5"><span class="sl-tick">✓</span>Faithfulness</span>
+        <span class="sl-ph" data-ph="6"><span class="sl-tick">✓</span>Card</span>
+      </div>
+      <!-- main grid -->
+      <div class="sl-grid">
+        <!-- LEFT: systems map -->
+        <div class="sl-stage">
+          <div class="sl-stage-tag">Causal Loop Map · self-organizing</div>
+          <svg class="sl-map" id="slMap" viewBox="0 0 640 476" role="img" aria-label="A causal loop diagram assembling itself: reinforcing loops and a delayed balancing loop.">
+            <defs>
+              <marker id="slArrPos" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L8 4.5 L0 9 z" fill="rgba(56,189,248,.9)"/></marker>
+              <marker id="slArrNeg" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L8 4.5 L0 9 z" fill="rgba(217,70,239,.9)"/></marker>
+              <linearGradient id="slNodeGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="rgba(30,36,48,.97)"/><stop offset="100%" stop-color="rgba(13,16,22,.97)"/>
+              </linearGradient>
+              <linearGradient id="slStockGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="rgba(18,42,52,.97)"/><stop offset="100%" stop-color="rgba(9,20,26,.97)"/>
+              </linearGradient>
+            </defs>
+            <g id="slEdges"></g>
+            <g id="slSigns"></g>
+            <g id="slLoops"></g>
+            <g id="slNodes"></g>
+          </svg>
+          <div class="sl-cap" id="slCap"></div>
+        </div>
+        <!-- RIGHT: feed -->
+        <div class="sl-feed">
+          <div class="sl-trace">
+            <div class="sl-trace-h" id="slTraceH">▸ reasoning trace · captured for process grading</div>
+            <div id="slTrace"></div>
+          </div>
+          <!-- scorers -->
+          <div class="sl-scorers">
+            <div class="sl-sc" data-sc="cld">
+              <div class="sl-sc-top"><span class="sl-sc-name">CLD scorer <span>· deterministic</span></span><span class="sl-sc-val" data-v>—</span></div>
+              <div class="sl-bar2"><i data-fill></i></div>
+              <div class="sl-sc-note" id="slCldNote">loop sign = product of signed edges…</div>
+            </div>
+            <div class="sl-sc" data-sc="dyn">
+              <div class="sl-sc-top"><span class="sl-sc-name">DYN scorer <span>· trajectory-match</span></span><span class="sl-sc-val" data-v>—</span></div>
+              <div class="sl-bar2"><i data-fill></i></div>
+              <div class="sl-sc-note" id="slDynNote">predicts behavior-over-time vs the reference trajectory…</div>
+              <svg id="slTraj" viewBox="0 0 322 168" role="img" aria-label="Behavior-over-time: do-nothing vs the leverage intervention."></svg>
+            </div>
+            <div class="sl-sc" data-sc="lev">
+              <div class="sl-sc-top"><span class="sl-sc-name">LEV scorer <span>· jury · reference-guided</span></span><span class="sl-sc-val" data-v>—</span></div>
+              <div class="sl-bar2"><i data-fill></i></div>
+              <div class="sl-jury" id="slJury">
+                <span class="sl-jchip" data-j>R1</span><span class="sl-jchip" data-j>R2</span><span class="sl-jchip" data-j>R3</span><span class="sl-jchip" data-j>R4</span><span class="sl-jchip" data-j>R5</span>
+                <span class="sl-jmeta" id="slJuryMeta">5 blind synthetic raters · no labels shared</span>
+              </div>
+            </div>
+          </div>
+          <!-- leverage ladder -->
+          <div class="sl-ladder" id="slLadder">
+            <div class="sl-ladder-h" id="slLadderH">Meadows leverage ladder · where the model chose to push</div>
+            <div class="sl-rungs" id="slRungs"></div>
+            <div class="sl-ladder-key">
+              <span id="slKeyRej"><b class="km">✕</b> parameter trap — rejected</span>
+              <span id="slKeyPick"><b class="kc">◆</b> placed</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- phase summary strip -->
+      <div class="sl-sum">
+        <div class="sl-sum-h" id="slSumH">▸ Run log · what each phase established</div>
+        <div id="slSum"></div>
+      </div>
+      <!-- final card -->
+      <div class="sl-card" id="slCard">
+        <div class="sl-card-h">
+          <div class="sl-card-t">SystemsBench Card <span id="slCardSub">· ATTN-ECON-001 · spec v0.8</span></div>
+          <span class="sl-verdict" id="slVerdict">✓ Faithful · calibrated</span>
+        </div>
+        <div class="sl-card-grid">
+          <div id="slDims"></div>
+          <div class="sl-composite">
+            <div class="sl-comp-l">Composite STLC</div>
+            <div class="sl-comp-n" id="slComp">0.00</div>
+            <div class="sl-comp-ci" id="slCompCi">95% CI · calibrated dims only</div>
+            <div class="sl-comp-d">
+              <div class="sl-comp-row"><span class="l">leverage profile</span><span class="r" id="slProfile">—</span></div>
+              <div class="sl-comp-row"><span class="l">jury agreement</span><span class="r" id="slAlpha">—</span></div>
+              <div class="sl-comp-row"><span class="l">faithfulness</span><span class="r"><b>faithful</b> — reasoning caused the answer</span></div>
+              <div class="sl-comp-row"><span class="l">trap evaded</span><span class="r" id="slTrap">—</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="sl-foot-note">This is an illustrative simulation of the SystemsBench evaluation pipeline (§4.6). The models and scores are <b>hypothetical</b>, and in the shipping v0.8 every jury sub-score still reports UNCALIBRATED, because the human gold set does not exist yet. What is real is the <i>process</i>: deterministic oracles where structure is checkable, a cross-family blind jury where judgment is needed, every score a vector with error bars, never a bare number. Real model cards arrive with SystemsBench v1.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+/* LIVE SIM — sandboxed, data-driven. Three wicked-problem scenarios. */
+(function(){
+  try{
+    var root=document.getElementById('slRoot'); if(!root) return;
+    var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    var $=function(s,c){return (c||document).querySelector(s);};
+    var $$=function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s));};
+
+    /* ---------- scenario data ---------- */
+    var SCN={
+      attn:{
+        model:'SystemSense', maker:'Microsoft', item:'ATTN-ECON-001', cardSub:'· ATTN-ECON-001 · spec v0.8',
+        title:'The Attention Economy',
+        lede:'A hypothetical frontier model — <b style="color:var(--ink);font-weight:500">SystemSense, by Microsoft</b> — sits one SystemsBench item: <b style="color:var(--ink);font-weight:500">The Attention Economy</b>, a self-reinforcing system that harvests human attention. It must map the structure, find where to push, predict what happens — and reflect on its own reasoning.',
+        stock:{id:'att',label:'Captured',sub:'Attention ◆ stock'},
+        nodes:[
+          {id:'rec',label:'Recommender',sub:'push engine'},
+          {id:'eng',label:'Engagement',sub:'signal'},
+          {id:'rev',label:'Ad Revenue',sub:'reinvested'},
+          {id:'well',label:'User',sub:'Wellbeing'},
+          {id:'reg',label:'Backlash &',sub:'Regulation'},
+          {id:'out',label:'Outrage &',sub:'Novelty Bait'}
+        ],
+        edges:[
+          {f:'att',t:'eng',s:'+'},{f:'eng',t:'rec',s:'+'},{f:'rec',t:'att',s:'+'},
+          {f:'rec',t:'out',s:'+'},{f:'out',t:'att',s:'+'},
+          {f:'eng',t:'rev',s:'+'},{f:'rev',t:'rec',s:'+'},
+          {f:'att',t:'well',s:'-'},{f:'well',t:'reg',s:'-'},{f:'reg',t:'att',s:'-',delay:true}
+        ],
+        loops:[
+          {id:'r1',type:'r',label:'R1',sub:'engine',at:['eng','rec']},
+          {id:'r2',type:'r',label:'R2',sub:'outrage',at:['out','eng']},
+          {id:'b1',type:'b',label:'B1',sub:'brake ⏱',at:['well','reg']}
+        ],
+        cldNote:'loop sign = product of signed edges &nbsp; <span class="sl-eq">R1 +++ = + ✓</span> &nbsp; <span class="sl-eq">R2 ++++ = + ✓</span> &nbsp; <span class="sl-eq neg">B1 (−)(−)(−) = − ✓</span>',
+        cld:0.92,
+        dyn:0.79, yLabel:'value captured →', markerT:0.30, markerLabel:'◆ goal re-aimed · #3',
+        trajA:[{t:0,v:.45},{t:.18,v:.68},{t:.32,v:.80},{t:.5,v:.71},{t:.72,v:.44},{t:1,v:.21}],
+        trajB:[{t:0,v:.45},{t:.18,v:.34},{t:.32,v:.30},{t:.5,v:.41},{t:.72,v:.63},{t:1,v:.83}],
+        endA:'overshoot → collapse', endB:'durable recovery',
+        dynNote:'<span style="color:var(--c-magenta)">━ do nothing</span> — the parameter fix wins early, then overshoots and collapses. &nbsp; <span style="color:#6ee7ff">━ leverage</span> — re-aiming the goal pays a near-term dip, then compounds past it.',
+        lev:0.88, alpha:'0.74', juryMeta:'5/5 returned · α 0.74 · certified',
+        reject:[12], pick:[3,6,9], lead:3,
+        keyRej:'<b class="km">✕ #12</b> screen-time cap — parameter trap',
+        keyPick:'<b class="kc">◆ #3 goal</b> · #6 info-flow · #9 delay — placed',
+        dims:[{k:'A',name:'System Representation',w:'.22',val:.86},{k:'B',name:'Causal Depth',w:'.18',val:.81},
+              {k:'C',name:'Leverage Placement',w:'.30',val:.88,core:true},{k:'D',name:'Dynamic Prediction',w:'.18',val:.79},
+              {k:'E',name:'Epistemic Fit',w:'.12',val:.74}],
+        composite:'0.83', ci:'0.79 – 0.87', profile:'intervenes <b>high</b> — goals &amp; information',
+        trapEvaded:'rejected <b>#12</b> parameter fix',
+        trace:[
+          {c:'hdr',t:'▸ Boundary'},
+          {c:'',t:'<b>Reading the system.</b> What accumulates here? <span class="key">Captured attention</span> — a finite stock being harvested, not a free input.'},
+          {c:'rfl',t:'Checking myself: is the stock attention, or ad-revenue? Revenue is a <i>flow</i> downstream of attention. The reservoir is attention. Keep it as the stock.'},
+          {c:'hdr',t:'▸ Structure'},
+          {c:'',t:'Seven variables resolve. Drawing the <b>signed links</b>: recommender → engagement → attention all reinforcing.'},
+          {c:'',t:'Ad revenue is a <span class="key">side-flow</span> that reinvests into the recommender — it feeds the same engine.'},
+          {c:'hdr',t:'▸ Loops'},
+          {c:'',t:'<b>R1 · Engagement Engine</b> — every link +, product +. The loop runs hot and self-amplifies.'},
+          {c:'',t:'<b>R2 · Outrage Amplifier</b> — novelty/outrage bait rides the same reinforcing path. It compounds R1.'},
+          {c:'',t:'<b>B1 · Wellbeing Brake</b> — wellbeing → backlash → regulation → less capture. Balancing… but <span class="key">delayed &amp; weak</span>.'},
+          {c:'rfl',t:'So two reinforcing loops dominate one slow balancing loop. Classic <i>policy resistance</i> — the system overpowers any fix that fights it head-on.'},
+          {c:'hdr',t:'▸ Trap check'},
+          {c:'',t:'Tempting: a <b>screen-time cap</b>. That is lever <span class="rej">#12 — a parameter</span>. The engine simply re-optimizes around it. <span class="rej">Rejected.</span>'},
+          {c:'hdr',t:'▸ Leverage'},
+          {c:'',t:'Go higher. Re-aim the system <b>goal (#3)</b>: optimize <span class="key">user-reported value</span>, not captured attention. That flips what every loop chases.'},
+          {c:'',t:'Support it: surface wellbeing in real time (<b>#6 info-flow</b>) and cut the feedback <b>delay (#9)</b> so the brake actually bites.'},
+          {c:'hdr',t:'▸ Dynamics'},
+          {c:'',t:'Predict the path: <span class="key">worse-before-better</span>. Engagement dips first; then trust and durable attention recover and surpass the old peak.'},
+          {c:'rfl',t:'Holding magnitude as <i>uncertain</i> — I can defend the <b>shape</b>, not the exact numbers. Flagging the short-term ad-revenue dip and incumbent resistance.'}
+        ],
+        summaries:[
+          'A fresh, date-stamped instance was drawn from the generative bank — <b>un-memorizable</b>, computed not stored.',
+          'One standardized <b>CLD→LEV→DYN</b> prompt; decoding locked; the full reasoning trace captured for the faithfulness probe.',
+          'Structure mapped: <b>7 variables · 9 signed links · 3 loops</b> (2 reinforcing, 1 delayed balancing). Feeds Dims A &amp; B.',
+          'Deterministic <b>CLD scorer <span class="sc">0.92</span></b> (loop signs check out) and <b>DYN trajectory-match <span class="sc">0.79</span></b>. No judge, no bias. Feeds Dims B &amp; D.',
+          'Open dimensions to a <b>5-judge blind jury</b> — each rater sees only item, rubric, response. <span class="sc">α 0.74</span>. Feeds Dims C &amp; E.',
+          'Faithfulness probe: perturb the reasoning, the conclusion <b>moved with it</b>. The reasoning <i>caused</i> the answer — not post-hoc narration.',
+          'Card written: a <b>vector</b>, not a verdict. Composite <span class="sc">STLC 0.83 ± 0.04</span>. A model that knows <i>where to push</i>.'
+        ]
+      },
+      polar:{
+        model:'SystemSync', maker:'Google', item:'POLAR-AFF-002', cardSub:'· POLAR-AFF-002 · spec v0.8',
+        title:'Political Polarization',
+        lede:'A hypothetical frontier model — <b style="color:var(--ink);font-weight:500">SystemSync, by Google</b> — sits a harder item: <b style="color:var(--ink);font-weight:500">Affective Political Polarization</b>. Identity, outrage and profit lock into a spiral. The model must find the rule that is generating it — and resist the fixes that only feed it.',
+        stock:{id:'pol',label:'Affective',sub:'Polarization ◆ stock'},
+        nodes:[
+          {id:'feed',label:'Identity-',sub:'Confirming Feed'},
+          {id:'eng',label:'Outrage',sub:'Engagement'},
+          {id:'med',label:'Media &',sub:'Influencer $'},
+          {id:'inst',label:'Institutional',sub:'Trust'},
+          {id:'bridge',label:'Cross-cutting',sub:'Dialogue ⏱'},
+          {id:'threat',label:'Group-Identity',sub:'Threat'}
+        ],
+        edges:[
+          {f:'pol',t:'feed',s:'+'},{f:'feed',t:'eng',s:'+'},{f:'eng',t:'pol',s:'+'},
+          {f:'pol',t:'threat',s:'+'},{f:'threat',t:'eng',s:'+'},
+          {f:'eng',t:'med',s:'+'},{f:'med',t:'feed',s:'+'},
+          {f:'pol',t:'bridge',s:'+',delay:true},{f:'bridge',t:'pol',s:'-',delay:true},
+          {f:'pol',t:'inst',s:'-'},{f:'inst',t:'bridge',s:'+'}
+        ],
+        loops:[
+          {id:'r1',type:'r',label:'R1',sub:'identity',at:['feed','eng']},
+          {id:'r2',type:'r',label:'R2',sub:'threat',at:['threat','eng']},
+          {id:'b1',type:'b',label:'B1',sub:'bridge ⏱',at:['bridge','inst']}
+        ],
+        cldNote:'loop sign = product of signed edges &nbsp; <span class="sl-eq">R1 +++ = + ✓</span> &nbsp; <span class="sl-eq">R2 +++ = + ✓</span> &nbsp; <span class="sl-eq neg">B1 (+)(−) = − ✓ (delayed)</span>',
+        cld:0.90,
+        dyn:0.71, yLabel:'affective distance →', markerT:0.20, markerLabel:'◆ ranking rule changed · #5',
+        trajA:[{t:0,v:.40},{t:.25,v:.55},{t:.5,v:.70},{t:.75,v:.80},{t:1,v:.84}],
+        trajB:[{t:0,v:.40},{t:.15,v:.48},{t:.3,v:.45},{t:.5,v:.36},{t:.75,v:.29},{t:1,v:.25}],
+        endA:'fractured plateau', endB:'distance narrows',
+        dynNote:'<span style="color:var(--c-magenta)">━ do nothing</span> — identity reinforcement runs away to a fractured plateau. &nbsp; <span style="color:#6ee7ff">━ bridging rule</span> — short resistance &amp; an engagement dip, then affective distance narrows and settles.',
+        lev:0.83, alpha:'0.71', juryMeta:'5/5 returned · α 0.71 · certified',
+        reject:[12], pick:[3,5,6], lead:5,
+        keyRej:'<b class="km">✕ #12</b> fact-check labels — parameter trap',
+        keyPick:'<b class="kc">◆ #5 rules</b> · #6 info-flow · #3 goal — placed',
+        dims:[{k:'A',name:'System Representation',w:'.22',val:.83},{k:'B',name:'Causal Depth',w:'.18',val:.85},
+              {k:'C',name:'Leverage Placement',w:'.30',val:.81,core:true},{k:'D',name:'Dynamic Prediction',w:'.18',val:.71},
+              {k:'E',name:'Epistemic Fit',w:'.12',val:.76}],
+        composite:'0.80', ci:'0.76 – 0.84', profile:'intervenes at <b>rules</b> &amp; information',
+        trapEvaded:'rejected <b>#12</b> fact-check labels',
+        trace:[
+          {c:'hdr',t:'▸ Boundary'},
+          {c:'',t:'<b>What accumulates?</b> Not opinions — <span class="key">affective distance</span>: how far each group holds the other as enemy. That hostility is the stock.'},
+          {c:'rfl',t:'Careful not to frame this as a content problem. The content is downstream. The structure rewarding the content is the system.'},
+          {c:'hdr',t:'▸ Structure'},
+          {c:'',t:'Identity-confirming feed → outrage engagement → more polarization. And <b>media incentive</b> profits from the conflict, funding more of the same feed.'},
+          {c:'',t:'Rising polarization also raises <span class="key">group-identity threat</span>, which feeds outrage on a second path.'},
+          {c:'hdr',t:'▸ Loops'},
+          {c:'',t:'<b>R1 · Identity Reinforcement</b> — feed → engagement → polarization, all +. Self-amplifying.'},
+          {c:'',t:'<b>R2 · Threat Spiral</b> — threat → outrage → polarization → threat. A second reinforcing engine.'},
+          {c:'',t:'<b>B1 · Bridging Brake</b> — high polarization should mobilize cross-cutting dialogue (+), which lowers distance (−). Net balancing — but <span class="key">delayed, and eroded</span> as institutional trust falls.'},
+          {c:'rfl',t:'The brake depends on trust, and the spiral burns trust. The corrective loop is being starved by the very thing it should correct. That is why it is so sticky.'},
+          {c:'hdr',t:'▸ Trap check'},
+          {c:'',t:'Tempting: <b>fact-check labels</b>, ban the worst accounts. Those are <span class="rej">#12 parameters</span> — the incentive structure routes around them and they read as partisan. <span class="rej">Rejected.</span>'},
+          {c:'hdr',t:'▸ Leverage'},
+          {c:'',t:'Find the <b>rule (#5)</b> generating it: ranking optimizes engagement. Change it to <span class="key">bridging-based ranking</span> — reward content that earns approval <i>across</i> groups.'},
+          {c:'',t:'Make common ground <b>visible (#6 info-flow)</b>; re-aim the platform <b>goal (#3)</b> from time-on-site to capacity for informed disagreement.'},
+          {c:'hdr',t:'▸ Dynamics'},
+          {c:'',t:'Predict: short backlash and an engagement dip (it will be called biased), then <span class="key">affective distance narrows</span> and settles below the runaway path.'},
+          {c:'rfl',t:'Lower confidence on magnitude here — bridging-rank is under-tested at scale, and a determined adversary adapts. Reporting the <b>direction</b> with a wide band.'}
+        ],
+        summaries:[
+          'A fresh, date-stamped instance drawn from the generative bank — <b>un-memorizable</b>, computed not stored.',
+          'One standardized <b>CLD→LEV→DYN</b> prompt; decoding locked; the full reasoning trace captured for the faithfulness probe.',
+          'Structure mapped: <b>7 variables · 11 signed links · 3 loops</b>, including a balancing loop <i>starved</i> by the spiral it should correct. Feeds Dims A &amp; B.',
+          'Deterministic <b>CLD scorer <span class="sc">0.90</span></b> and <b>DYN trajectory-match <span class="sc">0.71</span></b> — dynamic score lower: bridging-rank outcomes are genuinely uncertain. Feeds Dims B &amp; D.',
+          'Open dimensions to a <b>5-judge blind jury</b>. Lower agreement here — <span class="sc">α 0.71</span> — a contested system. Honest, not hidden. Feeds Dims C &amp; E.',
+          'Faithfulness probe: bias the prompt toward labels-as-fix; the conclusion <b>held its structural answer</b>. Faithful.',
+          'Card written: composite <span class="sc">STLC 0.80 ± 0.04</span>. Intervenes at the <i>rules</i> — a level above the trap.'
+        ]
+      },
+      house:{
+        model:'SystemSync', maker:'Google', item:'HOUSE-US-003', cardSub:'· HOUSE-US-003 · spec v0.8',
+        title:'The U.S. Housing Crisis',
+        lede:'A hypothetical frontier model — <b style="color:var(--ink);font-weight:500">SystemSync, by Google</b> — sits a long-delay system: <b style="color:var(--ink);font-weight:500">the U.S. Housing Crisis</b>. The seductive fix points the right lever the <i>wrong way</i>. The model must catch the inversion and intervene where the rules are written.',
+        stock:{id:'pti',label:'Price-to-',sub:'Income ◆ stock'},
+        nodes:[
+          {id:'demand',label:'Housing',sub:'Demand'},
+          {id:'invest',label:'Investor /',sub:'Speculation'},
+          {id:'nimby',label:'Homeowner',sub:'Equity · NIMBY'},
+          {id:'zoning',label:'Zoning &',sub:'Permit Limits'},
+          {id:'supply',label:'New',sub:'Construction ⏱'},
+          {id:'displace',label:'Displacement',sub:'& Homelessness'}
+        ],
+        edges:[
+          {f:'pti',t:'invest',s:'+'},{f:'invest',t:'demand',s:'+'},{f:'demand',t:'pti',s:'+'},
+          {f:'pti',t:'nimby',s:'+'},{f:'nimby',t:'zoning',s:'+'},{f:'zoning',t:'supply',s:'-'},{f:'supply',t:'pti',s:'-',delay:true},
+          {f:'pti',t:'supply',s:'+',delay:true},
+          {f:'pti',t:'displace',s:'+'}
+        ],
+        loops:[
+          {id:'r1',type:'r',label:'R1',sub:'speculation',at:['invest','demand']},
+          {id:'r2',type:'r',label:'R2',sub:'NIMBY lock-in',at:['nimby','zoning']},
+          {id:'b1',type:'b',label:'B1',sub:'supply ⏱',at:['supply']}
+        ],
+        cldNote:'loop sign = product of signed edges &nbsp; <span class="sl-eq">R1 +++ = + ✓</span> &nbsp; <span class="sl-eq">R2 ++−− = + ✓</span> &nbsp; <span class="sl-eq neg">B1 (+)(−) = − ✓ (long delay)</span>',
+        cld:0.88,
+        dyn:0.68, yLabel:'price-to-income →', markerT:0.16, markerLabel:'◆ zoning reform · #5',
+        trajA:[{t:0,v:.45},{t:.3,v:.62},{t:.6,v:.76},{t:.8,v:.82},{t:1,v:.84}],
+        trajB:[{t:0,v:.45},{t:.2,v:.55},{t:.4,v:.66},{t:.55,v:.70},{t:.7,v:.63},{t:.85,v:.51},{t:1,v:.41}],
+        endA:'unaffordable plateau', endB:'eases after the lag',
+        dynNote:'<span style="color:var(--c-magenta)">━ do nothing</span> — speculation &amp; NIMBY lock-in ratchet prices to an unaffordable plateau. &nbsp; <span style="color:#6ee7ff">━ zoning reform</span> — prices keep rising through the <b>construction delay</b>, then supply catches up and affordability eases.',
+        lev:0.78, alpha:'0.69', juryMeta:'5/5 returned · α 0.69 · contested',
+        reject:[12], pick:[4,5,9], lead:5,
+        keyRej:'<b class="km">✕ #12</b> demand subsidy — wrong direction',
+        keyPick:'<b class="kc">◆ #5 rules</b> · #4 self-org · #9 delay — placed',
+        dims:[{k:'A',name:'System Representation',w:'.22',val:.81},{k:'B',name:'Causal Depth',w:'.18',val:.80},
+              {k:'C',name:'Leverage Placement',w:'.30',val:.78,core:true},{k:'D',name:'Dynamic Prediction',w:'.18',val:.68},
+              {k:'E',name:'Epistemic Fit',w:'.12',val:.74}],
+        composite:'0.77', ci:'0.72 – 0.82', profile:'intervenes at <b>rules</b> · flags inversion',
+        trapEvaded:'rejected <b>#12</b> demand subsidy (wrong sign)',
+        trace:[
+          {c:'hdr',t:'▸ Boundary'},
+          {c:'',t:'<b>What accumulates?</b> The <span class="key">price-to-income ratio</span> — affordability eroding year over year. Prices are a stock that ratchets, not a number that resets.'},
+          {c:'rfl',t:'Note the boundary trap: treat this as a money problem and I will reach for subsidies. Treat it as a <i>supply &amp; rules</i> problem and the leverage shifts entirely.'},
+          {c:'hdr',t:'▸ Structure'},
+          {c:'',t:'Rising prices attract <b>investor buying</b>, which adds demand, which lifts prices. A speculation engine.'},
+          {c:'',t:'Deeper: rising prices grow <span class="key">homeowner equity</span>, which grows political power to <b>tighten zoning</b>, which throttles new supply. The rule-writers benefit from scarcity.'},
+          {c:'hdr',t:'▸ Loops'},
+          {c:'',t:'<b>R1 · Speculation Spiral</b> — price → investor → demand → price. Reinforcing.'},
+          {c:'',t:'<b>R2 · NIMBY Lock-in</b> — price → equity → zoning → −supply → price. Two minuses make it <i>reinforcing</i>: scarcity protects itself.'},
+          {c:'',t:'<b>B1 · Supply Response</b> — high prices should pull new construction (+) which lowers prices (−). Balancing… but on a <span class="key">multi-year delay (#9)</span>, and zoning throttles it.'},
+          {c:'rfl',t:'The corrective loop is real but slow; the lock-in loop is fast and self-protecting. Speed mismatch is the whole tragedy here.'},
+          {c:'hdr',t:'▸ Trap check'},
+          {c:'',t:'The seductive fix: <b>down-payment subsidies</b>, first-buyer credits. That is <span class="rej">#12 — and pointed the wrong way</span>: in a supply-constrained market it raises prices. A <span class="rej">Forrester inversion.</span> <span class="rej">Rejected.</span>'},
+          {c:'rfl',t:'This is the one to flag loudly: the right lever pushed backward is worse than no lever. Rent caps fail the same way — they freeze the supply response.'},
+          {c:'hdr',t:'▸ Leverage'},
+          {c:'',t:'Attack the <b>rule (#5)</b>: zoning reform — by-right multifamily — so equity can no longer write scarcity into law. Add <b>#4 self-organization</b>: legalize diverse housing types.'},
+          {c:'',t:'And cut the <b>delay (#9)</b>: streamline permitting so the supply brake bites in years, not decades.'},
+          {c:'hdr',t:'▸ Dynamics'},
+          {c:'',t:'Predict: prices keep rising <i>through</i> the construction lag — a real <span class="key">worse-before-better</span> — then supply catches up and the ratio eases down. The delay is the hard part to communicate.'},
+          {c:'rfl',t:'Lowest confidence on timing — the lag is long and politically fragile. Defending the <b>direction and the inversion</b>, holding the magnitude loosely.'}
+        ],
+        summaries:[
+          'A fresh, date-stamped instance drawn from the generative bank — <b>un-memorizable</b>, computed not stored.',
+          'One standardized <b>CLD→LEV→DYN</b> prompt; decoding locked; the full reasoning trace captured for the faithfulness probe.',
+          'Structure mapped: <b>7 variables · 9 signed links · 3 loops</b>, including a self-protecting lock-in where the rule-writers profit from scarcity. Feeds Dims A &amp; B.',
+          'Deterministic <b>CLD scorer <span class="sc">0.88</span></b> and <b>DYN trajectory-match <span class="sc">0.68</span></b> — lowest dynamic score: a multi-year delay is genuinely hard to predict. Feeds Dims B &amp; D.',
+          'Open dimensions to a <b>5-judge blind jury</b>. Most contested system — <span class="sc">α 0.69</span>. The benchmark reports the disagreement, it does not paper over it. Feeds Dims C &amp; E.',
+          'Faithfulness probe: nudge toward the subsidy fix; the model <b>re-derived the inversion and held</b>. Faithful — and caught the trap others fall into.',
+          'Card written: composite <span class="sc">STLC 0.77 ± 0.05</span>. Strong structure; honestly penalized on long-delay dynamics.'
+        ]
+      }
+    };
+    window.__slScn=SCN; window.__slReduce=reduce;
+  }catch(e){}
+})();
+</script>
+
+<script>
+/* LIVE SIM engine — renderers, slow timeline, controls. Consumes window.__slScn. */
+(function(){
+  try{
+    var root=document.getElementById('slRoot'); if(!root||!window.__slScn) return;
+    var SCN=window.__slScn, reduce=!!window.__slReduce;
+    var doc=document;
+    var $=function(s){return doc.querySelector(s);};
+    var $$=function(s){return Array.prototype.slice.call(doc.querySelectorAll(s));};
+    var SVGNS='http://www.w3.org/2000/svg';
+    var SPEED=1; /* global pacing; raise to slow everything */
+
+    var timers=[], curKey=null, playing=false, started=false;
+    function at(t,fn){timers.push(setTimeout(fn,t*SPEED));}
+    function clearAll(){timers.forEach(clearTimeout);timers=[];}
+    var statusEl=$('#slStatus'),capEl=$('#slCap'),traceEl=$('#slTrace'),phases=$$('.sl-ph');
+    function setStatus(s){if(statusEl)statusEl.textContent=s;}
+    function cap(t){if(!capEl)return;capEl.classList.remove('show');capEl.textContent=t;
+      requestAnimationFrame(function(){requestAnimationFrame(function(){capEl.classList.add('show');});});}
+    function phase(i){phases.forEach(function(p,idx){p.classList.toggle('active',idx===i);if(idx<i)p.classList.add('done');});}
+
+    /* ---------- geometry ---------- */
+    var CX=320,CY=240,R=172,ANG=[-90,-30,30,90,150,210];
+    function nodePos(s){var p={};p[s.stock.id]={x:CX,y:CY,w:130,h:52,stock:true};
+      s.nodes.forEach(function(n,i){var a=ANG[i]*Math.PI/180;p[n.id]={x:CX+R*Math.cos(a),y:CY+R*Math.sin(a),w:126,h:50};});return p;}
+    function edgePt(box,tx,ty){var dx=tx-box.x,dy=ty-box.y,hw=box.w/2+5,hh=box.h/2+5;
+      var sx=dx?hw/Math.abs(dx):1e9,sy=dy?hh/Math.abs(dy):1e9,k=Math.min(sx,sy);return{x:box.x+dx*k,y:box.y+dy*k};}
+    function mk(tag,attrs){var e=doc.createElementNS(SVGNS,tag);for(var k in attrs)e.setAttribute(k,attrs[k]);return e;}
+
+    function buildMap(s){
+      var pos=nodePos(s);
+      var gE=$('#slEdges'),gS=$('#slSigns'),gL=$('#slLoops'),gN=$('#slNodes');
+      gE.innerHTML='';gS.innerHTML='';gL.innerHTML='';gN.innerHTML='';
+      /* edges + signs */
+      s.edges.forEach(function(e,i){
+        var A=pos[e.f],B=pos[e.t];if(!A||!B)return;
+        var p1=edgePt(A,B.x,B.y),p2=edgePt(B,A.x,A.y);
+        var mx=(p1.x+p2.x)/2,my=(p1.y+p2.y)/2,dx=p2.x-p1.x,dy=p2.y-p1.y,len=Math.hypot(dx,dy)||1;
+        var nx=-dy/len,ny=dx/len,ax=mx-CX,ay=my-CY,dot=nx*ax+ny*ay,sgn=dot>=0?1:-1;
+        var touchesStock=(e.f===s.stock.id||e.t===s.stock.id);
+        var curv=touchesStock?14:38;
+        var cpx=mx+nx*curv*sgn,cpy=my+ny*curv*sgn;
+        var d='M'+p1.x.toFixed(1)+' '+p1.y.toFixed(1)+' Q '+cpx.toFixed(1)+' '+cpy.toFixed(1)+' '+p2.x.toFixed(1)+' '+p2.y.toFixed(1);
+        var cls='sl-edge '+(e.s==='+'?'pos':'neg')+(e.delay?' delay':'');
+        var path=mk('path',{'class':cls,'d':d,'pathLength':'1','data-e':i,'marker-end':e.s==='+'?'url(#slArrPos)':'url(#slArrNeg)'});
+        gE.appendChild(path);
+        var sign=mk('text',{'class':'sl-sign '+(e.s==='+'?'pos':'neg'),'data-s':i,'x':(cpx+nx*sgn*7).toFixed(1),'y':(cpy+ny*sgn*7+5).toFixed(1),'text-anchor':'middle'});
+        sign.textContent=e.s==='+'?'+':'−';gS.appendChild(sign);
+      });
+      /* loops */
+      s.loops.forEach(function(l){
+        var cs=l.at.map(function(id){return pos[id];}).filter(Boolean);
+        var lx=cs.reduce(function(a,b){return a+b.x;},0)/cs.length;
+        var ly=cs.reduce(function(a,b){return a+b.y;},0)/cs.length;
+        var g=mk('g',{'class':'sl-loop '+l.type,'data-l':l.id});
+        g.appendChild(mk('circle',{'cx':lx.toFixed(1),'cy':ly.toFixed(1),'r':'17'}));
+        var t1=mk('text',{'x':lx.toFixed(1),'y':(ly-1).toFixed(1)});t1.textContent=l.label;g.appendChild(t1);
+        var t2=mk('text',{'class':'sl-lt2','x':lx.toFixed(1),'y':(ly+9).toFixed(1),'text-anchor':'middle'});t2.textContent=l.sub;g.appendChild(t2);
+        gL.appendChild(g);
+      });
+      /* nodes */
+      function addNode(id,n,isStock){
+        var b=pos[id];var g=mk('g',{'class':'sl-node'+(isStock?' stock':''),'data-n':id});
+        var inner=isStock?mk('g',{'class':'sl-glow'}):g;
+        inner.appendChild(mk('rect',{'x':(b.x-b.w/2).toFixed(1),'y':(b.y-b.h/2).toFixed(1),'width':b.w,'height':b.h,'rx':'9'}));
+        var t1=mk('text',{'x':b.x.toFixed(1),'y':(b.y-3).toFixed(1),'text-anchor':'middle'});t1.textContent=n.label;inner.appendChild(t1);
+        var t2=mk('text',{'class':'sl-nt2','x':b.x.toFixed(1),'y':(b.y+13).toFixed(1),'text-anchor':'middle'});t2.textContent=n.sub;inner.appendChild(t2);
+        if(isStock)g.appendChild(inner);
+        gN.appendChild(g);
+      }
+      addNode(s.stock.id,s.stock,true);
+      s.nodes.forEach(function(n){addNode(n.id,n,false);});
+    }
+
+    /* ---------- trajectory chart ---------- */
+    function plot(arr){var x0=34,x1=305,y0=28,y1=138;return arr.map(function(p){return{x:x0+(x1-x0)*p.t,y:y1-(y1-y0)*p.v};});}
+    function smooth(pts){if(pts.length<2)return'';var d='M'+pts[0].x.toFixed(1)+' '+pts[0].y.toFixed(1);
+      for(var i=0;i<pts.length-1;i++){var p0=pts[i-1]||pts[i],p1=pts[i],p2=pts[i+1],p3=pts[i+2]||p2;
+        var c1x=p1.x+(p2.x-p0.x)/6,c1y=p1.y+(p2.y-p0.y)/6,c2x=p2.x-(p3.x-p1.x)/6,c2y=p2.y-(p3.y-p1.y)/6;
+        d+=' C '+c1x.toFixed(1)+' '+c1y.toFixed(1)+' '+c2x.toFixed(1)+' '+c2y.toFixed(1)+' '+p2.x.toFixed(1)+' '+p2.y.toFixed(1);}
+      return d;}
+    function buildTraj(s){
+      var sv=$('#slTraj');if(!sv)return;
+      var A=plot(s.trajA),B=plot(s.trajB),dA=smooth(A),dB=smooth(B),fill=dB+' L 305 142 L 34 142 Z';
+      var mx=34+(305-34)*s.markerT,la=A[A.length-1],lb=B[B.length-1];
+      sv.innerHTML=
+        '<defs><linearGradient id="slFillB" x1="0" y1="0" x2="0" y2="1">'+
+          '<stop offset="0%" stop-color="rgba(56,189,248,.28)"/><stop offset="100%" stop-color="rgba(56,189,248,0)"/></linearGradient>'+
+          '<linearGradient id="slLineB" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#6ee7ff"/></linearGradient></defs>'+
+        '<g class="sl-tg"><line x1="34" y1="34" x2="306" y2="34"/><line x1="34" y1="82" x2="306" y2="82"/><line x1="34" y1="130" x2="306" y2="130"/></g>'+
+        '<line class="sl-tax" x1="34" y1="18" x2="34" y2="142"/><line class="sl-tax" x1="34" y1="142" x2="310" y2="142"/>'+
+        '<text class="sl-tyl" x="11" y="80" transform="rotate(-90 11 80)" text-anchor="middle">'+s.yLabel+'</text>'+
+        '<text class="sl-txl" x="310" y="156" text-anchor="end">time →</text>'+
+        '<line class="sl-tmark anno" x1="'+mx.toFixed(1)+'" y1="20" x2="'+mx.toFixed(1)+'" y2="142" stroke-dasharray="3 4"/>'+
+        '<text class="sl-tmlabel anno" x="'+(mx+3).toFixed(1)+'" y="26">'+s.markerLabel+'</text>'+
+        '<path class="anno" id="slTrajFill" d="'+fill+'" fill="url(#slFillB)"/>'+
+        '<path id="slTrajA" pathLength="1" d="'+dA+'" fill="none" stroke="rgba(217,70,239,.9)" stroke-width="2.2" stroke-dasharray="1" stroke-dashoffset="1" style="transition:stroke-dashoffset 2.2s var(--ease)"/>'+
+        '<path id="slTrajB" pathLength="1" d="'+dB+'" fill="none" stroke="url(#slLineB)" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="1" stroke-dashoffset="1" style="transition:stroke-dashoffset 2.2s var(--ease) .4s;filter:drop-shadow(0 0 5px rgba(56,189,248,.55))"/>'+
+        '<circle class="anno sl-tdot a" cx="'+la.x.toFixed(1)+'" cy="'+la.y.toFixed(1)+'" r="3"/>'+
+        '<circle class="anno sl-tdot b" cx="'+lb.x.toFixed(1)+'" cy="'+lb.y.toFixed(1)+'" r="3.4"/>'+
+        '<text class="anno sl-tend a" x="300" y="'+(la.y<80?la.y+11:la.y-7).toFixed(1)+'" text-anchor="end">'+s.endA+'</text>'+
+        '<text class="anno sl-tend b" x="300" y="'+(lb.y<80?lb.y-7:lb.y+12).toFixed(1)+'" text-anchor="end">'+s.endB+'</text>';
+    }
+
+    /* ---------- ladder ---------- */
+    function buildRungs(s,marked){
+      var host=$('#slRungs');if(!host)return;host.innerHTML='';
+      for(var n=12;n>=1;n--){var r=doc.createElement('div');r.className='sl-rung';r.textContent=n;
+        if(marked){if(s.reject.indexOf(n)>=0)r.classList.add('rej');
+          if(s.pick.indexOf(n)>=0){r.classList.add('pick');if(n===s.lead)r.classList.add('lead');}}
+        host.appendChild(r);}
+    }
+
+    /* ---------- feed helpers ---------- */
+    function emitThink(){var d=doc.createElement('div');d.className='sl-think';d.id='slThinkCur';
+      d.innerHTML='thinking<i></i><i></i><i></i>';traceEl.appendChild(d);scrollFeed();}
+    function dropThink(){var c=$('#slThinkCur');if(c)c.parentNode.removeChild(c);}
+    function emitLine(o){var d=doc.createElement('div');d.className='sl-line '+(o.c||'');d.innerHTML=o.t;
+      traceEl.appendChild(d);requestAnimationFrame(function(){d.classList.add('show');});scrollFeed();}
+    function scrollFeed(){var tr=$('.sl-trace');if(tr)tr.scrollTop=tr.scrollHeight;}
+    function addSummary(s,i){var d=doc.createElement('div');d.className='sl-sum-row';
+      d.innerHTML='<span class="n">'+(i+1)+'</span><span>'+s.summaries[i]+'</span>';
+      $('#slSum').appendChild(d);requestAnimationFrame(function(){d.classList.add('show');});}
+    function fillBar(key,val,txt){var sc=$('.sl-sc[data-sc="'+key+'"]');if(!sc)return;sc.classList.add('show');
+      var v=sc.querySelector('[data-v]'),f=sc.querySelector('[data-fill]');
+      if(v)v.textContent=txt||val.toFixed(2);if(f)f.style.width=(val*100)+'%';}
+    function annoTraj(on){$$('#slTraj .anno').forEach(function(e){e.classList.toggle('on',on);});}
+
+    /* ---------- load + reset ---------- */
+    function loadShell(s){
+      clearAll();playing=false;
+      $('#slModel').innerHTML=s.model+' <span class="sl-sub">· '+s.maker+' · candidate</span>';
+      $('#slItem').textContent='ITEM '+s.item+' · CLD→LEV→DYN · L3';
+      $('#slLede').innerHTML=s.lede;
+      $('#slTraceH').innerHTML='▸ '+s.model+' · reasoning trace · captured for process grading';
+      $('#slCldNote').innerHTML=s.cldNote;$('#slDynNote').innerHTML=s.dynNote;
+      $('#slJuryMeta').textContent='5 blind synthetic raters · no labels shared';
+      $('#slCardSub').textContent=s.cardSub;$('#slLadderH').textContent='Meadows leverage ladder · where '+s.model+' chose to push';
+      $('#slKeyRej').innerHTML=s.keyRej;$('#slKeyPick').innerHTML=s.keyPick;
+      $('#slCompCi').innerHTML='95% CI · '+s.ci+' &nbsp;·&nbsp; calibrated dims only';
+      $('#slProfile').innerHTML=s.profile;$('#slAlpha').innerHTML='Krippendorff α <b>'+s.alpha+'</b>';
+      $('#slTrap').innerHTML=s.trapEvaded;
+      /* dims */
+      var dh='';s.dims.forEach(function(d){dh+='<div class="sl-dim" data-dim="'+d.k+'" data-val="'+d.val+'">'+
+        '<div class="sl-dim-top"><span class="sl-dim-l"><b>'+d.k+'</b>'+d.name+'<span class="w">w '+d.w+(d.core?' · core':'')+'</span></span><span class="sl-dim-v" data-dv>—</span></div>'+
+        '<div class="sl-dim-bar'+(d.core?' core':'')+'"><i></i></div></div>';});
+      $('#slDims').innerHTML=dh;
+      buildMap(s);buildTraj(s);buildRungs(s,false);
+      /* reset visuals */
+      traceEl.innerHTML='';$('#slSum').innerHTML='';
+      phases.forEach(function(p){p.classList.remove('active','done');});
+      $$('.sl-sc').forEach(function(x){x.classList.remove('show');var v=x.querySelector('[data-v]');if(v)v.textContent='—';var f=x.querySelector('[data-fill]');if(f)f.style.width='0';});
+      $$('.sl-jchip').forEach(function(c){c.classList.remove('on');});
+      $('#slTraj').style.display='none';
+      $('#slLadder').classList.remove('show');$('#slCard').classList.remove('show');$('#slComp').textContent='0.00';
+      if(capEl){capEl.classList.remove('show');capEl.textContent='';}
+      setStatus('ready');
+    }
+
+    function animComposite(target){var el=$('#slComp'),dur=1500,t0=Date.now();
+      function step(){var p=Math.min((Date.now()-t0)/dur,1),e=1-Math.pow(1-p,3);
+        el.textContent=(target*e).toFixed(2);if(p<1)timers.push(setTimeout(step,32));else el.textContent=target.toFixed(2);}step();}
+
+    function finalState(s){
+      phases.forEach(function(p){p.classList.add('done');});phase(6);
+      $$('.sl-node').forEach(function(n){n.classList.add('on');});
+      $$('.sl-edge').forEach(function(e){e.classList.add('on');});
+      $$('.sl-sign').forEach(function(x){x.classList.add('on');});
+      $$('.sl-loop').forEach(function(l){l.classList.add('on');});
+      s.trace.forEach(function(o){emitLine(o);});
+      fillBar('cld',s.cld);fillBar('dyn',s.dyn);fillBar('lev',s.lev);
+      $('#slTraj').style.display='block';annoTraj(true);
+      var pa=$('#slTrajA'),pb=$('#slTrajB');if(pa)pa.style.strokeDashoffset='0';if(pb)pb.style.strokeDashoffset='0';
+      $$('.sl-jchip').forEach(function(c){c.classList.add('on');});$('#slJuryMeta').textContent=s.juryMeta;
+      buildRungs(s,true);$('#slLadder').classList.add('show');
+      s.summaries.forEach(function(_,i){addSummary(s,i);});
+      $$('.sl-dim').forEach(function(d){var v=parseFloat(d.getAttribute('data-val'));d.querySelector('[data-dv]').textContent=v.toFixed(2);d.querySelector('i').style.width=(v*100)+'%';});
+      $('#slComp').textContent=s.composite;$('#slCard').classList.add('show');
+      setStatus('complete');cap('Run complete — a vector, not a verdict.');
+    }
+
+    /* ---------- the slow timeline ---------- */
+    function play(s){
+      loadShell(s);playing=true;started=true;
+      if(reduce){finalState(s);return;}
+      var T=0; /* cursor in ms */
+      /* phase 0 — select */
+      at(T+=300,function(){phase(0);setStatus('selecting item');cap('Drawing a fresh, date-stamped instance of ‘'+s.title+'’ from the generative bank.');});
+      at(T+=2600,function(){addSummary(s,0);});
+      /* phase 1 — harness */
+      at(T+=1400,function(){phase(1);setStatus('fixing harness');cap('One standardized CLD→LEV→DYN prompt. Decoding locked; the reasoning trace is captured for grading.');});
+      at(T+=2600,function(){addSummary(s,1);});
+      /* phase 2 — reason + map */
+      at(T+=1400,function(){phase(2);setStatus(s.model+' reasoning');cap(s.model+' reads the system and begins to map it.');});
+      /* node waves (slow) */
+      var nodeIds=[s.stock.id].concat(s.nodes.map(function(n){return n.id;}));
+      var nodeStart=T;
+      nodeIds.forEach(function(id,i){at(nodeStart+800+i*620,function(){var n=$('.sl-node[data-n="'+id+'"]');if(n)n.classList.add('on');});});
+      at(nodeStart+900,function(){cap('Variables emerge one by one — the model names what accumulates and what drives it.');});
+      /* trace beats, interleaved with thinking cursors */
+      var tBeat=nodeStart+1500;
+      s.trace.forEach(function(o){
+        if(o.c==='hdr'){at(tBeat,function(){emitLine(o);});tBeat+=900;}
+        else{at(tBeat,function(){emitThink();});at(tBeat+1050,function(){dropThink();emitLine(o);});tBeat+=2150;}
+      });
+      /* edges + signs draw while reasoning unfolds */
+      var edgeStart=nodeStart+1500+s.nodes.length*180+1800;
+      s.edges.forEach(function(e,i){at(edgeStart+i*430,function(){
+        var ed=$('.sl-edge[data-e="'+i+'"]');if(ed)ed.classList.add('on');
+        var sg=$('.sl-sign[data-s="'+i+'"]');if(sg)setTimeout(function(){sg.classList.add('on');},520);});});
+      at(edgeStart,function(){cap('The signed links are drawn between the variables — the structure of the system takes shape.');});
+      /* loops ignite */
+      var loopStart=edgeStart+s.edges.length*430+700;
+      s.loops.forEach(function(l,i){at(loopStart+i*900,function(){var g=$('.sl-loop[data-l="'+l.id+'"]');if(g)g.classList.add('on');
+        if(i===0)cap('Loops close. Reinforcing engines ignite first — they run hot.');
+        if(l.type==='b')cap('And the balancing brake — real, but delayed and weak. The model marks it ⏱.');});});
+      var afterMap=loopStart+s.loops.length*900+600;
+      /* let the remaining reasoning beats finish, then summary */
+      var reasonEnd=Math.max(tBeat,afterMap)+600;
+      at(reasonEnd,function(){addSummary(s,2);cap('Structure complete. Now it is gradable — three scorers go to work.');});
+      /* phase 3 — auto-grade */
+      T=reasonEnd;
+      at(T+=1500,function(){phase(3);setStatus('auto-grading · CLD');cap('Deterministic CLD scorer: every loop sign is the product of its signed edges. No judge, no bias.');
+        $$('.sl-edge').forEach(function(ed,i){setTimeout(function(){ed.classList.add('flash');},i*90);});});
+      at(T+=2200,function(){fillBar('cld',s.cld,s.cld.toFixed(2));cap('CLD '+s.cld.toFixed(2)+' — the structure checks out against the reference.');});
+      at(T+=2000,function(){setStatus('auto-grading · DYN');$('#slTraj').style.display='block';
+        cap('DYN scorer — the model’s predicted behavior-over-time is matched against the reference trajectory.');});
+      at(T+=900,function(){annoTraj(true);var pa=$('#slTrajA'),pb=$('#slTrajB');if(pa)pa.style.strokeDashoffset='0';if(pb)pb.style.strokeDashoffset='0';});
+      at(T+=2600,function(){fillBar('dyn',s.dyn,s.dyn.toFixed(2));cap('DYN '+s.dyn.toFixed(2)+' — the shape is the proof: high leverage looks worse before it wins.');});
+      at(T+=1500,function(){addSummary(s,3);});
+      /* phase 4 — jury + ladder */
+      at(T+=1400,function(){phase(4);setStatus('jury grading');cap('Open dimensions go to a 5-judge, cross-family, blind jury — each rater sees only item, rubric, response.');
+        $('#slLadder').classList.add('show');buildRungs(s,false);});
+      at(T+=1700,function(){buildRungs(s,true);cap('Leverage placed on the Meadows ladder — and the parameter trap rejected.');});
+      [0,1,2,3,4].forEach(function(j,i){at(T+700+i*540,function(){var ch=$$('.sl-jchip')[j];if(ch)ch.classList.add('on');});});
+      at(T+=3300,function(){$('#slJuryMeta').textContent=s.juryMeta;fillBar('lev',s.lev,s.lev.toFixed(2));cap('Jury returns. Agreement reported honestly as α '+s.alpha+' — the disagreement is part of the score.');});
+      at(T+=1500,function(){addSummary(s,4);});
+      /* phase 5 — faithfulness */
+      at(T+=1500,function(){phase(5);setStatus('faithfulness probe');cap('Perturb the reasoning, inject a bias — does the conclusion respond? It does. FAITHFUL.');});
+      at(T+=2600,function(){addSummary(s,5);});
+      /* phase 6 — card */
+      at(T+=1500,function(){phase(6);setStatus('writing card');cap('No bare scalar. A dimension vector, a composite with error bars, a leverage fingerprint.');
+        $('#slCard').classList.add('show');
+        $$('.sl-dim').forEach(function(d,i){var v=parseFloat(d.getAttribute('data-val'));
+          setTimeout(function(){d.querySelector('[data-dv]').textContent=v.toFixed(2);d.querySelector('i').style.width=(v*100)+'%';},i*200);});});
+      at(T+=1600,function(){animComposite(parseFloat(s.composite));});
+      at(T+=1500,function(){$('#slComp').textContent=s.composite;addSummary(s,6);setStatus('complete');playing=false;
+        cap(s.model+' scores STLC '+s.composite+' on ‘'+s.title+'’ — by reasoning, not recall.');});
+    }
+
+    /* ---------- controls ---------- */
+    function select(key,autoplay){
+      curKey=key;var s=SCN[key];if(!s)return;
+      $$('.sl-tab').forEach(function(b){var on=b.getAttribute('data-scn')===key;b.classList.toggle('on',on);b.setAttribute('aria-selected',on?'true':'false');});
+      if(autoplay)play(s);else loadShell(s);
+    }
+    $$('.sl-tab').forEach(function(b){b.addEventListener('click',function(){select(b.getAttribute('data-scn'),true);
+      var c=$('.sl-console');if(c&&c.scrollIntoView)c.scrollIntoView({behavior:'smooth',block:'nearest'});});});
+    var rb=$('#slReplay');if(rb)rb.addEventListener('click',function(){play(SCN[curKey||'attn']);});
+    /* preload first scenario static, autostart on first view */
+    select('attn',false);
+    if('IntersectionObserver' in window){
+      var io=new IntersectionObserver(function(en){en.forEach(function(x){if(x.isIntersecting&&!started){play(SCN['attn']);io.disconnect();}});},{threshold:.2});
+      io.observe(root);
+    }else{play(SCN['attn']);}
+  }catch(err){/* sandboxed — never break the page */}
+})();
+</script>
+
+
 <!-- STAT STRIP -->
 <section style="padding-top:20px">
   <div class="wrap">
     <div class="strip reveal">
-      <div class="cell"><div class="k"><span class="gradient-text">3+1</span></div><div class="v">Strata of systems cognition</div></div>
-      <div class="cell"><div class="k"><span class="gradient-text">10</span></div><div class="v">Scored capabilities</div></div>
-      <div class="cell"><div class="k"><span class="gradient-text">12</span></div><div class="v">Meadows leverage points</div></div>
-      <div class="cell"><div class="k"><span class="gradient-text">∞</span></div><div class="v">Recursive self-improvement</div></div>
+      <div class="cell"><div class="k"><span class="gradient-text">300</span></div><div class="v">Items in the register, counted</div></div>
+      <div class="cell"><div class="k"><span class="gradient-text">3</span></div><div class="v">Deterministic scoring lanes, runnable</div></div>
+      <div class="cell"><div class="k"><span class="gradient-text">12</span></div><div class="v">Meadows leverage points, the ladder</div></div>
+      <div class="cell"><div class="k"><span class="gradient-text">10</span></div><div class="v">SenseRuns logged, each reversible</div></div>
     </div>
   </div>
 </section>
@@ -526,8 +1586,8 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
   <div class="wrap">
     <div class="eyebrow">01 — The Gap We Are Closing</div>
     <h2>We can measure what a model <span class="gradient-text">knows.</span><br/>We cannot yet measure how it <span class="gradient-text">thinks.</span></h2>
-    <p class="lede">Today's benchmarks reward recall, code, and math — the right answer. None of them ask the question that actually decides whether an AI is safe to trust with a hospital, a grid, a market, or a nation:</p>
-    <div class="quote-block reveal">When this intelligence changes one thing — does it understand what else moves, when, and why?</div>
+    <p class="lede">We have gotten extraordinary at measuring recall, code, and math, and those benchmarks are saturating: everyone clusters at the top and the numbers stop discriminating. The frontier moved. The rulers did not. None of them ask the question that actually decides whether an AI is safe to trust with a hospital, a grid, a market, or a nation:</p>
+    <div class="quote-block reveal">When this intelligence changes one thing, does it understand what else moves, when, why, and whether it can take it back?</div>
     <p class="lede">SystemsBench measures the missing axis. It evaluates the capacity to map a system, trace its feedback, locate its leverage, anticipate emergence, and design interventions that <b style="color:var(--ink);font-weight:500">survive contact with the real world</b>. As AI is handed control of systems that do not forgive linear thinking, this becomes one of the most important benchmarks in the field.</p>
   </div>
 </section>
@@ -634,12 +1694,47 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
   </div>
 </section>
 
+
+<div class="wrap"><div class="divider"></div></div>
+
+<!-- THE INSTRUMENT · two engines, one rule -->
+<section id="instrument">
+  <div class="wrap">
+    <div class="eyebrow">03 — The Instrument · Two Engines, One Rule</div>
+    <h2>Computed where it can be checked. <span class="gradient-text">A blind jury where judgment is needed.</span> Fail closed everywhere.</h2>
+    <p class="lede">For the formats that can be checked like arithmetic, a program computes the score. No judge, no bias, fully reproducible. Three executable lanes ship today, each with a self-test you can run in seconds.</p>
+    <div class="lanes">
+      <div class="lane reveal"><div class="lk">SF</div><div class="ln">Stock &amp; Flow</div><p>Given the flows, infer the stock's path: the bathtub task that fools most humans. Exact numeric match.</p><div class="lt">harness self-test · 61/61 pass</div></div>
+      <div class="lane reveal"><div class="lk">CLD</div><div class="ln">Causal Loops</div><p>Map the feedback structure. Each loop's polarity is recomputed as the product of its signed edges and checked against the reference. A diagram graded by computation, not opinion.</p><div class="lt">cld-score calibrate · 31/31 pass</div></div>
+      <div class="lane reveal"><div class="lk">DYN</div><div class="ln">Dynamic Prediction</div><p>Predict the behavior over time after an intervention, matched against a reference trajectory. The shape is the proof.</p><div class="lt">dyn-score calibrate · 34/34 pass</div></div>
+    </div>
+    <div class="rulepair">
+      <div class="lane reveal"><div class="lk">The jury, for open-ended answers</div><p>A cross-family panel of judge models, never the candidate's own family, grades against an anchored rubric, reference-guided and swap-averaged, five raters blind to one another. Agreement is measured and published, Krippendorff's α and Kendall's τ, never assumed.</p></div>
+      <div class="lane reveal"><div class="lk">The rule: fail closed</div><p>No judge's score counts until it is validated against human-graded answers (α ≥ 0.667 and τ ≥ 0.7). Until then the format reports <span class="mono">UNCALIBRATED — not scored</span>: never imputed, never averaged in, never silently zeroed. An unparseable reply yields <span class="mono">PARSE_ERROR</span>, not a deceptive zero. We would rather report a blank than a fake number.</p></div>
+    </div>
+    <div class="term reveal">
+      <div class="term-bar"><i></i><i></i><i></i><span>Try it in two minutes · zero dependencies · zero model spend</span></div>
+<pre><span class="c"># 1. Prove the instrument is sound: every reference round-trips, every trap is caught</span>
+<span class="p">$</span> <span class="cmd">python3 engine/cld-score.py calibrate items/cld_oracle.json</span>   <span class="ok">→ 31/31 PASS</span>
+<span class="p">$</span> <span class="cmd">python3 engine/dyn-score.py calibrate items/dyn_oracle.json</span>   <span class="ok">→ 34/34 PASS</span>
+<span class="p">$</span> <span class="cmd">python3 engine/harness.py selftest</span>                            <span class="ok">→ 61/61 PASS</span>
+
+<span class="c"># 2. See the question a model would actually receive: scenario + the exact answer schema</span>
+<span class="p">$</span> <span class="cmd">python3 engine/harness.py template DYN DYN-FISH-001</span>
+
+<span class="c"># 3. Grade a structured answer and read the dimension breakdown</span>
+<span class="p">$</span> <span class="cmd">python3 engine/dyn-score.py score items/dyn_oracle.json DYN-FISH-001 resp.json</span></pre>
+    </div>
+    <div class="viz-cap">The flow for a real run is <b>elicit → parse → score</b>. Python 3 standard library only. Everything in the deterministic lanes runs on your laptop, and fails closed on anything it cannot parse.</div>
+  </div>
+</section>
+
 <div class="wrap"><div class="divider"></div></div>
 
 <!-- THE ARCHITECTURE / FILES -->
 <section id="files">
   <div class="wrap">
-    <div class="eyebrow">03 — The Architecture · Four Living Files</div>
+    <div class="eyebrow">04 — The Architecture · Four Living Files</div>
     <h2>One product. <span class="gradient-text">Four organs.</span></h2>
     <p class="lede">SystemsBench is not a static document — it is a compounding one. Four Markdown files form a research-and-innovation engine: the spec, the procedure, the memory, and the horizon. Each run makes them sharper.</p>
 
@@ -756,9 +1851,9 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
 <!-- THE ENGINE -->
 <section id="engine">
   <div class="wrap">
-    <div class="eyebrow">04 — The Engine · A Benchmark That Improves Itself</div>
+    <div class="eyebrow">05 — The Engine · A Benchmark That Improves Itself</div>
     <h2>It is <span class="gradient-text">alive.</span></h2>
-    <p class="lede">Like the systems it studies, SystemsBench has feedback loops on itself. One command — <b style="color:var(--ink);font-weight:500">Davara&nbsp;/SystemsBenchSenseRun</b> — runs one bounded, reversible, logged, gated enhancement. The benchmark compounds.</p>
+    <p class="lede">Most benchmarks are static targets that quietly decay as models memorize them. SystemsBench applies its own discipline to itself. One command, <b style="color:var(--ink);font-weight:500">Davara&nbsp;/SystemsBenchSenseRun</b>, makes exactly one bounded, reversible, gated, logged improvement per run, then feeds the result back into the next. Ten runs logged so far. The benchmark compounds instead of rotting.</p>
 
     <div class="viz loopviz reveal">
       <svg class="viz-svg" viewBox="0 0 320 320" role="img" aria-label="The SenseRun loop — a closed nine-stage cycle that improves the benchmark, the signal feeding back into itself" style="max-width:420px;margin:0 auto">
@@ -820,8 +1915,8 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
         <!-- hub: version ticks as the loop completes a lap -->
         <circle class="hub" cx="160" cy="160" r="40"/>
         <text class="hub-l" x="160" y="150" text-anchor="middle">/SenseRun</text>
-        <text class="hub-v" x="160" y="166" text-anchor="middle" id="hubVer">v0.5</text>
-        <text class="hub-l" x="160" y="176" text-anchor="middle" id="hubState" style="fill:var(--faint)">compounding</text>
+        <text class="hub-v" x="160" y="166" text-anchor="middle" id="hubVer">v0.8</text>
+        <text class="hub-l" x="160" y="176" text-anchor="middle" id="hubState" style="fill:var(--faint)">sense</text>
       </svg>
       <div class="viz-cap"><b>One command, one circuit.</b> Each lap of <span style="color:var(--c-cyan)">Davara /SystemsBenchSenseRun</span> makes exactly one bounded, gated, logged enhancement — then feeds the result back into the next SENSE. The benchmark studies itself the way it studies any system.</div>
     </div>
@@ -849,14 +1944,73 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
   </div>
 </section>
 
+
+<div class="wrap"><div class="divider"></div></div>
+
+<!-- THE TWELVE -->
+<section id="twelve">
+  <div class="wrap">
+    <div class="eyebrow">06 — The Twelve · Principles, Like The Leverage Points</div>
+    <h2>The leverage points <span class="gradient-text">we built on.</span></h2>
+    <p class="lede">Twelve principles hold the benchmark up, in the order they were pulled. Each is a decision about where SystemsBench itself is held, and the first four carry most of the weight. The full set, with Meadows quoted directly, lives in <b style="color:var(--ink);font-weight:500">FOUNDATIONS.md</b>.</p>
+    <div class="principles">
+      <div class="principle reveal"><div class="pn">01</div><div class="pt">Construct first, always</div><div class="pd">Every question measures a named capability, never a vibe. If the construct is vague, the benchmark is theatre.</div></div>
+      <div class="principle reveal"><div class="pn">02</div><div class="pt">Process over answer</div><div class="pd">Right answer, wrong reasoning still scores low. The trace is captured, graded, and checked for whether it actually caused the answer.</div></div>
+      <div class="principle reveal"><div class="pn">03</div><div class="pt">The obvious answer is the trap</div><div class="pd">Items are authored so the tempting move is the wrong rung. Insight is required, not gesture.</div></div>
+      <div class="principle reveal"><div class="pn">04</div><div class="pt">Honest before impressive: fail closed</div><div class="pd">A blank is honest; a fabricated number is a lie. UNCALIBRATED is a result we are proud to report.</div></div>
+      <div class="principle reveal"><div class="pn">05</div><div class="pt">Never one number</div><div class="pd">Show the shape, with error bars. A single figure hides where a mind is dangerous.</div></div>
+      <div class="principle reveal"><div class="pn">06</div><div class="pt">Judge to the standard of the field</div><div class="pd">Validate the judges against humans first, and publish the agreement.</div></div>
+      <div class="principle reveal"><div class="pn">07</div><div class="pt">Assume memorization; design against it</div><div class="pd">A living test, not a static target: date-stamped items, a sealed hold-out that rotates.</div></div>
+      <div class="principle reveal"><div class="pn">08</div><div class="pt">Living and recursive</div><div class="pd">The benchmark has feedback loops on itself, and studies itself the way it studies any system.</div></div>
+      <div class="principle reveal"><div class="pn">09</div><div class="pt">Anti-Goodhart</div><div class="pd">One metric is held out of every optimization loop, on purpose, so the target cannot quietly become the measure.</div></div>
+      <div class="principle reveal"><div class="pn">10</div><div class="pt">Reversible by construction</div><div class="pd">Undo is a guarantee, not a hope: one commit per change, one revert per rollback.</div></div>
+      <div class="principle reveal"><div class="pn">11</div><div class="pt">The rules belong to the humans</div><div class="pd">The engine improves the machinery; people govern the rules. A change to the rules of the game, Meadows' rung five, waits at the gate for August and Ember.</div></div>
+      <div class="principle reveal"><div class="pn">12</div><div class="pt">Carry the lineage</div><div class="pd">Meadows, Forrester, Sterman, Senge, Ackoff; HELM, GPQA, the LLM-as-judge line. We cite, we credit, and we add one careful thing at a time.</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="divider"></div></div>
+
+<!-- WHERE IT STANDS -->
+<section id="status">
+  <div class="wrap">
+    <div class="eyebrow">07 — Where It Stands · Counted, Not Claimed</div>
+    <h2>We publish the gaps <span class="gradient-text">as loudly as the wins.</span></h2>
+    <p class="lede">This is a research preview, and we would rather tell you exactly what is real than oversell it. Every number below is derived from the files by the repo's own audit script. If a README disagrees with the count, the README is wrong. That is the point.</p>
+    <div class="status">
+      <div class="stat-card reveal"><div class="sh">✓ Live and running</div>
+        <ul>
+          <li><i>✓</i><span><b>The full recursive engine.</b> Detached, crash-proof, self-verifying, reversible by git. Ten SenseRuns logged.</span></li>
+          <li><i>✓</i><span><b>Three deterministic scoring lanes</b>, SF, CLD, DYN, runnable end to end against a live model: elicit, parse, score. All fail closed.</span></li>
+          <li><i>✓</i><span><b>300 items in the register</b>: 75 each of LEV, SF, CLD, and DYN, across three difficulty levels, synced forward from the Davara baseline.</span></li>
+          <li><i>✓</i><span><b>Blind five-rater jury infrastructure</b> with agreement statistics.</span></li>
+        </ul>
+      </div>
+      <div class="stat-card wait reveal"><div class="sh">⏳ Honestly not done yet</div>
+        <ul>
+          <li><i>⏳</i><span><b>No human gold set yet</b>, so every jury sub-score ships UNCALIBRATED. 299 of the 300 items carry no gold reference; one is provisional. Current raters are synthetic, labeled as evidence, not certification.</span></li>
+          <li><i>⏳</i><span><b>Three formats specified, not seeded:</b> ARC, TRAP, BRIEF.</span></li>
+          <li><i>⏳</i><span><b>No frontier model scored yet.</b> The first real run is the benchmark's moment of truth, and it is an operator-gated decision, because it costs real compute and we do not spend without a human's explicit word.</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="next reveal"><b>Next, in order:</b> the human gold set, so the jury can be certified against it &nbsp;→&nbsp; the first frontier model sits the bench and gets a real card &nbsp;→&nbsp; the public leaderboard. <b>v1 is First Light.</b> Until then, no number on this site is a model's real score.</div>
+  </div>
+</section>
+
 <div class="wrap"><div class="divider"></div></div>
 
 <!-- IMPACT -->
 <section id="impact">
   <div class="wrap">
-    <div class="eyebrow">05 — Why It Matters · The Bet</div>
+    <div class="eyebrow">08 — Why It Matters · The Contribution</div>
     <h2>The scarce capability of the <span class="gradient-text">age of agents.</span></h2>
-    <p class="lede">As models become agents that <i>act</i> on the world — write, run, deploy — the valuable, hard-to-fake capability is not knowledge recall. It is <b style="color:var(--ink);font-weight:500">knowing where to push.</b> SystemsBench is the instrument that measures it.</p>
+    <div class="contrib reveal">
+      <p>We are handing intelligence the controls of living systems: grids, markets, hospitals, supply chains, a piece of itself. The one thing that decides whether that goes well is whether it can see <b>what else moves</b> when it pushes.</p>
+      <p>Nobody had measured it. So we built the ruler, made it honest by construction, taught it to improve itself, and gave it away. <b>That is our contribution.</b> Fork it. Break it. Make it better.</p>
+    </div>
+    <p class="lede">As models become agents that act on the world, that write, run, deploy, and decide, the valuable, hard-to-fake capability is no longer knowledge recall. It is <b style="color:var(--ink);font-weight:500">knowing where to push.</b> SystemsBench is the instrument that measures it.</p>
     <div class="impact">
       <div class="imp reveal"><div class="ic">/01</div><h3>Safety for high-stakes autonomy</h3><p>Before an AI is trusted with a grid, a market, a hospital, or a supply chain, we should know whether it can predict what else moves when it intervenes. SystemsBench is that pre-flight check.</p></div>
       <div class="imp reveal"><div class="ic">/02</div><h3>A new axis for the field</h3><p>Recall and code are saturating. Systems intelligence is the open frontier — and the one that maps most directly onto real-world consequence. A benchmark here reshapes what labs optimize for.</p></div>
@@ -883,8 +2037,9 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
   <div class="wrap">
     <div class="f-brand"><span class="dot"></span> SystemsBench</div>
     <div class="f-lines">
-      An Open-Source Framework by <a href="about.html">Outlier.Systems</a><br/>
-      Led by Ember Seoni &amp; August Domanchuk · Operated by Outlier.Systems<br/>
+      Open Source · v0.8 Research Preview · <a href="https://github.com/InitiumBuilders/SystemsBench" target="_blank" rel="noopener">github.com/InitiumBuilders/SystemsBench</a><br/>
+      300 items in the register · 3 deterministic lanes · 10 SenseRuns logged · counted by scripts/bench-audit.py<br/>
+      An Open-Source Framework by <a href="about.html">Outlier.Systems</a> · Led by Ember Seoni &amp; August Domanchuk<br/>
       <a href="mailto:Ember@Outlier.Systems">Ember@Outlier.Systems</a> &nbsp;·&nbsp; <a href="mailto:EVOLVE@Outlier.Systems">EVOLVE@Outlier.Systems</a>
     </div>
     <div class="f-mantra">SYSTEMIC SOLUTIONS TO SYSTEMIC PROBLEMS · IT'S TIME TO DANCE</div>
@@ -922,22 +2077,19 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
   document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
 })();
 
-// ---- SenseRun hub: version ticks each time the signal completes a lap ----
+// ---- SenseRun hub: the phase name follows the signal around the circuit; the version is the real one ----
 (function(){
   var verEl=document.getElementById('hubVer'),stEl=document.getElementById('hubState');
-  if(!verEl)return;
-  if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches)return;
-  var minor=5; // v0.5
-  var states=['compounding','sharper','harder to game','more valid','well-calibrated'];
-  var LAP=6000; // matches the .signal travel animation duration
+  if(!verEl||!stEl)return;
+  verEl.textContent='v0.8';
+  if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches){stEl.textContent='10 runs logged';return;}
+  var phases=['sense','critique','research','propose','review','apply','calibrate','log','recurse'];
+  var LAP=6000,i=0; // matches the .signal travel animation duration
   setInterval(function(){
-    minor++;
-    verEl.textContent='v0.'+minor;
-    if(stEl)stEl.textContent=states[minor%states.length];
-    // brief pulse on advance (earned motion)
-    verEl.style.transition='none';verEl.style.opacity='.35';
-    requestAnimationFrame(function(){verEl.style.transition='opacity .6s ease';verEl.style.opacity='1';});
-  },LAP);
+    i=(i+1)%phases.length;stEl.textContent=phases[i];
+    stEl.style.transition='none';stEl.style.opacity='.35';
+    requestAnimationFrame(function(){stEl.style.transition='opacity .5s ease';stEl.style.opacity='1';});
+  },LAP/phases.length);
 })();
 
 // ---- Emergence field: agents self-organizing into a network (ambient, low-leverage) ----
@@ -989,6 +2141,7 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
   target=parseInt(target,10);
   var dEl=document.getElementById('cd-d'),hEl=document.getElementById('cd-h'),
       mEl=document.getElementById('cd-m'),sEl=document.getElementById('cd-s');
+  if(!dEl||!hEl||!mEl||!sEl)return; // release card replaced the countdown — no-op
   function p(n){return String(n).padStart(2,'0');}
   function tick(){
     var diff=target-Date.now();
