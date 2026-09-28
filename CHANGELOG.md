@@ -148,5 +148,5 @@ Format: `vX.Y.Z — YYYY-MM-DD — type — summary`.
 - Created `SystemsBenchEngine.MD`: the exact 9-step SenseRun loop (SENSE→CRITIQUE→RESEARCH→PROPOSE→REVIEW→APPLY→CALIBRATE→LOG→RECURSE), run-log template, leverage discipline for the engine itself, safety rails, invocation contract.
 - Created `SystemsBenchResearch.MD`: living prior-art ledger seeded with systems-thinking science (Meadows, Arnold-Wade, Sweeney-Sterman, Senge, Forrester, Cynefin, Ackoff, Checkland, Simon) and benchmark science (MMLU/GPQA/HELM/SWE-bench/GAIA/ARC-AGI, LLM-as-judge/PoLL/Prometheus, contamination/LiveBench, IRT/Bradley-Terry, process supervision/faithfulness).
 - Seeded `rubrics/DIMENSION_RUBRICS.md`, `items/INDEX.md` + first item set (`items/seed_LEV_organizations.md`), `protocols/BACKLOG.md`, `protocols/ANTIPATTERNS.md`.
-- Established Hermes skill `systemsbench-senserun` → invoked by `Davara /SystemsBenchSenseRun`.
+- Established the operator skill `systemsbench-senserun` → invoked by `Davara /SystemsBenchSenseRun`.
 - Led by Ember Seoni & August Domanchuk. Operated by Outlier.Systems.
