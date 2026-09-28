@@ -1,0 +1,250 @@
+{
+ "_meta": {
+  "what": "Machine-readable reference-label oracle for the ARC (archetype recognition) format — the validation set for engine/arc-score.py.",
+  "source_items": "items/seed_ARC_archetypes.md (27 items, 9 per level, seeded SenseRun #14). Every field here is parsed from the seed file by script (label, confusable, level, domain, confusable text); calibrate re-checks each label against the seed's own Reference and Confusable lines.",
+  "convention": "Each item declares the reference archetype (canonical label), its family, and the CONFUSABLE: the archetype the surface most resembles. arc_subscore = 1.0 for the reference (aliases accepted), 0.25 for the confusable (the trap), 0.5 for another same-family label, 0 otherwise.",
+  "scoring": "Deterministic arc_subscore only. The trap the archetype creates and the escape are jury-graded and stay UNCALIBRATED — not scored (no ARC gold; fail-closed, Structure 5.1). This oracle scores NO jury number.",
+  "vocabulary": [
+   "accidental-adversaries",
+   "eroding-goals",
+   "escalation",
+   "fixes-that-fail",
+   "growth-and-underinvestment",
+   "limits-to-growth",
+   "shifting-the-burden",
+   "success-to-the-successful",
+   "tragedy-of-the-commons"
+  ],
+  "families": {
+   "limits-to-growth": "growth-limits",
+   "growth-and-underinvestment": "growth-limits",
+   "shifting-the-burden": "symptomatic-relief",
+   "fixes-that-fail": "symptomatic-relief",
+   "escalation": "rivalry",
+   "accidental-adversaries": "rivalry",
+   "success-to-the-successful": "rivalry",
+   "tragedy-of-the-commons": "commons",
+   "eroding-goals": "standards"
+  },
+  "date": "2026-09-27",
+  "senserun": 14
+ },
+ "items": {
+  "ARC-INVITE-001": {
+   "level": "L1",
+   "domain": "software/infra",
+   "archetype": "limits-to-growth",
+   "family": "growth-limits",
+   "confusable": "growth-and-underinvestment",
+   "confusable_text": "The flattening looks like a capacity the team failed to build, but the limiting condition here, the number of students in the town, is not a capacity anyone can invest into."
+  },
+  "ARC-SLEEP-002": {
+   "level": "L1",
+   "domain": "personal/behavioral",
+   "archetype": "shifting-the-burden",
+   "family": "symptomatic-relief",
+   "confusable": "fixes-that-fail",
+   "confusable_text": "The pill does not backfire; it works each night. The damage is what it displaces, not what it causes."
+  },
+  "ARC-GRAZE-003": {
+   "level": "L1",
+   "domain": "ecology",
+   "archetype": "tragedy-of-the-commons",
+   "family": "commons",
+   "confusable": "success-to-the-successful",
+   "confusable_text": "No family is winning at another's expense through an allocation rule; all twelve are losing together against one commons."
+  },
+  "ARC-DEADLINE-004": {
+   "level": "L1",
+   "domain": "organizations",
+   "archetype": "fixes-that-fail",
+   "family": "symptomatic-relief",
+   "confusable": "shifting-the-burden",
+   "confusable_text": "No fundamental solution is being starved in this story; the fix itself generates the next round of the problem."
+  },
+  "ARC-CREDITS-005": {
+   "level": "L1",
+   "domain": "economics/markets",
+   "archetype": "escalation",
+   "family": "rivalry",
+   "confusable": "accidental-adversaries",
+   "confusable_text": "The companies are competitors on purpose and respond to each other's moves deliberately; nobody is undermining a partner by accident."
+  },
+  "ARC-STREAM-006": {
+   "level": "L1",
+   "domain": "social",
+   "archetype": "success-to-the-successful",
+   "family": "rivalry",
+   "confusable": "limits-to-growth",
+   "confusable_text": "The lower class is not meeting a natural limit; it is being starved by a rule that feeds the other loop."
+  },
+  "ARC-WAIT-007": {
+   "level": "L1",
+   "domain": "public-health",
+   "archetype": "eroding-goals",
+   "family": "standards",
+   "confusable": "shifting-the-burden",
+   "confusable_text": "There is relief here, but what is relieved is the gap itself, by moving the goal; no outside fix is displacing a fundamental one."
+  },
+  "ARC-TELEHEALTH-008": {
+   "level": "L1",
+   "domain": "organizations",
+   "archetype": "growth-and-underinvestment",
+   "family": "growth-limits",
+   "confusable": "limits-to-growth",
+   "confusable_text": "The limit here is a capacity the company chose not to build, and the standard for an acceptable wait is drifting; a fixed, external limit would be the other archetype."
+  },
+  "ARC-PLANNER-009": {
+   "level": "L1",
+   "domain": "AI/agent",
+   "archetype": "accidental-adversaries",
+   "family": "rivalry",
+   "confusable": "escalation",
+   "confusable_text": "The agents are not competing for position; they are partners whose corrective moves collide. Nothing here is a bid to beat the other."
+  },
+  "ARC-SYNTH-010": {
+   "level": "L2",
+   "domain": "social",
+   "archetype": "limits-to-growth",
+   "family": "growth-limits",
+   "confusable": "growth-and-underinvestment",
+   "confusable_text": "The stall looks like under-spending on marketing, but the limit is the size of the community, not a capacity the course failed to build."
+  },
+  "ARC-DENTAL-011": {
+   "level": "L2",
+   "domain": "public-health",
+   "archetype": "shifting-the-burden",
+   "family": "symptomatic-relief",
+   "confusable": "fixes-that-fail",
+   "confusable_text": "The emergency visits do not backfire; each one works. The problem is what they displace."
+  },
+  "ARC-SONAR-012": {
+   "level": "L2",
+   "domain": "ecology",
+   "archetype": "tragedy-of-the-commons",
+   "family": "commons",
+   "confusable": "escalation",
+   "confusable_text": "The captains are not answering each other's moves as threats; each is answering their own falling catch, and the shared stock does the damage."
+  },
+  "ARC-CANNED-013": {
+   "level": "L2",
+   "domain": "organizations",
+   "archetype": "fixes-that-fail",
+   "family": "symptomatic-relief",
+   "confusable": "eroding-goals",
+   "confusable_text": "The team is not lowering a goal for support quality; it is applying a fix whose consequence enlarges the queue."
+  },
+  "ARC-MILK-014": {
+   "level": "L2",
+   "domain": "economics/markets",
+   "archetype": "escalation",
+   "family": "rivalry",
+   "confusable": "tragedy-of-the-commons",
+   "confusable_text": "No shared resource is being depleted; the damage is done directly by each other's moves."
+  },
+  "ARC-GRANT-015": {
+   "level": "L2",
+   "domain": "social",
+   "archetype": "success-to-the-successful",
+   "family": "rivalry",
+   "confusable": "escalation",
+   "confusable_text": "The programs are not answering each other's moves; the rule answers the results."
+  },
+  "ARC-DONE-016": {
+   "level": "L2",
+   "domain": "software/infra",
+   "archetype": "eroding-goals",
+   "family": "standards",
+   "confusable": "fixes-that-fail",
+   "confusable_text": "No fix is backfiring here; the goal itself is moving."
+  },
+  "ARC-LATENCY-017": {
+   "level": "L2",
+   "domain": "AI/agent",
+   "archetype": "growth-and-underinvestment",
+   "family": "growth-limits",
+   "confusable": "limits-to-growth",
+   "confusable_text": "The limit is not fixed; it is a capacity the team can build and chooses to defer, and the performance standard is drifting."
+  },
+  "ARC-BATCHES-018": {
+   "level": "L2",
+   "domain": "organizations",
+   "archetype": "accidental-adversaries",
+   "family": "rivalry",
+   "confusable": "escalation",
+   "confusable_text": "Neither party is trying to beat the other; each is fixing a local problem, and the harm to the partner is a side effect."
+  },
+  "ARC-FEED-019": {
+   "level": "L3",
+   "domain": "social",
+   "archetype": "success-to-the-successful",
+   "family": "rivalry",
+   "confusable": "tragedy-of-the-commons",
+   "confusable_text": "Attention looks like a commons, but nothing is being depleted by overuse; it is being allocated by a rule that feeds whoever already has it."
+  },
+  "ARC-FEEDLOT-020": {
+   "level": "L3",
+   "domain": "public-health",
+   "archetype": "fixes-that-fail",
+   "family": "symptomatic-relief",
+   "confusable": "shifting-the-burden",
+   "confusable_text": "There is no fundamental solution being starved in the text; hygiene and care are unchanged. What distinguishes the archetype is that the fix's own consequence, resistance, makes the original problem worse."
+  },
+  "ARC-WELLS-021": {
+   "level": "L3",
+   "domain": "ecology",
+   "archetype": "tragedy-of-the-commons",
+   "family": "commons",
+   "confusable": "escalation",
+   "confusable_text": "The deepening reads like a race in which each move answers the neighbor's, but no farmer is countering a neighbor's move to hold a position; each is answering the shared stock, and the stock does the damage."
+  },
+  "ARC-SLO-022": {
+   "level": "L3",
+   "domain": "software/infra",
+   "archetype": "eroding-goals",
+   "family": "standards",
+   "confusable": "fixes-that-fail",
+   "confusable_text": "No fix has backfired; the number has drifted. The distinguishing mark is that the goal, not the condition, is what keeps changing."
+  },
+  "ARC-VOLUME-023": {
+   "level": "L3",
+   "domain": "personal/behavioral",
+   "archetype": "escalation",
+   "family": "rivalry",
+   "confusable": "accidental-adversaries",
+   "confusable_text": "They are partners, which invites that reading, but no local fix to a separate problem is harming the other; each move answers the other's move directly."
+  },
+  "ARC-TUTOR-024": {
+   "level": "L3",
+   "domain": "AI/agent",
+   "archetype": "shifting-the-burden",
+   "family": "symptomatic-relief",
+   "confusable": "fixes-that-fail",
+   "confusable_text": "The tutor does not backfire; its answers are correct and its task succeeds every time. The damage is what it displaces."
+  },
+  "ARC-CHARGERS-025": {
+   "level": "L3",
+   "domain": "economics/markets",
+   "archetype": "growth-and-underinvestment",
+   "family": "growth-limits",
+   "confusable": "limits-to-growth",
+   "confusable_text": "The limit is not external or fixed; it is capacity the utility can build, and the performance standard is drifting, which is what makes the archetype this one."
+  },
+  "ARC-DISCHARGE-026": {
+   "level": "L3",
+   "domain": "organizations",
+   "archetype": "accidental-adversaries",
+   "family": "rivalry",
+   "confusable": "escalation",
+   "confusable_text": "It looks like a fight, but neither party is countering the other to hold a position; each is fixing its own problem, and the harm to the partner is the side effect."
+  },
+  "ARC-COWORK-027": {
+   "level": "L3",
+   "domain": "organizations",
+   "archetype": "limits-to-growth",
+   "family": "growth-limits",
+   "confusable": "growth-and-underinvestment",
+   "confusable_text": "The operator's own reading, a capacity that should have been built, is the confusable; the limit here is the size at which a community stops being one, which no desk purchase lifts."
+  }
+ }
+}

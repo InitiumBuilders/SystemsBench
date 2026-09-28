@@ -1,7 +1,7 @@
 {
  "_meta": {
   "what": "Machine-readable elicitation source for engine/harness.py `template` — per-item scenario prompts + the per-format canonical-schema instruction wrapper that elicits the structured response the deterministic scorers consume.",
-  "source_items": "Scenario prompts copied verbatim from items/seed_CLD_causalloops.md and items/seed_DYN_dynamics.md (SenseRun #7 / #9). The worked examples are NEUTRAL (a thermostat / a cooling coffee) and leak none of the 5 reference answers. SF: scenario prompts copied verbatim from items/seed_SF_stockflow.md (SenseRun #13); the worked example is a bathtub that matches no item.",
+  "source_items": "Scenario prompts copied verbatim from items/seed_CLD_causalloops.md and items/seed_DYN_dynamics.md (SenseRun #7 / #9). The worked examples are NEUTRAL (a thermostat / a cooling coffee) and leak none of the 5 reference answers. SF: scenario prompts copied verbatim from items/seed_SF_stockflow.md (SenseRun #13); the worked example is a bathtub that matches no item. ARC: scenario prompts copied verbatim from items/seed_ARC_archetypes.md (SenseRun #14); the worked example is a factory queue that matches no item.",
   "scope": "Elicitation only. Scoring stays in engine/cld-score.py + engine/dyn-score.py against the oracles. The schema_instructions are tool-internal harness policy, NOT governance.",
   "date": "2026-06-13",
   "senserun": 10
@@ -328,6 +328,92 @@
    "SF-GRID-075": {
     "prompt": "A grid battery charges whenever there's solar surplus. Operators dispatch discharge based on a demand forecast that lags real demand by a few hours, so when a spike hits, discharge is ordered late. Describe how the battery's state-of-charge behaves, and why relying on the lagged signal causes trouble.",
     "keys": "- \"shape\": one of the named shapes, exactly as written; the battery's state of charge: levels-off (stays right where it should) | oscillates (overshoots and oscillates)"
+   }
+  }
+ },
+ "ARC": {
+  "schema_instructions": "Return your answer as a SINGLE JSON object, and nothing else, fenced in a ```json code block, with exactly these keys:\n- \"archetype\": the system archetype at work, one of: limits-to-growth | growth-and-underinvestment | shifting-the-burden | fixes-that-fail | escalation | accidental-adversaries | success-to-the-successful | tragedy-of-the-commons | eroding-goals.\n- \"trap\": one or two sentences on the trap this structure creates for the people inside it (what they keep doing that makes it worse). A jury reads this; the scorer does not.\n- \"escape\": one or two sentences naming the high-leverage move out of the archetype. A jury reads this; the scorer does not.\nWorked example (a different scenario): a factory answers a growing repair queue by paying overtime to the repair crew; repairs done in overtime are rushed and come back within weeks, so the queue grows and more overtime is ordered:\n```json\n{\"archetype\": \"fixes-that-fail\", \"trap\": \"Each round of overtime clears the queue now and seeds the next queue with rushed repairs, so the fix is asked for again and again.\", \"escape\": \"Stop the overtime, accept a visible backlog once, and remove the cause of the rushed work.\"}\n```",
+  "items": {
+   "ARC-INVITE-001": {
+    "prompt": "A study app grows only by invitation: every active user invites, on average, two friends in their first month. In a town of 40,000 students the app went from 200 to 9,000 users in a year, and then growth slowed to a crawl even though each user still invites as eagerly as before. The team's response has been to double the invitation bonus. Name the archetype at work."
+   },
+   "ARC-SLEEP-002": {
+    "prompt": "Someone who cannot fall asleep starts taking an over-the-counter sleep aid. It works the same night. Over the following months they take it more often, sleep less well without it, and the habits that would have fixed the sleeplessness at its source (a regular bedtime, less screen light late, a walk in the afternoon) never get built, because the problem always feels handled. Name the archetype."
+   },
+   "ARC-GRAZE-003": {
+    "prompt": "Twelve families graze goats on a hillside that no one owns. Each family's goats grow fatter the more they graze, so each family adds a few goats a year, and every family can see that doing so is sensible for them. The hillside's grass, which regrows only so fast, is thinner each spring, and this year the thin grass is making every goat lighter than last year's. Name the archetype."
+   },
+   "ARC-DEADLINE-004": {
+    "prompt": "A team keeps missing release dates, so its manager adds mandatory overtime in the last week of each cycle. Each release then ships on time. Over three cycles, the bugs written in the tired last week have grown into a repair load that eats the first two weeks of the next cycle, so each cycle starts further behind, and the manager orders a longer overtime week. Name the archetype."
+   },
+   "ARC-CREDITS-005": {
+    "prompt": "Two ride-hailing companies each offer sign-up credits to riders. When one raises its credit, the other reads it as a threat to its share and raises its own; the first responds in kind. Each raise is a reasonable defensive step, and after a year both are paying riders more than either earns from them. Name the archetype."
+   },
+   "ARC-STREAM-006": {
+    "prompt": "A school streams pupils into two classes after a test at age eight. The higher class gets the most experienced teacher and the wider curriculum, so its pupils improve faster; the next test confirms they belong there, and the difference in resources grows with every year. By age fourteen the gap between the two classes is many times the gap the first test found. Name the archetype."
+   },
+   "ARC-WAIT-007": {
+    "prompt": "A hospital sets a standard that emergency patients are seen within 30 minutes. When the median creeps to 40, the board debates hiring and instead, to stay realistic, resets the standard to 45. A year later, at 55, it moves the standard again, to 60. Waiting times never spiked; they drifted, and each drift was ratified. Name the archetype."
+   },
+   "ARC-TELEHEALTH-008": {
+    "prompt": "A telehealth service wins patients on short waits. As demand rises, waits lengthen; leadership judges that patients will tolerate a little longer, and delays hiring doctors until the numbers prove the demand is durable. Word spreads of long waits, demand softens, and the softened demand is read as proof that hiring was unnecessary. Name the archetype."
+   },
+   "ARC-PLANNER-009": {
+    "prompt": "Two AI agents share one workflow: a planner that breaks tasks into steps and an executor that runs them. When the executor's steps fail on vague plans, it starts rewriting the plans it receives; the planner, seeing its plans altered, starts writing more rigid, over-specified plans to stop the rewriting; the rigid plans fail more, so the executor rewrites more. Each agent is fixing its own local problem and each fix makes the other's worse. Name the archetype."
+   },
+   "ARC-SYNTH-010": {
+    "prompt": "An online course on restoring vintage synthesizers earned its following by recommendation inside the hobby's forums; enrolments doubled for three cohorts and then stalled at around 2,000 per cohort. The obvious move is to spend on advertising to the general public to restart the doubling. Explain why this move will disappoint, and name the archetype."
+   },
+   "ARC-DENTAL-011": {
+    "prompt": "A region with too few dentists sees rising emergency visits for tooth pain. The obvious move is to keep expanding the emergency service that hands out antibiotics and painkillers, since it clears the queue each week and patients leave relieved. Explain why the queue will keep growing anyway, and name the archetype."
+   },
+   "ARC-SONAR-012": {
+    "prompt": "In an unregulated fishery, catches per boat are falling. The obvious move for each captain is to fish longer hours and buy better sonar to keep the household's income up, and each captain who does this does, for a season, catch more. Explain why the fleet as a whole ends up poorer, and name the archetype."
+   },
+   "ARC-CANNED-013": {
+    "prompt": "A support team is flooded with tickets, so it closes any ticket that resembles a known issue with a canned reply. Open tickets fall by half in a week. The obvious move, when the count creeps back up, is to widen the canned-close rule. Explain why the count will keep coming back higher, and name the archetype."
+   },
+   "ARC-MILK-014": {
+    "prompt": "Two supermarkets on the same road each run a promise that they will not be beaten on price. When one cuts the price of milk, the other matches and undercuts, and the first matches back. The obvious move for each manager is to keep matching, because not matching visibly loses customers that week. Explain where this ends, and name the archetype."
+   },
+   "ARC-GRANT-015": {
+    "prompt": "A city funds two youth programs from one grant pool and rewards results: next year's share follows this year's outcomes. Program A had a slightly better first year, got a larger share, hired stronger staff, and had a much better second year. The obvious move is to keep rewarding results. Explain why the city will end up with one program and no way to tell which was better, and name the archetype."
+   },
+   "ARC-DONE-016": {
+    "prompt": "A team's definition of done says every feature ships with tests. Under deadline, they ship one without and agree it is an exception. The next sprint has two exceptions, then the definition is edited to say tests where practical. Coverage drifts down over a year with no single decision that felt like lowering the bar. The obvious move, when the bugs arrive, is to write a stricter definition. Explain why the new definition will erode the same way, and name the archetype."
+   },
+   "ARC-LATENCY-017": {
+    "prompt": "An AI assistant product grows on fast, high-quality answers. As traffic rises, the team keeps the same inference capacity and lets latency creep; retention dips, the team reads the dip as the market cooling, and it postpones the capacity purchase until growth justifies it. The obvious move is to wait for proof. Explain why the proof will never arrive, and name the archetype."
+   },
+   "ARC-BATCHES-018": {
+    "prompt": "A retailer and its main supplier were both growing. The retailer, to smooth its cash flow, starts ordering late and in bigger batches; the supplier, seeing lumpy demand, builds inventory and raises prices to cover the holding cost; the retailer, facing higher prices, orders even later and in bigger batches to negotiate discounts. The obvious move for each is to keep protecting itself. Explain why both will lose, and name the archetype."
+   },
+   "ARC-FEED-019": {
+    "prompt": "A video platform's feed allocates exposure by engagement: a creator whose first videos get a little lift is shown to more people, gains followers, and gets more engagement, which earns more exposure. Two creators of equal skill who started a week apart end the year with a hundredfold difference in audience, and the platform's analysts present this as proof that quality wins. Newer creators, watching the numbers, conclude the platform is saturated and stop posting. **Name the archetype, the trap it creates for the platform, and the high-leverage escape.**"
+   },
+   "ARC-FEEDLOT-020": {
+    "prompt": "A large cattle operation adds low-dose antibiotics to feed to keep infections down and growth up. It works: infections fall, weights rise. Over several years, the infections that do occur respond less and less to the drugs, so the operation raises the dose and adds a second antibiotic, which works for a while, and then the same thing happens. Nothing about the operation's hygiene, stocking density or veterinary care has changed in either direction. **Name the archetype, the trap it creates, and the high-leverage escape.**"
+   },
+   "ARC-WELLS-021": {
+    "prompt": "A valley of small farms draws irrigation from one aquifer through private wells. A subsidy lowers the cost of pumping. As the water table falls, each farmer deepens their well before the neighbor's deeper well leaves theirs dry, and the local paper describes a race to the bottom between neighbors. Each farm's yield rises for a few seasons after its well is deepened. **Name the archetype, the trap it creates, and the high-leverage escape.**"
+   },
+   "ARC-SLO-022": {
+    "prompt": "A service team commits to 99.9% monthly availability. After a bad quarter it sets a temporary target of 99.5% while the causes are fixed. The causes are never fully fixed, the temporary target is written into the runbook, and two years later the document says 99.0% with a note that customers have adapted. When a large customer complains, the team's first proposal is a new, stricter target with a dashboard. **Name the archetype, the trap it creates, and the high-leverage escape.**"
+   },
+   "ARC-VOLUME-023": {
+    "prompt": "Two people who live together have the same argument most weeks. When one raises their voice, the other feels threatened and raises theirs to be heard; the first, feeling attacked, raises theirs again. Each one, asked afterwards, says they were only responding, and each remembers the other starting it. Both would rather it stopped, and both believe stopping first means losing. **Name the archetype, the trap it creates, and the high-leverage escape.**"
+   },
+   "ARC-TUTOR-024": {
+    "prompt": "A school gives every student an AI tutor that produces a worked solution on demand. Homework scores rise within a term. A year later, exam scores, taken without the tutor, have fallen, and teachers report that students no longer start a problem before asking. The school's response is more tutor time, since homework results show it works. Nothing about the tutor's answers is wrong. **Name the archetype, the trap it creates, and the high-leverage escape.**"
+   },
+   "ARC-CHARGERS-025": {
+    "prompt": "A city's electric-car adoption grew fast on the strength of a dense, reliable charging network. As adoption rose, queues at chargers lengthened; the utility, unwilling to upgrade substations before demand was proven, held its plans, and drivers learned to plan around waits. Adoption growth slowed the next year, and the utility cited the slowdown as evidence that the upgrade would have been premature. **Name the archetype, the trap it creates, and the high-leverage escape.**"
+   },
+   "ARC-DISCHARGE-026": {
+    "prompt": "A hospital and a nursing home have long shared a care pathway. Under bed pressure the hospital begins discharging patients earlier, with thinner handover notes, to free beds. The nursing home, receiving sicker patients it is not staffed for, tightens its admission criteria. Patients who no longer qualify stay in hospital beds, so the hospital discharges the rest even earlier. Each side now describes the other as unreasonable, and both are worse off than when the pathway worked. **Name the archetype, the trap it creates, and the high-leverage escape.**"
+   },
+   "ARC-COWORK-027": {
+    "prompt": "A coworking space grew on the strength of its community: members knew each other, made introductions, and recommended the space to friends. Growth slowed at about 150 members. The operator, reading the slowdown as a space problem, took the floor above and doubled the desks; the desks filled slowly, introductions stopped happening, and the recommendation rate fell further. **Name the archetype, the trap it creates, and the high-leverage escape.**"
    }
   }
  }

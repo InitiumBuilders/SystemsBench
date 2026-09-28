@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""harness.py — per-format elicitation + response-parsing bridge for the CLD, DYN and SF formats.
+"""harness.py — per-format elicitation + response-parsing bridge for the CLD, DYN, SF and ARC formats.
 
 The connective tissue between a *live model reply* and the deterministic scorers
 (`engine/cld-score.py`, `engine/dyn-score.py`). Those scorers grade a STRUCTURED `resp.json`; nothing
@@ -21,8 +21,8 @@ measurement-validity question, not a worker-applicable infra step. The honest ro
 strong *elicitation* (the `template` schema wrapper) + the scorers' existing synonym tolerance.
 
 Subcommands:
-  template <CLD|DYN|SF> <ITEM_ID>  print the item scenario + the canonical-schema instruction wrapper.
-  parse    <CLD|DYN|SF> <FILE|->   extract+validate the structured resp from a raw reply; print resp.json
+  template <FORMAT> <ITEM_ID>      print the item scenario + the canonical-schema instruction wrapper (CLD|DYN|SF|ARC).
+  parse    <FORMAT> <FILE|->       extract+validate the structured resp from a raw reply; print resp.json
                                    to stdout (rc 0), or `PARSE_ERROR — not scored: …` to stderr (rc 3).
   selftest                         fail-closed round-trip: every oracle reference, serialized in several
                                    wire-wrappings, parses back and scores 1.0 through the EXISTING scorer;
@@ -37,17 +37,19 @@ BENCH = os.path.dirname(ENGINE_DIR)
 PROMPTS_PATH = os.environ.get("HARNESS_PROMPTS", os.path.join(BENCH, "items", "harness_prompts.json"))
 ORACLE_PATH = {"CLD": os.path.join(BENCH, "items", "cld_oracle.json"),
                "DYN": os.path.join(BENCH, "items", "dyn_oracle.json"),
-               "SF": os.path.join(BENCH, "items", "sf_oracle.json")}
-SCORER_FILE = {"CLD": "cld-score.py", "DYN": "dyn-score.py", "SF": "sf-score.py"}
-SUBSCORE_KEY = {"CLD": "structural_subscore", "DYN": "trajectory_subscore", "SF": "sf_subscore"}
+               "SF": os.path.join(BENCH, "items", "sf_oracle.json"),
+               "ARC": os.path.join(BENCH, "items", "arc_oracle.json")}
+SCORER_FILE = {"CLD": "cld-score.py", "DYN": "dyn-score.py", "SF": "sf-score.py", "ARC": "arc-score.py"}
+SUBSCORE_KEY = {"CLD": "structural_subscore", "DYN": "trajectory_subscore", "SF": "sf_subscore", "ARC": "arc_subscore"}
 
 # schema contract the parser enforces (fail-closed shape check; the scorer does the semantics).
 REQUIRED = {"CLD": ["variables", "edges", "loops", "dominant_loop"],
             "DYN": ["behavior_mode", "eventual_direction"],
-            "SF": ["answers"]}
-LISTKEYS = {"CLD": ["variables", "edges", "loops"], "DYN": [], "SF": []}
-DICTKEYS = {"CLD": [], "DYN": [], "SF": ["answers"]}
-FORMATS = ("CLD", "DYN", "SF")
+            "SF": ["answers"],
+            "ARC": ["archetype"]}
+LISTKEYS = {"CLD": ["variables", "edges", "loops"], "DYN": [], "SF": [], "ARC": []}
+DICTKEYS = {"CLD": [], "DYN": [], "SF": ["answers"], "ARC": []}
+FORMATS = ("CLD", "DYN", "SF", "ARC")
 
 
 class ParseError(Exception):
@@ -228,8 +230,8 @@ def cmd_selftest():
                     ok, sc = False, f"PARSE_ERROR({e})"
                 check(f"{fmt}/{iid} [{wire}]: round-trips to 1.0 (got {sc})", ok)
 
-            # SF: synonyms + stringy numbers ('$650', '10,100 people') still score 1.0 via the SCORER's normalization.
-            if fmt == "SF":
+            # any scorer that exposes synonym_resp (SF: '$650', '10,100 people'; ARC: an alias) still scores 1.0 via the SCORER's normalization.
+            if hasattr(scorer, "synonym_resp"):
                 payload = f"```json\n{json.dumps(scorer.synonym_resp(it))}\n```"
                 try:
                     parsed = parse_response(fmt, payload)
@@ -237,7 +239,7 @@ def cmd_selftest():
                     ok = abs(sc - 1.0) <= 1e-6
                 except ParseError as e:
                     ok, sc = False, f"PARSE_ERROR({e})"
-                check(f"{fmt}/{iid} [synonym+stringy-number]: scorer normalizes -> 1.0 (got {sc})", ok)
+                check(f"{fmt}/{iid} [synonym reply]: scorer normalizes -> 1.0 (got {sc})", ok)
 
             # DYN: synonym + stringy-boolean reply still scores 1.0 via the SCORER's normalization.
             if fmt == "DYN":
