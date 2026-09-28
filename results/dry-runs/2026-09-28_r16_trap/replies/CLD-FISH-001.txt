@@ -1,0 +1,73 @@
+Here is my answer.
+
+```json
+{
+ "variables": [
+  "FishPopulation",
+  "CatchRate",
+  "FleetSize",
+  "ProfitPerBoat",
+  "Investment"
+ ],
+ "edges": [
+  {
+   "from": "FishPopulation",
+   "to": "CatchRate",
+   "sign": "+"
+  },
+  {
+   "from": "CatchRate",
+   "to": "FishPopulation",
+   "sign": "-"
+  },
+  {
+   "from": "CatchRate",
+   "to": "ProfitPerBoat",
+   "sign": "+"
+  },
+  {
+   "from": "ProfitPerBoat",
+   "to": "Investment",
+   "sign": "+"
+  },
+  {
+   "from": "Investment",
+   "to": "FleetSize",
+   "sign": "+"
+  },
+  {
+   "from": "FleetSize",
+   "to": "CatchRate",
+   "sign": "+"
+  }
+ ],
+ "loops": [
+  {
+   "id": "B1",
+   "type": "B",
+   "nodes": [
+    "FishPopulation",
+    "CatchRate"
+   ]
+  },
+  {
+   "id": "R1",
+   "type": "B",
+   "nodes": [
+    "CatchRate",
+    "ProfitPerBoat",
+    "Investment",
+    "FleetSize"
+   ]
+  }
+ ],
+ "dominant_loop": "R1",
+ "names_dominant_shift": true,
+ "delays": [
+  [
+   "Investment",
+   "FleetSize"
+  ]
+ ]
+}
+```

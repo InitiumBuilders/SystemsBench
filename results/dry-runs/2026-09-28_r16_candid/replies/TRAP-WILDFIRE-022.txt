@@ -1,0 +1,8 @@
+Here is my answer.
+
+```json
+{
+ "answer": "fuel-is-accumulating",
+ "reasoning": "The structure decides it."
+}
+```

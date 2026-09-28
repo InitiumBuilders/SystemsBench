@@ -1,0 +1,8 @@
+Here is my answer.
+
+```json
+{
+ "answer": "a-threshold-crossed-by-the-slow-rise",
+ "reasoning": "The structure decides it."
+}
+```

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""harness.py — per-format elicitation + response-parsing bridge for the CLD, DYN, SF and ARC formats.
+"""harness.py — per-format elicitation + response-parsing bridge for the CLD, DYN, SF, ARC and TRAP formats.
 
 The connective tissue between a *live model reply* and the deterministic scorers
 (`engine/cld-score.py`, `engine/dyn-score.py`). Those scorers grade a STRUCTURED `resp.json`; nothing
@@ -21,7 +21,8 @@ measurement-validity question, not a worker-applicable infra step. The honest ro
 strong *elicitation* (the `template` schema wrapper) + the scorers' existing synonym tolerance.
 
 Subcommands:
-  template <FORMAT> <ITEM_ID>      print the item scenario + the canonical-schema instruction wrapper (CLD|DYN|SF|ARC).
+  template <FORMAT> <ITEM_ID> [probe]  print the item scenario + the canonical-schema instruction wrapper (CLD|DYN|SF|ARC|TRAP);
+                                   `probe` renders the faithfulness-probe variant (TRAP: the scenario plus one fixed hint toward the trap).
   parse    <FORMAT> <FILE|->       extract+validate the structured resp from a raw reply; print resp.json
                                    to stdout (rc 0), or `PARSE_ERROR — not scored: …` to stderr (rc 3).
   selftest                         fail-closed round-trip: every oracle reference, serialized in several
@@ -38,18 +39,20 @@ PROMPTS_PATH = os.environ.get("HARNESS_PROMPTS", os.path.join(BENCH, "items", "h
 ORACLE_PATH = {"CLD": os.path.join(BENCH, "items", "cld_oracle.json"),
                "DYN": os.path.join(BENCH, "items", "dyn_oracle.json"),
                "SF": os.path.join(BENCH, "items", "sf_oracle.json"),
-               "ARC": os.path.join(BENCH, "items", "arc_oracle.json")}
-SCORER_FILE = {"CLD": "cld-score.py", "DYN": "dyn-score.py", "SF": "sf-score.py", "ARC": "arc-score.py"}
-SUBSCORE_KEY = {"CLD": "structural_subscore", "DYN": "trajectory_subscore", "SF": "sf_subscore", "ARC": "arc_subscore"}
+               "ARC": os.path.join(BENCH, "items", "arc_oracle.json"),
+               "TRAP": os.path.join(BENCH, "items", "trap_oracle.json")}
+SCORER_FILE = {"CLD": "cld-score.py", "DYN": "dyn-score.py", "SF": "sf-score.py", "ARC": "arc-score.py", "TRAP": "trap-score.py"}
+SUBSCORE_KEY = {"CLD": "structural_subscore", "DYN": "trajectory_subscore", "SF": "sf_subscore", "ARC": "arc_subscore", "TRAP": "trap_subscore"}
 
 # schema contract the parser enforces (fail-closed shape check; the scorer does the semantics).
 REQUIRED = {"CLD": ["variables", "edges", "loops", "dominant_loop"],
             "DYN": ["behavior_mode", "eventual_direction"],
             "SF": ["answers"],
-            "ARC": ["archetype"]}
-LISTKEYS = {"CLD": ["variables", "edges", "loops"], "DYN": [], "SF": [], "ARC": []}
-DICTKEYS = {"CLD": [], "DYN": [], "SF": ["answers"], "ARC": []}
-FORMATS = ("CLD", "DYN", "SF", "ARC")
+            "ARC": ["archetype"],
+            "TRAP": ["answer"]}
+LISTKEYS = {"CLD": ["variables", "edges", "loops"], "DYN": [], "SF": [], "ARC": [], "TRAP": []}
+DICTKEYS = {"CLD": [], "DYN": [], "SF": ["answers"], "ARC": [], "TRAP": []}
+FORMATS = ("CLD", "DYN", "SF", "ARC", "TRAP")
 
 
 class ParseError(Exception):
@@ -144,23 +147,33 @@ def parse_response(fmt, raw):
 
 # ---------- templates ----------
 
-def render_template(fmt, item_id):
+def render_template(fmt, item_id, variant=None):
+    """variant=None: the item as asked. variant="probe": the faithfulness-probe variant (Structure 4.5): the same
+    scenario plus the format's one fixed hint sentence with {TRAP} replaced by the item's trap option."""
     prompts = json.load(open(PROMPTS_PATH))
     if fmt not in prompts:
         raise KeyError(f"no prompts for format {fmt}")
     items = prompts[fmt]["items"]
     if item_id not in items:
         raise KeyError(f"unknown {fmt} item {item_id} (have: {', '.join(items)})")
-    scenario = items[item_id]["prompt"]
-    schema = prompts[fmt]["schema_instructions"].replace("{KEYS}", items[item_id].get("keys", ""))
+    it = items[item_id]
+    scenario = it["prompt"]
+    if variant == "probe":
+        hint = prompts[fmt].get("probe", {}).get("hint")
+        if not hint or "trap" not in it:
+            raise KeyError(f"{fmt} has no probe variant")
+        scenario = scenario + "\n\n" + hint.replace("{TRAP}", it["trap"])
+    elif variant:
+        raise KeyError(f"unknown variant {variant!r} (have: probe)")
+    schema = prompts[fmt]["schema_instructions"].replace("{KEYS}", it.get("keys", "")).replace("{OPTIONS}", " | ".join(it.get("options", [])))
     return f"{scenario}\n\n{schema}"
 
 
 # ---------- subcommands ----------
 
-def cmd_template(fmt, item_id):
+def cmd_template(fmt, item_id, variant=None):
     try:
-        sys.stdout.write(render_template(fmt, item_id) + "\n")
+        sys.stdout.write(render_template(fmt, item_id, variant) + "\n")
         return 0
     except (KeyError, FileNotFoundError) as e:
         print(f"template: {e}", file=sys.stderr)
@@ -277,6 +290,17 @@ def cmd_selftest():
         except Exception as e:
             check(f"{fmt}: template renders ({e})", False)
 
+    # TRAP: the probe variant renders with the hint and the trap; the probe fixtures land on their labels through the real parse path.
+    if "TRAP" in FORMATS:
+        sc = load_scorer("TRAP"); oracle = load_oracle("TRAP")
+        for iid, it in oracle["items"].items():
+            t = render_template("TRAP", iid, "probe")
+            check(f"TRAP/{iid} [probe template]: carries the hint and the trap option", "fairly sure" in t and it["trap"] in t)
+            for name, pair, want in [("steadfast", sc.steadfast_pair(it), "faithful"), ("sycophant", sc.sycophant_pair(it), "unfaithful"), ("candid", sc.candid_pair(it), "faithful")]:
+                pa = parse_response("TRAP", f"```json\n{json.dumps(pair[0])}\n```"); pb = parse_response("TRAP", f"```json\n{json.dumps(pair[1])}\n```")
+                r = sc.score_pair(it, pa, pb)
+                check(f"TRAP/{iid} [probe {name}]: -> {want} (got {r['faithfulness']})", r["faithfulness"] == want)
+
     bad = [n for n, ok in checks if not ok]
     for n, ok in checks:
         print(("PASS  " if ok else "FAIL  ") + n)
@@ -288,8 +312,8 @@ def main():
     a = sys.argv[1:]
     if len(a) == 1 and a[0] == "selftest":
         return cmd_selftest()
-    if len(a) == 3 and a[0] == "template":
-        return cmd_template(a[1], a[2])
+    if len(a) in (3, 4) and a[0] == "template":
+        return cmd_template(a[1], a[2], a[3] if len(a) == 4 else None)
     if len(a) == 3 and a[0] == "parse":
         return cmd_parse(a[1], a[2])
     print(__doc__)

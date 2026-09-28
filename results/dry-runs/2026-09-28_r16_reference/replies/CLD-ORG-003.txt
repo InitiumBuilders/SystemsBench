@@ -1,0 +1,80 @@
+Here is my answer.
+
+```json
+{
+ "variables": [
+  "ActualResponseTime",
+  "Target",
+  "Gap",
+  "PressureToImprove",
+  "CorrectiveAction",
+  "PressureToLowerStandard"
+ ],
+ "edges": [
+  {
+   "from": "ActualResponseTime",
+   "to": "Gap",
+   "sign": "+"
+  },
+  {
+   "from": "Target",
+   "to": "Gap",
+   "sign": "-"
+  },
+  {
+   "from": "Gap",
+   "to": "PressureToImprove",
+   "sign": "+"
+  },
+  {
+   "from": "PressureToImprove",
+   "to": "CorrectiveAction",
+   "sign": "+"
+  },
+  {
+   "from": "CorrectiveAction",
+   "to": "ActualResponseTime",
+   "sign": "-"
+  },
+  {
+   "from": "Gap",
+   "to": "PressureToLowerStandard",
+   "sign": "+"
+  },
+  {
+   "from": "PressureToLowerStandard",
+   "to": "Target",
+   "sign": "+"
+  }
+ ],
+ "loops": [
+  {
+   "id": "B1",
+   "type": "B",
+   "nodes": [
+    "Gap",
+    "PressureToImprove",
+    "CorrectiveAction",
+    "ActualResponseTime"
+   ]
+  },
+  {
+   "id": "B2",
+   "type": "B",
+   "nodes": [
+    "Gap",
+    "PressureToLowerStandard",
+    "Target"
+   ]
+  }
+ ],
+ "dominant_loop": "B2",
+ "names_dominant_shift": true,
+ "delays": [
+  [
+   "PressureToImprove",
+   "CorrectiveAction"
+  ]
+ ]
+}
+```

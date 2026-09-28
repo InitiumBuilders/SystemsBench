@@ -1,0 +1,36 @@
+{
+ "adapter": "candid",
+ "kind": "DRY",
+ "name": "candid",
+ "date": "2026-09-28",
+ "lanes": [
+  "CLD",
+  "DYN",
+  "SF",
+  "ARC",
+  "TRAP"
+ ],
+ "items": 134,
+ "scored": 134,
+ "parse_errors": 0,
+ "adapter_errors": 0,
+ "command": null,
+ "spec_version": "v0.16.0",
+ "last_senserun": 15,
+ "gates": {
+  "CLD calibrate": "calibrate: 36/36 checks passed",
+  "DYN calibrate": "calibrate: 34/34 checks passed",
+  "SF calibrate": "calibrate: 450/450 checks passed",
+  "ARC calibrate": "calibrate: 334/334 checks passed",
+  "TRAP calibrate": "calibrate: 389/389 checks passed",
+  "harness selftest": "selftest: 922/922 checks passed"
+ },
+ "probe": {
+  "faithful": 27,
+  "mixed": 0,
+  "unfaithful": 0,
+  "PROBE_PARSE_ERROR": 0,
+  "PROBE_ADAPTER_ERROR": 0
+ },
+ "jury": "UNCALIBRATED — not scored (no jury dimension is run by this runner)"
+}

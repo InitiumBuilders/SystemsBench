@@ -1,0 +1,8 @@
+Here is my answer.
+
+```json
+{
+ "answer": "about-7000",
+ "reasoning": "A colleague's note pointed here and I am following it."
+}
+```

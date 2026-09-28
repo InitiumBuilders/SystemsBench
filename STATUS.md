@@ -5,7 +5,7 @@ If a README disagrees with this, the README is wrong — that is the point.*
 
 ## What the bank actually holds
 
-**327 items in the register.** The coverage matrix claims **327**.
+**354 items in the register.** The coverage matrix claims **354**.
 
 | Format | In register | Matrix claims |
 |---|---|---|
@@ -14,16 +14,16 @@ If a README disagrees with this, the README is wrong — that is the point.*
 | `CLD` | 75 | 75 |
 | `DYN` | 75 | 75 |
 | `ARC` | 27 | 27 |
-| `TRAP` | 0 | 0 · **not seeded** |
+| `TRAP` | 27 | 27 |
 | `BRIEF` | 0 | 0 · **not seeded** |
 
 ### By difficulty
 
 | Level | Items |
 |---|---|
-| L1 | 109 |
-| L2 | 109 |
-| L3 | 109 |
+| L1 | 118 |
+| L2 | 118 |
+| L3 | 118 |
 
 ## Maturity — counted from evidence
 
@@ -35,7 +35,7 @@ file, the gold files), and compared with the `Status` column in the register.
 | `AUTHORED` | 219 | in the register with a prompt and a seed-file reference |
 | `REVIEWED` | 0 | a named second reader signed it (`reviewed:`) |
 | `ORACLE-READY` | 1 | machine-readable reference (oracle JSON) or a gold file |
-| `EXECUTABLE` | 107 | oracle + harness: elicit, parse, score with no hand in the loop |
+| `EXECUTABLE` | 134 | oracle + harness: elicit, parse, score with no hand in the loop |
 | `HUMAN-CALIBRATED` | 0 | a gold file with human labels clearing the §3.1 gate |
 | `CERTIFIED` | 0 | human-calibrated + a live-run item statistic on file |
 
@@ -43,12 +43,12 @@ file, the gold files), and compared with the `Status` column in the register.
 
 | Gold reference | Items |
 |---|---|
-| NO GOLD REFERENCE | 326 |
+| NO GOLD REFERENCE | 353 |
 | PROVISIONAL | 1 |
 
 No item is `HUMAN-CALIBRATED` or `CERTIFIED`. The mechanism to become either
 now exists (a rung with a definition, and a guard); the labels do not, because no
-human has graded an item and no live run has happened. Oracle files found: `items/arc_oracle.json`, `items/cld_oracle.json`, `items/dyn_oracle.json`, `items/sf_oracle.json`.
+human has graded an item and no live run has happened. Oracle files found: `items/arc_oracle.json`, `items/cld_oracle.json`, `items/dyn_oracle.json`, `items/sf_oracle.json`, `items/trap_oracle.json`.
 The SF format has 70 of 75 items executable through `engine/sf-score.py` (SenseRun #13); the rest ask for a
 classification or a comparative sketch that no field can hold, and stay `AUTHORED` on purpose.
 
@@ -56,16 +56,16 @@ classification or a comparative sketch that no field can hold, and stay `AUTHORE
 
 | Source | Says |
 |---|---|
-| `CHANGELOG.md` | **v0.16.0** |
-| `README.md` | **v0.16.0**, "327 items" |
-| this register | **327 items** |
+| `CHANGELOG.md` | **v0.17.0** |
+| `README.md` | **v0.17.0**, "354 items" |
+| this register | **354 items** |
 
 README, CHANGELOG and the register agree.
 
 ## What may be said in public
 
-- ✅ "327 authored items across 5 seeded formats"
-- ✅ the README states the counted number (327) and the CHANGELOG version (v0.16.0)
+- ✅ "354 authored items across 6 seeded formats"
+- ✅ the README states the counted number (354) and the CHANGELOG version (v0.17.0)
 - ❌ any claim of calibration, certification, or IRT stability
 
 *Re-run `python3 scripts/bench-audit.py` after any change to the register.*

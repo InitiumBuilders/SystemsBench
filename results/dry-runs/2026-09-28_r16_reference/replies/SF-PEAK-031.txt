@@ -1,0 +1,11 @@
+Here is my answer.
+
+```json
+{
+ "answers": {
+  "value": 100,
+  "peak_value": 160,
+  "peak_time": 3
+ }
+}
+```

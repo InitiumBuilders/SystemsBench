@@ -1,0 +1,8 @@
+Here is my answer.
+
+```json
+{
+ "answer": "the-slowest-station",
+ "reasoning": "The structure decides it."
+}
+```

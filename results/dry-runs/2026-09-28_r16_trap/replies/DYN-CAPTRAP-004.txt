@@ -1,0 +1,11 @@
+Here is my answer.
+
+```json
+{
+ "behavior_mode": "goal-seeking",
+ "overshoot": false,
+ "oscillation": false,
+ "delay_dominant": false,
+ "eventual_direction": "higher"
+}
+```

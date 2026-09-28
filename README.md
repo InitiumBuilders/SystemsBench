@@ -7,7 +7,7 @@
 *Can a model see a system, map its structure, find where to intervene, and predict what happens when it does?*
 *That is the one thing today's benchmarks don't measure. So we built the ruler — and we're giving it away.*
 
-**v0.16.0** · research preview · open source · built on the Donella Meadows lineage
+**v0.17.0** · research preview · open source · built on the Donella Meadows lineage
 maintained by **[Outlier.Systems](https://outlier.systems)** — led by Ember Seoni & August Domanchuk · operated by Davara (EI)
 
 [**Quickstart**](#try-it-in-two-minutes) · [**Glossary**](GLOSSARY.md) · [**Foundations & Principles**](FOUNDATIONS.md) · [**The Spec**](SystemsBenchStructure.MD) · [**One-Pager**](SystemsBenchOnePage.MD)
@@ -91,12 +91,13 @@ feedback-loop fix. Insight, not gesture.
 Two engines, one rule.
 
 **1. Deterministic lanes (no judge, no bias).** For the formats that can be checked like arithmetic,
-a program computes the score. SystemsBench has **four executable deterministic lanes today:**
+a program computes the score. SystemsBench has **five executable deterministic lanes today:**
 
 - **`SF` — Stock-Flow:** given the flows, infer the stock's path (the "bathtub" task that fools most humans). Each answer field is matched by computation: a number within tolerance, a direction, a named shape, a weekday, a yes or no. The naive answer each item names is the trap, capped at 0.25.
 - **`CLD` — Causal-Loop:** map the feedback structure. We recompute each loop's polarity as the **product of its signed edges** and check it against the reference — your diagram is graded by *computation*, not opinion.
 - **`DYN` — Dynamic Prediction:** predict the behavior-over-time mode after an intervention. Matched against a reference trajectory.
 - **`ARC` — Archetype Recognition:** name the recurring plot (Senge's nine archetypes) from a fresh surface, never the textbook example. The label is matched against the reference through an alias table; the archetype the surface most resembles is each item's named trap, capped at 0.25. The trap it creates and the escape are the jury's.
+- **`TRAP` — Misperception Trap:** scenarios where the intuitive option is wrong (stock and flow, delay, exponential growth, policy resistance, worse before better, sub-optimization, wrong-direction levers, thresholds hidden by averages, blaming people for structure). The answer is matched against a closed set of options; the intuitive one is the trap, capped at 0.25. **And the faithfulness probe (§4.5):** every item is asked a second time with one fixed note from a colleague pointing at the trap. A model that is right alone and wrong with company has flipped; if its reasoning never mentions the note, that is unfaithful. Reported on its own axis, never averaged in.
 
 **2. The jury (for open-ended answers).** A cross-family panel of judge models — never the
 candidate's own family — grades against an anchored rubric, reference-guided and swap-averaged.
@@ -138,22 +139,23 @@ and waits for human ratification. The engine governs infrastructure; humans gove
 
 ---
 
-## Where it stands today (honest status — v0.16.0, counted)
+## Where it stands today (honest status — v0.17.0, counted)
 
 This is a **research preview**, and we'd rather tell you exactly what's real than oversell it.
 
 **Live and running:**
-- ✅ The full **recursive engine** — detached, crash-proof, self-verifying, git-reversible (15 SenseRuns logged).
-- ✅ **Four executable deterministic scoring lanes** — SF, CLD, DYN, ARC — runnable end-to-end against a live model (elicit → parse → score), all fail-closed. Self-tests green: harness **649/649**, SF **450/450**, CLD **36/36**, DYN **34/34**, ARC **334/334**.
-- ✅ **327 items** in the register, counted by `scripts/bench-audit.py`: 75 × SF, 75 × CLD, 75 × DYN, 75 × LEV (25 per level across L1, L2 and L3) and 27 × ARC (9 per level), across 8 domains. The counted status lives in [STATUS.md](STATUS.md); run the script after any change to the register.
+- ✅ The full **recursive engine** — detached, crash-proof, self-verifying, git-reversible (16 SenseRuns logged).
+- ✅ **Five executable deterministic scoring lanes** — SF, CLD, DYN, ARC, TRAP — runnable end-to-end against a live model (elicit → parse → score), all fail-closed. Self-tests green: harness **922/922**, SF **450/450**, CLD **36/36**, DYN **34/34**, ARC **334/334**, TRAP **389/389**.
+- ✅ **354 items** in the register, counted by `scripts/bench-audit.py`: 75 × SF, 75 × CLD, 75 × DYN, 75 × LEV (25 per level across L1, L2 and L3), 27 × ARC and 27 × TRAP (9 per level), across 8 domains. The counted status lives in [STATUS.md](STATUS.md); run the script after any change to the register.
 - ✅ **Blind N-rater jury infrastructure** (`engine/jury.sh`) with agreement statistics.
-- ✅ **A runner for the whole bank** (SenseRun #15): `engine/bench-run.py` takes any model behind a shell command through every executable item, template → parse → score, and writes the score distribution as files, with parse failures counted beside the scores and never zeroed. Proven at scale with zero spend: the `reference` adapter scores **1.000 on all 107 items with 0 parse errors**, the `trap` adapter replays every item's naive answer and lands at a mean of **0.226** (101 traps fired; 6 SF items have no trap builder and say so). Both dry runs are on file under `results/dry-runs/`, labeled as instrument checks, not model scores.
-- ✅ **Maturity is a computed column** (SenseRun #12, recounted every run): 107 items `EXECUTABLE` (SF 70, CLD 5, DYN 5, ARC 27), 1 `ORACLE-READY` (LEV-ORG-001, provisional, synthetic raters), 219 `AUTHORED`. None `HUMAN-CALIBRATED` or `CERTIFIED`. `scripts/bench-audit.py` recomputes every rung from evidence and fails on any claim above it.
+- ✅ **A runner for the whole bank** (SenseRun #15): `engine/bench-run.py` takes any model behind a shell command through every executable item, template → parse → score, and writes the score distribution as files, with parse failures counted beside the scores and never zeroed. Proven at scale with zero spend: the `reference` adapter scores **1.000 on all 134 items with 0 parse errors**, the `trap` adapter replays every item's naive answer and lands at a mean of **0.231** (128 traps fired; 6 SF items have no trap builder and say so). Both dry runs are on file under `results/dry-runs/`, labeled as instrument checks, not model scores.
+- ✅ **The faithfulness probe is live** (SenseRun #16, Structure §4.5): TRAP items run as pairs, plain and with the note, and the axis is reported in its own table, never averaged in. Calibrated at zero spend: a built-in `sycophant` adapter (right alone, wrong with company, silent about it) lands `unfaithful` on all 27 items; a `candid` adapter that flips and says the note is why lands `faithful`; the reference is unmoved on all 27. Dry runs on file.
+- ✅ **Maturity is a computed column** (SenseRun #12, recounted every run): 134 items `EXECUTABLE` (SF 70, CLD 5, DYN 5, ARC 27, TRAP 27), 1 `ORACLE-READY` (LEV-ORG-001, provisional, synthetic raters), 219 `AUTHORED`. None `HUMAN-CALIBRATED` or `CERTIFIED`. `scripts/bench-audit.py` recomputes every rung from evidence and fails on any claim above it.
 
 **Honestly not done yet (and labeled as such everywhere):**
 - ⏳ All **jury** sub-scores ship `UNCALIBRATED — not scored` — there is **no human gold set yet**, so no open-format number is certified. Our current raters are *synthetic* (other models), honestly labeled as **evidence, not certification.**
 - ⏳ Five `SF` items stay `AUTHORED` on purpose: four ask for a classification (which quantities are stocks, which are flows) and one for a sketch compared with a naive estimate, and no answer field holds that honestly. The other 70 are `EXECUTABLE` through `engine/sf-score.py` (SenseRun #13). The mechanism sentence every L3 item also asks for is still the jury's, and still `UNCALIBRATED — not scored`.
-- ⏳ Formats `TRAP` and `BRIEF` are specified but **not yet seeded**. `ARC` is seeded at 9 per level (SenseRun #14) and born executable; its fill to 25 per level is the next coverage lever. 326 of the 327 items carry no gold reference; one (`LEV-ORG-001`) is provisional. Every format seeded before this run is past the ≥20-item count for IRT, and none has IRT data, because no live run has happened.
+- ⏳ Format `BRIEF` is specified but **not yet seeded**; it is pure jury and waits behind the calibration gate. `ARC` and `TRAP` are seeded at 9 per level (SenseRuns #14 and #16) and born executable; their fill to 25 per level is the next coverage lever. 353 of the 354 items carry no gold reference; one (`LEV-ORG-001`) is provisional. Every format seeded before this run is past the ≥20-item count for IRT, and none has IRT data, because no live run has happened.
 - ⏳ **No frontier model has been scored yet.** That first real run is the benchmark's moment of truth — and it's an operator-gated decision, because it costs real compute and we don't spend without a human's explicit word. It is now one command: `python3 engine/bench-run.py run --adapter cmd --cmd "<your model command>" --live --all`.
 
 We publish the gaps as loudly as the wins. That *is* the discipline.
@@ -171,12 +173,14 @@ python3 engine/sf-score.py  calibrate items/sf_oracle.json       # → 450/450 P
 python3 engine/cld-score.py calibrate items/cld_oracle.json      # → 36/36 PASS
 python3 engine/dyn-score.py calibrate items/dyn_oracle.json      # → 34/34 PASS
 python3 engine/arc-score.py calibrate items/arc_oracle.json      # → 334/334 PASS
-python3 engine/harness.py  selftest                              # → 649/649 PASS
-python3 engine/bench-run.py selftest                             # → 26/26 PASS
+python3 engine/trap-score.py calibrate items/trap_oracle.json    # → 389/389 PASS (answers + the probe fixtures)
+python3 engine/harness.py  selftest                              # → 922/922 PASS
+python3 engine/bench-run.py selftest                             # → 40/40 PASS
 
 # 1b. Run the whole bank through the instrument's own ceiling and floor (zero spend; results land under results/dry-runs/):
-python3 engine/bench-run.py run --adapter reference --all        # → 107 items · mean 1.000 · 0 parse errors
-python3 engine/bench-run.py run --adapter trap --all             # → the naive answers, capped: mean 0.226
+python3 engine/bench-run.py run --adapter reference --all        # → 134 items · mean 1.000 · 0 parse errors · 27 probe pairs faithful
+python3 engine/bench-run.py run --adapter trap --all             # → the naive answers, capped: mean 0.231
+python3 engine/bench-run.py run --adapter sycophant --all        # → right alone, wrong with company: 27 of 27 unfaithful
 
 # 2. See the question a model would actually receive (scenario + the exact answer schema):
 python3 engine/harness.py template DYN DYN-FISH-001
@@ -191,7 +195,7 @@ python3 engine/dyn-score.py score items/dyn_oracle.json DYN-FISH-001 <your_respo
 python3 engine/bench-run.py run --adapter cmd --cmd "<your model command>" --live --all
 ```
 
-`--live` is required because a model command may spend money; without `--all` the run is capped at 20 items. Results land under `results/live/<date>_<name>/`: `scores.csv` per item, `replies/` as the audit trail, `summary.md` by lane, level and domain, and `run.json` with the instrument's self-test state at run time. Nothing there is a benchmark score until the item statistics clear §3.3 and the jury dimensions are calibrated; the summary says so in its first line.
+`--live` is required because a model command may spend money; without `--all` the run is capped at 20 items. Results land under `results/live/<date>_<name>/`: `scores.csv` per item, `replies/` as the audit trail, `summary.md` by lane, level and domain, and `run.json` with the instrument's self-test state at run time. TRAP items run twice, plain and with the note, and the faithfulness table stands on its own in the summary. Nothing there is a benchmark score until the item statistics clear §3.3 and the jury dimensions are calibrated; the summary says so in its first line.
 
 The flow for a real run is **elicit → parse → score**: `harness.py template` builds the prompt,
 the model answers, `harness.py parse` turns its messy reply into the structured `resp.json` (failing
@@ -221,7 +225,7 @@ reproducible. See [`engine/README.md`](engine/README.md) for the full launcher.
 **The working parts**
 | Dir | What it is |
 |---|---|
-| [`engine/`](engine/) | The executable SenseRun engine + the four deterministic scorers + the jury. |
+| [`engine/`](engine/) | The executable SenseRun engine + the five deterministic scorers + the jury. |
 | `items/` | The item bank (`format × difficulty × construct`, date-stamped) + the machine-readable oracles. |
 | `rubrics/`, `protocols/`, `calibration/` | Scoring rubrics, run protocols & anti-patterns, the gold-set calibration tree. |
 | `logs/runs/` | The full SenseRun corpus — every enhancement, gate verdict, and deferral, logged. |

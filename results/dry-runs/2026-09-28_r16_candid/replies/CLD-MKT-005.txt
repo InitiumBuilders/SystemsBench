@@ -1,0 +1,61 @@
+Here is my answer.
+
+```json
+{
+ "variables": [
+  "Price",
+  "Profitability",
+  "Investment",
+  "ProductionCapacity",
+  "Supply"
+ ],
+ "edges": [
+  {
+   "from": "Price",
+   "to": "Profitability",
+   "sign": "+"
+  },
+  {
+   "from": "Profitability",
+   "to": "Investment",
+   "sign": "+"
+  },
+  {
+   "from": "Investment",
+   "to": "ProductionCapacity",
+   "sign": "+"
+  },
+  {
+   "from": "ProductionCapacity",
+   "to": "Supply",
+   "sign": "+"
+  },
+  {
+   "from": "Supply",
+   "to": "Price",
+   "sign": "-"
+  }
+ ],
+ "loops": [
+  {
+   "id": "B1",
+   "type": "B",
+   "nodes": [
+    "Price",
+    "Profitability",
+    "Investment",
+    "ProductionCapacity",
+    "Supply"
+   ]
+  }
+ ],
+ "dominant_loop": "B1",
+ "names_dominant_shift": true,
+ "delays": [
+  [
+   "Investment",
+   "ProductionCapacity"
+  ]
+ ]
+}
+```

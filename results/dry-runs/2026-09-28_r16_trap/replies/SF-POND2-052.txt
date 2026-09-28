@@ -1,0 +1,11 @@
+Here is my answer.
+
+```json
+{
+ "answers": {
+  "value": 1120,
+  "low_value": 850,
+  "low_month": 5
+ }
+}
+```

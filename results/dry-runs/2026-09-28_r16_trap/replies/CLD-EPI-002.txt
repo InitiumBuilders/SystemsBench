@@ -1,0 +1,106 @@
+Here is my answer.
+
+```json
+{
+ "variables": [
+  "Susceptible",
+  "Infected",
+  "Recovered",
+  "InfectionRate",
+  "RecoveryRate",
+  "ContactRate",
+  "PublicConcern"
+ ],
+ "edges": [
+  {
+   "from": "Infected",
+   "to": "InfectionRate",
+   "sign": "+"
+  },
+  {
+   "from": "Susceptible",
+   "to": "InfectionRate",
+   "sign": "+"
+  },
+  {
+   "from": "InfectionRate",
+   "to": "Infected",
+   "sign": "+"
+  },
+  {
+   "from": "InfectionRate",
+   "to": "Susceptible",
+   "sign": "-"
+  },
+  {
+   "from": "Infected",
+   "to": "RecoveryRate",
+   "sign": "+"
+  },
+  {
+   "from": "RecoveryRate",
+   "to": "Infected",
+   "sign": "-"
+  },
+  {
+   "from": "Infected",
+   "to": "PublicConcern",
+   "sign": "+"
+  },
+  {
+   "from": "PublicConcern",
+   "to": "ContactRate",
+   "sign": "-"
+  },
+  {
+   "from": "ContactRate",
+   "to": "InfectionRate",
+   "sign": "+"
+  }
+ ],
+ "loops": [
+  {
+   "id": "R1",
+   "type": "B",
+   "nodes": [
+    "Infected",
+    "InfectionRate"
+   ]
+  },
+  {
+   "id": "B1",
+   "type": "B",
+   "nodes": [
+    "InfectionRate",
+    "Susceptible"
+   ]
+  },
+  {
+   "id": "B2",
+   "type": "B",
+   "nodes": [
+    "Infected",
+    "RecoveryRate"
+   ]
+  },
+  {
+   "id": "B3",
+   "type": "B",
+   "nodes": [
+    "Infected",
+    "PublicConcern",
+    "ContactRate",
+    "InfectionRate"
+   ]
+  }
+ ],
+ "dominant_loop": "R1",
+ "names_dominant_shift": true,
+ "delays": [
+  [
+   "Infected",
+   "PublicConcern"
+  ]
+ ]
+}
+```
