@@ -1,0 +1,1445 @@
+{
+ "_meta": {
+  "what": "Machine-readable answer oracle for the SF (stock-flow inference) format — the validation set for engine/sf-score.py.",
+  "source_items": "items/seed_SF_stockflow.md (75 items). Level, domain and trap text are copied from the file by scripts; only each item's answer FIELDS and TRAP VALUES were hand-encoded, and calibrate checks every expected number against the seed's own oracle line and every expected word for a synonym there.",
+  "convention": "Each item declares answer fields: number (with a tolerance), direction (rising | falling | steady), shape (a named behavior-over-time mode), day (a weekday), yesno. sf_subscore = matched fields / fields. trap = the naive answer(s) per field, almost always the correlation heuristic; answering a trap value caps the score at 0.25.",
+  "scoring": "Deterministic sf_subscore only. The mechanism prose (L3) is jury-graded and stays UNCALIBRATED — not scored (no SF gold; fail-closed, Structure 5.1). This oracle scores NO jury number.",
+  "not_encoded": {
+   "SF-BATH-006": "pure classification (stock vs flow, named quantities)",
+   "SF-LABEL-012": "pure classification (six labels)",
+   "SF-ROOM-017": "classification + a number; scoring the number alone would misstate the item",
+   "SF-HEAT-025": "pure classification",
+   "SF-TRUST-005": "a qualitative sketch compared with a naive estimate; no single value or named shape to grade"
+  },
+  "date": "2026-09-27",
+  "senserun": 13
+ },
+ "items": {
+  "SF-RES-001": {
+   "level": "L1",
+   "domain": "ecology/water",
+   "fields": {
+    "value": {
+     "kind": "number",
+     "expected": 140,
+     "ask": "volume after 4 hours",
+     "unit": "ML"
+    },
+    "direction": {
+     "kind": "direction",
+     "expected": "rising",
+     "ask": "one word: rising | falling | steady"
+    }
+   },
+   "trap": {
+    "direction": [
+     "steady"
+    ]
+   },
+   "trap_text": "answering \"steady\" because inflow and outflow are each constant (confusing constant *flows* with a constant *stock*)."
+  },
+  "SF-ACCT-007": {
+   "level": "L1",
+   "domain": "economics/personal-finance",
+   "fields": {
+    "value": {
+     "kind": "number",
+     "expected": 650,
+     "ask": "balance at month end, in dollars"
+    },
+    "direction": {
+     "kind": "direction",
+     "expected": "rising",
+     "ask": "versus the start: rising (higher) | falling (lower) | steady"
+    }
+   },
+   "trap": {
+    "value": [
+     200,
+     150
+    ]
+   },
+   "trap_text": "answering \"$200\" or \"$150\" — reporting a *flow* (the deposit or the net change) instead of the resulting *stock*."
+  },
+  "SF-POP-008": {
+   "level": "L1",
+   "domain": "ecology/social",
+   "fields": {
+    "value": {
+     "kind": "number",
+     "expected": 10100,
+     "ask": "population at year end"
+    },
+    "direction": {
+     "kind": "direction",
+     "expected": "rising",
+     "ask": "one word: rising | falling | steady"
+    }
+   },
+   "trap": {
+    "direction": [
+     "steady"
+    ]
+   },
+   "trap_text": "answering \"steady\" because \"people are both being born and dying\" — births and deaths both being nonzero does not make the stock steady; only births = deaths would."
+  },
+  "SF-WARE-009": {
+   "level": "L1",
+   "domain": "operations/inventory",
+   "fields": {
+    "value": {
+     "kind": "number",
+     "expected": 215,
+     "ask": "units in the warehouse at day's end"
+    },
+    "direction": {
+     "kind": "direction",
+     "expected": "rising",
+     "ask": "one word: rising | falling | steady"
+    }
+   },
+   "trap": {
+    "value": [
+     40,
+     15
+    ],
+    "direction": [
+     "falling"
+    ]
+   },
+   "trap_text": "answering \"40\" or \"15\" (a flow) rather than the resulting level, or \"falling\" by fixating on the outflow."
+  },
+  "SF-INBOX-010": {
+   "level": "L1",
+   "domain": "software/infra",
+   "fields": {
+    "value": {
+     "kind": "number",
+     "expected": 50,
+     "ask": "unread messages at day's end"
+    },
+    "direction": {
+     "kind": "direction",
+     "expected": "rising",
+     "ask": "one word: rising | falling | steady"
+    }
+   },
+   "trap": {
+    "direction": [
+     "falling"
+    ]
+   },
+   "trap_text": "answering \"falling\" because \"you read messages all day\" — reading (outflow) is smaller than arrivals (inflow), so the stock rises."
+  },
+  "SF-FOREST-011": {
+   "level": "L1",
+   "domain": "ecology",
+   "fields": {
+    "value": {
+     "kind": "number",
+     "expected": 1020,
+     "ask": "trees at year end"
+    },
+    "direction": {
+     "kind": "direction",
+     "expected": "rising",
+     "ask": "one word: rising | falling | steady"
+    }
+   },
+   "trap": {
+    "value": [
+     970,
+     50,
+     20
+    ]
+   },
+   "trap_text": "subtracting only (\"30 cut → 970\") and ignoring the planting inflow, or reporting a flow."
+  },
+  "SF-BATT-013": {
+   "level": "L1",
+   "domain": "personal/tech",
+   "fields": {
+    "value": {
+     "kind": "number",
+     "expected": 78,
+     "ask": "charge level after 3 hours, in percent"
+    },
+    "direction": {
+     "kind": "direction",
+     "expected": "rising",
+     "ask": "one word: rising | falling | steady"
+    }
+   },
+   "trap": {
+    "value": [
+     90
+    ]
+   },
+   "trap_text": "using only the charge rate (+10 → 90%) and ignoring the simultaneous drain outflow."
+  },
+  "SF-STEADY-014": {
+   "level": "L1",
+   "domain": "ecology/water",
+   "fields": {
+    "value": {
+     "kind": "number",
+     "expected": 100,
+     "ask": "level after 5 hours, in litres"
+    },
+    "direction": {
+     "kind": "direction",
+     "expected": "steady",
+     "ask": "one word: rising | falling | steady"
+    }
+   },
+   "trap": {
+    "direction": [
+     "rising"
+    ]
+   },
+   "trap_text": "answering \"rising\" because \"25 L/h keeps pouring in\" — a large but *balanced* inflow leaves the stock unchanged. (This is the mirror of SF-RES-001: there, equal-looking constant flows were *not* equal.)"
+  },
+  "SF-LOAN-015": {
+   "level": "L1",
+   "domain": "economics",
+   "fields": {
+    "value": {
+     "kind": "number",
+     "expected": 700,
+     "ask": "balance after 3 months, in dollars"
+    },
+    "direction": {
+     "kind": "direction",
+     "expected": "falling",
+     "ask": "one word: rising | falling | steady"
+    }
+   },
+   "trap": {
+    "value": [
+     300
+    ]
+   },
+   "trap_text": "answering \"$300\" — reporting the total paid (a cumulative flow) instead of the remaining stock."
+  },
+  "SF-DRAW-016": {
+   "level": "L1",
+   "domain": "ecology/water",
+   "fields": {
+    "value": {
+     "kind": "number",
+     "expected": 40,
+     "ask": "volume after 4 hours",
+     "unit": "ML"
+    },
+    "direction": {
+     "kind": "direction",
+     "expected": "falling",
+     "ask": "one word: rising | falling | steady"
+    }
+   },
+   "trap": {
+    "direction": [
+     "rising",
+     "steady"
+    ]
+   },
+   "trap_text": "answering \"rising\" or \"steady\" because water is still flowing *in* — a positive inflow below the outflow still drains the stock."
+  },
+  "SF-SNOW-018": {
+   "level": "L1",
+   "domain": "ecology",
+   "fields": {
+    "value": {
+     "kind": "number",
+     "expected": 23,
+     "ask": "snow at day's end, in cm"
+    },
+    "direction": {
+     "kind": "direction",
+     "expected": "rising",
+     "ask": "one word: rising | falling | steady"
+    }
+   },
+   "trap": {
+    "value": [
+     5,
+     25
+    ]
+   },
+   "trap_text": "reporting a flow (the 5 cm that fell) or ignoring melt."
+  },
+  "SF-MEM-019": {
+   "level": "L1",
+   "domain": "AI/agent",
+   "fields": {
+    "value": {
+     "kind": "number",
+     "expected": 58,
+     "ask": "facts stored after the session"
+    },
+    "direction": {
+     "kind": "direction",
+     "expected": "rising",
+     "ask": "one word: rising | falling | steady"
+    }
+   },
+   "trap": {
+    "value": [
+     12,
+     62
+    ]
+   },
+   "trap_text": "reporting the number learned (12) as the total, or ignoring the forgetting outflow."
+  },
+  "SF-TODO-020": {
+   "level": "L1",
+   "domain": "personal/behavioral",
+   "fields": {
+    "value": {
+     "kind": "number",
+     "expected": 18,
+     "ask": "tasks remaining at week's end"
+    },
+    "direction": {
+     "kind": "direction",
+     "expected": "rising",
+     "ask": "one word: rising | falling | steady"
+    }
+   },
+   "trap": {
+    "direction": [
+     "falling"
+    ]
+   },
+   "trap_text": "answering \"falling\" because \"you got things done\" — completions (5) are fewer than additions (8), so the backlog grows."
+  },
+  "SF-CUST-021": {
+   "level": "L1",
+   "domain": "organizations/markets",
+   "fields": {
+    "value": {
+     "kind": "number",
+     "expected": 5250,
+     "ask": "customers at quarter end"
+    },
+    "direction": {
+     "kind": "direction",
+     "expected": "rising",
+     "ask": "one word: rising | falling | steady"
+    }
+   },
+   "trap": {
+    "value": [
+     400,
+     4850
+    ]
+   },
+   "trap_text": "reporting a flow (400 gained) or subtracting only the losses."
+  },
+  "SF-DISK-022": {
+   "level": "L1",
+   "domain": "software/infra",
+   "fields": {
+    "value": {
+     "kind": "number",
+     "expected": 220,
+     "ask": "GB used at day's end"
+    },
+    "direction": {
+     "kind": "direction",
+     "expected": "rising",
+     "ask": "one word: rising | falling | steady"
+    }
+   },
+   "trap": {
+    "direction": [
+     "falling"
+    ]
+   },
+   "trap_text": "treating \"deleting frees space\" as dominant when the write inflow is larger."
+  },
+  "SF-POND-023": {
+   "level": "L1",
+   "domain": "ecology/fisheries",
+   "fields": {
+    "value": {
+     "kind": "number",
+     "expected": 480,
+     "ask": "fish at season's end"
+    },
+    "direction": {
+     "kind": "direction",
+     "expected": "falling",
+     "ask": "one word: rising | falling | steady"
+    }
+   },
+   "trap": {
+    "direction": [
+     "rising"
+    ]
+   },
+   "trap_text": "answering \"rising\" because fish were added — the harvest outflow exceeds the stocking inflow."
+  },
+  "SF-FOLLOW-024": {
+   "level": "L1",
+   "domain": "social",
+   "fields": {
+    "value": {
+     "kind": "number",
+     "expected": 1800,
+     "ask": "followers at month end"
+    },
+    "direction": {
+     "kind": "direction",
+     "expected": "falling",
+     "ask": "one word: rising | falling | steady"
+    }
+   },
+   "trap": {
+    "direction": [
+     "rising"
+    ]
+   },
+   "trap_text": "fixating on the 300 gained and calling it growth, ignoring the larger loss outflow."
+  },
+  "SF-QUEUE-026": {
+   "level": "L1",
+   "domain": "AI/agent",
+   "fields": {
+    "value": {
+     "kind": "number",
+     "expected": 80,
+     "ask": "items still queued after the hour"
+    },
+    "direction": {
+     "kind": "direction",
+     "expected": "falling",
+     "ask": "one word: rising | falling | steady"
+    }
+   },
+   "trap": {
+    "direction": [
+     "rising"
+    ]
+   },
+   "trap_text": "answering \"rising\" because \"items keep getting flagged\" — resolutions (60) outpace arrivals (40), so the queue shrinks."
+  },
+  "SF-RAIN-027": {
+   "level": "L1",
+   "domain": "ecology/water",
+   "fields": {
+    "value": {
+     "kind": "number",
+     "expected": 37,
+     "ask": "litres in the barrel at day's end"
+    },
+    "direction": {
+     "kind": "direction",
+     "expected": "rising",
+     "ask": "one word: rising | falling | steady"
+    }
+   },
+   "trap": {
+    "value": [
+     12,
+     25
+    ]
+   },
+   "trap_text": "reporting a flow, or subtracting only the 5 L drawn."
+  },
+  "SF-SUB-028": {
+   "level": "L1",
+   "domain": "markets",
+   "fields": {
+    "value": {
+     "kind": "number",
+     "expected": 8000,
+     "ask": "subscribers at month end"
+    },
+    "direction": {
+     "kind": "direction",
+     "expected": "steady",
+     "ask": "one word: rising | falling | steady"
+    }
+   },
+   "trap": {
+    "direction": [
+     "rising"
+    ]
+   },
+   "trap_text": "answering \"growing\" because \"500 new people joined\" — equal in- and out-flows hold the stock flat despite lots of churn on both sides."
+  },
+  "SF-BED-029": {
+   "level": "L1",
+   "domain": "public-health",
+   "fields": {
+    "value": {
+     "kind": "number",
+     "expected": 115,
+     "ask": "occupied beds at day's end"
+    },
+    "direction": {
+     "kind": "direction",
+     "expected": "falling",
+     "ask": "one word: rising | falling | steady"
+    }
+   },
+   "trap": {
+    "value": [
+     25
+    ],
+    "direction": [
+     "rising"
+    ]
+   },
+   "trap_text": "treating admissions as the answer, or misreading the net direction when discharges exceed admissions."
+  },
+  "SF-BANK-002": {
+   "level": "L2",
+   "domain": "economics/debt",
+   "fields": {
+    "direction": {
+     "kind": "direction",
+     "expected": "rising",
+     "ask": "in month 1 the debt: rising | falling | steady"
+    },
+    "shape": {
+     "kind": "shape",
+     "expected": "accelerates",
+     "ask": "long-run trajectory if the payment stays fixed: accelerates | linear | levels-off | keeps-falling"
+    }
+   },
+   "trap": {
+    "direction": [
+     "falling"
+    ]
+   },
+   "trap_text": "\"it falls because you're making payments\" — ignores that the inflow is a function of the stock (compounding)."
+  },
+  "SF-INV-004": {
+   "level": "L2",
+   "domain": "operations/inventory",
+   "fields": {
+    "value": {
+     "kind": "number",
+     "expected": 520,
+     "ask": "net stock at Friday close, in units"
+    },
+    "first_decrease_day": {
+     "kind": "day",
+     "expected": "tuesday",
+     "ask": "the weekday on which the stock first decreases"
+    }
+   },
+   "trap_text": "picking the day with the largest single outflow (Tue −40) by magnitude rather than the first *net* decrease."
+  },
+  "SF-HIRE-030": {
+   "level": "L2",
+   "domain": "organizations",
+   "fields": {
+    "change": {
+     "kind": "number",
+     "expected": 500,
+     "ask": "year-end headcount minus start-of-year headcount (positive if higher)"
+    },
+    "direction": {
+     "kind": "direction",
+     "expected": "rising",
+     "ask": "in Q4 headcount is: rising | falling | steady"
+    }
+   },
+   "trap": {
+    "direction": [
+     "falling"
+    ]
+   },
+   "trap_text": "\"headcount is falling because the hiring rate is dropping\" — the correlation heuristic: mistaking a falling flow for a falling stock."
+  },
+  "SF-PEAK-031": {
+   "level": "L2",
+   "domain": "ecology/water",
+   "fields": {
+    "value": {
+     "kind": "number",
+     "expected": 100,
+     "ask": "volume at the end of hour 6",
+     "unit": "ML"
+    },
+    "peak_value": {
+     "kind": "number",
+     "expected": 160,
+     "ask": "the highest volume reached",
+     "unit": "ML"
+    },
+    "peak_time": {
+     "kind": "number",
+     "expected": 3,
+     "ask": "the hour at which the volume is highest"
+    }
+   },
+   "trap": {
+    "peak_time": [
+     6
+    ]
+   },
+   "trap_text": "assuming the volume peaks at the end (hour 6) or where inflow is largest — the peak is where *net* flow crosses zero."
+  },
+  "SF-TICKET-032": {
+   "level": "L2",
+   "domain": "software/infra",
+   "fields": {
+    "value": {
+     "kind": "number",
+     "expected": 300,
+     "ask": "backlog after 30 days, in tickets"
+    },
+    "shape": {
+     "kind": "shape",
+     "expected": "unbounded",
+     "ask": "long-run trajectory if nothing changes: unbounded (grows without bound) | levels-off | keeps-falling",
+     "accept": [
+      "keeps-rising"
+     ]
+    }
+   },
+   "trap": {
+    "shape": [
+     "levels-off",
+     "keeps-falling"
+    ]
+   },
+   "trap_text": "\"the team is resolving tickets, so the backlog shrinks or stabilizes\" — a nonzero, even large, outflow can't drain a stock whose inflow is larger."
+  },
+  "SF-CASH-033": {
+   "level": "L2",
+   "domain": "organizations",
+   "fields": {
+    "months": {
+     "kind": "number",
+     "expected": 10,
+     "ask": "months until the cash runs out"
+    }
+   },
+   "trap": {
+    "months": [
+     6.7
+    ]
+   },
+   "trap_text": "dividing by gross spend ($150k → ~6.7 months) and ignoring the revenue inflow that partly offsets it."
+  },
+  "SF-STEADYK-034": {
+   "level": "L2",
+   "domain": "ecology/water",
+   "fields": {
+    "value": {
+     "kind": "number",
+     "expected": 200,
+     "ask": "the volume at which the level stops changing, in litres"
+    }
+   },
+   "trap_text": "\"it fills forever\" — ignores that a stock-proportional outflow rises with the level until it balances the constant inflow (a self-limiting, balancing structure)."
+  },
+  "SF-SAVE-035": {
+   "level": "L2",
+   "domain": "personal/finance",
+   "fields": {
+    "shape": {
+     "kind": "shape",
+     "expected": "accelerates",
+     "ask": "the balance over time: linear (a straight line) | accelerates"
+    }
+   },
+   "trap": {
+    "shape": [
+     "linear"
+    ]
+   },
+   "trap_text": "\"linear — just $100 × number of months\" — ignores that part of the inflow is a function of the stock."
+  },
+  "SF-PAYOFF-036": {
+   "level": "L2",
+   "domain": "economics",
+   "fields": {
+    "direction": {
+     "kind": "direction",
+     "expected": "falling",
+     "ask": "in month 1 the balance: rising | falling | steady"
+    },
+    "paid_off": {
+     "kind": "yesno",
+     "expected": "yes",
+     "ask": "will the loan ever be paid off at this fixed payment: yes | no",
+     "check": false
+    }
+   },
+   "trap": {
+    "paid_off": [
+     "no"
+    ]
+   },
+   "trap_text": "\"interest means it never gets paid off\" — the decisive comparison is payment vs. interest; here the payment wins."
+  },
+  "SF-CHURN-037": {
+   "level": "L2",
+   "domain": "social",
+   "fields": {
+    "value": {
+     "kind": "number",
+     "expected": 2000,
+     "ask": "the user count at which the base stops growing"
+    }
+   },
+   "trap_text": "\"it grows forever at +100/week\" — churn scales with the (growing) base until it exactly offsets the constant inflow."
+  },
+  "SF-OVERFLOW-038": {
+   "level": "L2",
+   "domain": "ecology/water",
+   "fields": {
+    "hours": {
+     "kind": "number",
+     "expected": 12,
+     "ask": "hours until it overflows"
+    }
+   },
+   "trap": {
+    "hours": [
+     4.5
+    ]
+   },
+   "trap_text": "dividing headroom by the *inflow* (180 / 40 = 4.5 h) and ignoring the outflow that slows the fill."
+  },
+  "SF-BAC-039": {
+   "level": "L2",
+   "domain": "personal/health",
+   "fields": {
+    "peak_time": {
+     "kind": "number",
+     "expected": 3,
+     "ask": "the hour at which blood alcohol is highest"
+    },
+    "peak_value": {
+     "kind": "number",
+     "expected": 6,
+     "ask": "blood alcohol at the peak, in grams",
+     "tolerance": 1
+    }
+   },
+   "trap": {
+    "peak_time": [
+     0
+    ]
+   },
+   "trap_text": "thinking blood alcohol peaks the moment you start (or peaks immediately after the last drink and is already falling during drinking) — it rises the whole time inflow exceeds clearance."
+  },
+  "SF-AQUI-040": {
+   "level": "L2",
+   "domain": "ecology/economics",
+   "fields": {
+    "year": {
+     "kind": "number",
+     "expected": 6,
+     "ask": "the year in which the aquifer level begins to fall"
+    }
+   },
+   "trap": {
+    "year": [
+     2
+    ]
+   },
+   "trap_text": "\"it starts falling in year 2, when extraction starts rising\" — a rising outflow only drains the stock once it exceeds the inflow."
+  },
+  "SF-INVWK-041": {
+   "level": "L2",
+   "domain": "operations",
+   "fields": {
+    "value": {
+     "kind": "number",
+     "expected": 300,
+     "ask": "level at Friday close, in units"
+    },
+    "peak_value": {
+     "kind": "number",
+     "expected": 350,
+     "ask": "the fullest the bin gets, in units"
+    },
+    "peak_day": {
+     "kind": "day",
+     "expected": "tuesday",
+     "ask": "the weekday on which the bin is fullest"
+    }
+   },
+   "trap": {
+    "peak_day": [
+     "friday"
+    ]
+   },
+   "trap_text": "reading a single day (e.g., the biggest inflow) or assuming the last day is fullest, instead of tracking the running total."
+  },
+  "SF-RIVER-042": {
+   "level": "L2",
+   "domain": "ecology/water",
+   "fields": {
+    "direction": {
+     "kind": "direction",
+     "expected": "rising",
+     "ask": "during hours 1 to 4 the lake is: rising | falling | steady"
+    }
+   },
+   "trap": {
+    "direction": [
+     "falling"
+    ]
+   },
+   "trap_text": "\"the lake is falling because inflow is decreasing\" — a decreasing inflow that's still *above* outflow means a rising stock."
+  },
+  "SF-HEATER-043": {
+   "level": "L2",
+   "domain": "personal/infra",
+   "fields": {
+    "value": {
+     "kind": "number",
+     "expected": 40,
+     "ask": "the temperature at which the water settles, in degrees C"
+    }
+   },
+   "trap_text": "\"it heats up without limit\" — loss grows with temperature until it balances the constant heating input."
+  },
+  "SF-CACHE-044": {
+   "level": "L2",
+   "domain": "software/infra",
+   "fields": {
+    "value": {
+     "kind": "number",
+     "expected": 5000,
+     "ask": "the size at which the cache stabilizes, in entries"
+    }
+   },
+   "trap_text": "\"it fills without bound\" — eviction scales with size and eventually balances the constant write inflow."
+  },
+  "SF-AGENT-045": {
+   "level": "L2",
+   "domain": "AI/agent",
+   "fields": {
+    "direction": {
+     "kind": "direction",
+     "expected": "rising",
+     "ask": "over the four sessions the knowledge base is: rising (growing) | falling (shrinking) | steady"
+    }
+   },
+   "trap": {
+    "direction": [
+     "falling"
+    ]
+   },
+   "trap_text": "\"the knowledge base is shrinking because it's learning less each session\" — a falling *inflow* is not a falling *stock*."
+  },
+  "SF-WEIGHT-046": {
+   "level": "L2",
+   "domain": "personal/behavioral",
+   "fields": {
+    "direction": {
+     "kind": "direction",
+     "expected": "rising",
+     "ask": "stored body fat after four weeks versus the start: rising (higher) | falling (lower) | steady"
+    },
+    "still_rising": {
+     "kind": "yesno",
+     "expected": "yes",
+     "ask": "is it still rising in week 4: yes | no",
+     "check": false
+    }
+   },
+   "trap": {
+    "direction": [
+     "falling"
+    ]
+   },
+   "trap_text": "\"they're losing weight because the surplus is dropping\" — the correlation heuristic applied to body weight."
+  },
+  "SF-COHORT-047": {
+   "level": "L2",
+   "domain": "organizations",
+   "fields": {
+    "value": {
+     "kind": "number",
+     "expected": 1500,
+     "ask": "the steady-state headcount, in people"
+    }
+   },
+   "trap_text": "\"headcount grows forever at +30/month\" — attrition scales with headcount until it offsets the constant hiring."
+  },
+  "SF-DAM-048": {
+   "level": "L2",
+   "domain": "ecology/water",
+   "fields": {
+    "value": {
+     "kind": "number",
+     "expected": 240,
+     "ask": "volume at the end of week 5",
+     "unit": "ML"
+    },
+    "week": {
+     "kind": "number",
+     "expected": 5,
+     "ask": "the week in which the volume first climbs back above 200 ML"
+    }
+   },
+   "trap": {
+    "week": [
+     3,
+     4
+    ]
+   },
+   "trap_text": "seeing three straight positive weeks (3–5) and assuming it recovered earlier than it did, or reading the last week's flow (+50) as the answer."
+  },
+  "SF-EMISS-049": {
+   "level": "L2",
+   "domain": "public-health/ecology",
+   "fields": {
+    "shape": {
+     "kind": "shape",
+     "expected": "levels-off",
+     "ask": "the pollutant in the pond: unbounded (rises forever) | levels-off (approaches a steady level)"
+    },
+    "value": {
+     "kind": "number",
+     "expected": 2000,
+     "ask": "the steady level, in kg"
+    }
+   },
+   "trap": {
+    "shape": [
+     "unbounded",
+     "keeps-rising"
+    ]
+   },
+   "trap_text": "\"it rises forever because emissions never stop\" — true only if the sink is fixed/saturated; a stock-proportional sink balances a constant inflow."
+  },
+  "SF-SALES-050": {
+   "level": "L2",
+   "domain": "operations/markets",
+   "fields": {
+    "day": {
+     "kind": "number",
+     "expected": 7,
+     "ask": "the day on which inventory begins to fall"
+    }
+   },
+   "trap": {
+    "day": [
+     2
+    ]
+   },
+   "trap_text": "\"inventory falls as soon as sales start rising\" — a rising outflow only draws the stock down once it exceeds the inflow."
+  },
+  "SF-COOL-051": {
+   "level": "L2",
+   "domain": "software/infra",
+   "fields": {
+    "hour": {
+     "kind": "number",
+     "expected": 3,
+     "ask": "the hour in which the room temperature begins to rise"
+    }
+   },
+   "trap": {
+    "hour": [
+     2
+    ]
+   },
+   "trap_text": "\"it rises as soon as the load increases (hour 2)\" — temperature rises only when heat-in exceeds heat-out."
+  },
+  "SF-POND2-052": {
+   "level": "L2",
+   "domain": "ecology/fisheries",
+   "fields": {
+    "value": {
+     "kind": "number",
+     "expected": 1120,
+     "ask": "level at season's end, in fish"
+    },
+    "low_value": {
+     "kind": "number",
+     "expected": 850,
+     "ask": "the lowest level reached, in fish"
+    },
+    "low_month": {
+     "kind": "number",
+     "expected": 2,
+     "ask": "the month in which the pond is lowest"
+    }
+   },
+   "trap": {
+    "low_month": [
+     5
+    ]
+   },
+   "trap_text": "assuming the pond keeps falling all season (it reverses at M3) or reading a single month's flows."
+  },
+  "SF-CO2-003": {
+   "level": "L3",
+   "domain": "climate/public-good",
+   "fields": {
+    "shape": {
+     "kind": "shape",
+     "expected": "keeps-rising",
+     "ask": "atmospheric CO2: levels-off (stabilizes) | keeps-rising | keeps-falling",
+     "accept": [
+      "unbounded"
+     ]
+    }
+   },
+   "trap": {
+    "shape": [
+     "levels-off"
+    ]
+   },
+   "trap_text": "\"stabilizes, because emissions stopped increasing\" — the canonical correlation-heuristic error; conflates flattening the flow with flattening the stock."
+  },
+  "SF-EMISSDROP-053": {
+   "level": "L3",
+   "domain": "climate",
+   "fields": {
+    "shape": {
+     "kind": "shape",
+     "expected": "keeps-rising",
+     "ask": "atmospheric CO2 is currently: keeps-rising | keeps-falling | levels-off (stable)"
+    }
+   },
+   "trap": {
+    "shape": [
+     "keeps-falling"
+    ]
+   },
+   "trap_text": "\"CO₂ is falling now that emissions are declining\" — the correlation heuristic at policy scale."
+  },
+  "SF-MOMENTUM-054": {
+   "level": "L3",
+   "domain": "public-health/social",
+   "fields": {
+    "shape": {
+     "kind": "shape",
+     "expected": "keeps-rising",
+     "ask": "population growth: levels-off (stops now) | keeps-rising (continues)"
+    }
+   },
+   "trap": {
+    "shape": [
+     "levels-off"
+    ]
+   },
+   "trap_text": "\"replacement fertility means the population immediately stops growing.\""
+  },
+  "SF-DEFICIT-055": {
+   "level": "L3",
+   "domain": "economics",
+   "fields": {
+    "shape": {
+     "kind": "shape",
+     "expected": "keeps-rising",
+     "ask": "over the five years the national debt: keeps-rising | keeps-falling | levels-off"
+    }
+   },
+   "trap": {
+    "shape": [
+     "keeps-falling"
+    ]
+   },
+   "trap_text": "\"the debt is coming down because we cut the deficit\" — the correlation heuristic, and a genuine political misperception."
+  },
+  "SF-AQUIFER-056": {
+   "level": "L3",
+   "domain": "ecology",
+   "fields": {
+    "shape": {
+     "kind": "shape",
+     "expected": "levels-off",
+     "ask": "the aquifer will: keeps-rising (refill) | levels-off (hold where it is) | keeps-falling"
+    }
+   },
+   "trap": {
+    "shape": [
+     "keeps-rising"
+    ]
+   },
+   "trap_text": "\"cutting pumping to a sustainable rate will bring the water table back up.\""
+  },
+  "SF-FISHSET-057": {
+   "level": "L3",
+   "domain": "ecology/fisheries",
+   "fields": {
+    "shape": {
+     "kind": "shape",
+     "expected": "keeps-falling",
+     "ask": "the fish population: keeps-falling | levels-off | keeps-rising"
+    }
+   },
+   "trap": {
+    "shape": [
+     "levels-off"
+    ]
+   },
+   "trap_text": "\"10,000 t was sustainable before, so it's still safe\" — ignores that the inflow (reproduction) is a function of the stock."
+  },
+  "SF-TEMPCOMMIT-058": {
+   "level": "L3",
+   "domain": "climate",
+   "fields": {
+    "shape": {
+     "kind": "shape",
+     "expected": "levels-off",
+     "ask": "global temperature then: keeps-falling (falls back) | levels-off (holds roughly steady) | keeps-rising"
+    }
+   },
+   "trap": {
+    "shape": [
+     "keeps-falling"
+    ]
+   },
+   "trap_text": "\"net-zero will cool the planet back down.\""
+  },
+  "SF-TECHDEBT-059": {
+   "level": "L3",
+   "domain": "software/infra",
+   "fields": {
+    "shape": {
+     "kind": "shape",
+     "expected": "unbounded",
+     "ask": "the open-bug backlog over time: keeps-falling (drains) | levels-off | unbounded (grows without bound)",
+     "accept": [
+      "keeps-rising"
+     ]
+    }
+   },
+   "trap": {
+    "shape": [
+     "keeps-falling"
+    ]
+   },
+   "trap_text": "\"20 fixed > 15 introduced, so the backlog drains to zero\" — snapshots one moment and ignores the growing inflow."
+  },
+  "SF-PIPELINE-060": {
+   "level": "L3",
+   "domain": "operations",
+   "fields": {
+    "shape": {
+     "kind": "shape",
+     "expected": "overshoot",
+     "ask": "on-hand inventory before it settles: levels-off (stops rising immediately) | overshoot (keeps rising, then overshoots)"
+    }
+   },
+   "trap": {
+    "shape": [
+     "levels-off"
+    ]
+   },
+   "trap_text": "\"orders stopped, so inventory stops rising immediately.\""
+  },
+  "SF-PLASTIC-061": {
+   "level": "L3",
+   "domain": "ecology",
+   "fields": {
+    "shape": {
+     "kind": "shape",
+     "expected": "keeps-rising",
+     "ask": "the amount of plastic in the ocean: keeps-falling | levels-off | keeps-rising"
+    }
+   },
+   "trap": {
+    "shape": [
+     "keeps-falling"
+    ]
+   },
+   "trap_text": "\"halving plastic input reduces the plastic already in the ocean\" — flow reduction mistaken for stock reduction."
+  },
+  "SF-RETIRE-062": {
+   "level": "L3",
+   "domain": "personal/finance",
+   "fields": {
+    "direction": {
+     "kind": "direction",
+     "expected": "falling",
+     "ask": "the balance is: rising (growing) | steady (stable) | falling (shrinking)"
+    },
+    "breakeven": {
+     "kind": "number",
+     "expected": 666667,
+     "ask": "the balance that would exactly sustain the withdrawal, in dollars",
+     "tolerance": 1000
+    }
+   },
+   "trap": {
+    "direction": [
+     "rising",
+     "steady"
+    ]
+   },
+   "trap_text": "\"6% is positive, so it grows / lasts forever\" — compares returns to zero instead of to the withdrawal, and misses that returns fall as the balance falls."
+  },
+  "SF-OCEANHEAT-063": {
+   "level": "L3",
+   "domain": "climate",
+   "fields": {
+    "shape": {
+     "kind": "shape",
+     "expected": "rise-then-level",
+     "ask": "global temperature: levels-off (stops rising immediately) | rise-then-level (keeps rising for a while, then levels off)",
+     "accept": [
+      "keeps-rising"
+     ]
+    }
+   },
+   "trap": {
+    "shape": [
+     "levels-off"
+    ]
+   },
+   "trap_text": "\"stop the greenhouse gases from rising and warming stops\" — ignores the in-pipeline (committed) warming from the delay."
+  },
+  "SF-SKILL-064": {
+   "level": "L3",
+   "domain": "personal/behavioral",
+   "fields": {
+    "shape": {
+     "kind": "shape",
+     "expected": "levels-off",
+     "ask": "vocabulary: unbounded (grows without limit) | levels-off"
+    }
+   },
+   "trap": {
+    "shape": [
+     "unbounded",
+     "linear",
+     "keeps-rising"
+    ]
+   },
+   "trap_text": "\"constant study means vocabulary grows forever (or linearly).\""
+  },
+  "SF-RESIST-065": {
+   "level": "L3",
+   "domain": "public-health",
+   "fields": {
+    "shape": {
+     "kind": "shape",
+     "expected": "levels-off",
+     "ask": "the overall level of resistance: keeps-falling (goes away) | levels-off (stays high)"
+    }
+   },
+   "trap": {
+    "shape": [
+     "keeps-falling"
+    ]
+   },
+   "trap_text": "\"cut antibiotic use and resistance goes away.\""
+  },
+  "SF-AGENTERR-066": {
+   "level": "L3",
+   "domain": "AI/agent",
+   "fields": {
+    "going_down": {
+     "kind": "yesno",
+     "expected": "no",
+     "ask": "is the total error count in context going down: yes | no",
+     "check": false
+    },
+    "shape": {
+     "kind": "shape",
+     "expected": "keeps-rising",
+     "ask": "the total error count: keeps-falling | keeps-rising | levels-off"
+    }
+   },
+   "trap": {
+    "going_down": [
+     "yes"
+    ],
+    "shape": [
+     "keeps-falling"
+    ]
+   },
+   "trap_text": "\"fewer new errors means a cleaner context\" — flow-rate reduction mistaken for stock reduction."
+  },
+  "SF-HOUSING-067": {
+   "level": "L3",
+   "domain": "economics/markets",
+   "fields": {
+    "shape": {
+     "kind": "shape",
+     "expected": "overshoot",
+     "ask": "once the units arrive the housing stock tends to: levels-off (smoothly close the gap) | overshoot"
+    }
+   },
+   "trap": {
+    "shape": [
+     "levels-off"
+    ]
+   },
+   "trap_text": "\"more building will smoothly close the gap and settle prices.\""
+  },
+  "SF-WEALTH-068": {
+   "level": "L3",
+   "domain": "economics/social",
+   "fields": {
+    "shape": {
+     "kind": "shape",
+     "expected": "diverges",
+     "ask": "the wealth gap: keeps-falling (shrinks) | levels-off (stays flat) | diverges (widens)"
+    },
+    "handout_closes_gap": {
+     "kind": "yesno",
+     "expected": "no",
+     "ask": "would an equal cash handout to everyone close it: yes | no",
+     "check": false
+    }
+   },
+   "trap": {
+    "shape": [
+     "keeps-falling",
+     "levels-off"
+    ],
+    "handout_closes_gap": [
+     "yes"
+    ]
+   },
+   "trap_text": "\"an equal handout to everyone closes the gap.\""
+  },
+  "SF-PENSION-069": {
+   "level": "L3",
+   "domain": "economics",
+   "fields": {
+    "shape": {
+     "kind": "shape",
+     "expected": "keeps-falling",
+     "ask": "the fund balance: levels-off (stays fine) | keeps-falling (drawn down)"
+    }
+   },
+   "trap": {
+    "shape": [
+     "levels-off"
+    ]
+   },
+   "trap_text": "\"the rates are unchanged, so the fund is fine.\""
+  },
+  "SF-RESERVOIR-070": {
+   "level": "L3",
+   "domain": "ecology/water",
+   "fields": {
+    "shape": {
+     "kind": "shape",
+     "expected": "unbounded",
+     "ask": "the lake's volume: levels-off | unbounded (rises without bound)",
+     "accept": [
+      "keeps-rising"
+     ]
+    }
+   },
+   "trap": {
+    "shape": [
+     "levels-off"
+    ]
+   },
+   "trap_text": "\"the inflow levels off, so the volume levels off\" — the flattening-flow illusion; a leveling flow doesn't level the stock unless it meets the outflow."
+  },
+  "SF-FORESTC-071": {
+   "level": "L3",
+   "domain": "ecology",
+   "fields": {
+    "shape": {
+     "kind": "shape",
+     "expected": "worse-before-better",
+     "ask": "in the first years the carbon stock: keeps-rising (rises right away) | worse-before-better (keeps falling first, then recovers)"
+    }
+   },
+   "trap": {
+    "shape": [
+     "keeps-rising"
+    ]
+   },
+   "trap_text": "\"stop logging and the carbon stock starts rising immediately.\""
+  },
+  "SF-GLUCOSE-072": {
+   "level": "L3",
+   "domain": "public-health",
+   "fields": {
+    "shape": {
+     "kind": "shape",
+     "expected": "overshoot-undershoot",
+     "ask": "blood glucose: rise-then-level (rises, then smoothly returns to normal) | overshoot-undershoot (spikes, then dips below normal before settling)"
+    }
+   },
+   "trap": {
+    "shape": [
+     "rise-then-level",
+     "levels-off"
+    ]
+   },
+   "trap_text": "\"glucose rises, then smoothly returns to normal\" — ignores that the delayed correction causes the dip."
+  },
+  "SF-SILT-073": {
+   "level": "L3",
+   "domain": "infra/ecology",
+   "fields": {
+    "shape": {
+     "kind": "shape",
+     "expected": "keeps-falling",
+     "ask": "usable storage capacity over decades: levels-off (basically fine) | keeps-falling (declines toward zero)"
+    },
+    "reversible": {
+     "kind": "yesno",
+     "expected": "no",
+     "ask": "is it easily reversed: yes | no",
+     "check": false
+    }
+   },
+   "trap": {
+    "shape": [
+     "levels-off"
+    ]
+   },
+   "trap_text": "\"the silt inflow is tiny, so capacity is basically fine\" — ignores integration over time."
+  },
+  "SF-SAAS-074": {
+   "level": "L3",
+   "domain": "markets/SaaS",
+   "fields": {
+    "shape": {
+     "kind": "shape",
+     "expected": "levels-off",
+     "ask": "MRR: unbounded (grows forever) | levels-off (hits a ceiling)"
+    },
+    "value": {
+     "kind": "number",
+     "expected": 2000000,
+     "ask": "the ceiling, in dollars of MRR"
+    }
+   },
+   "trap": {
+    "shape": [
+     "unbounded",
+     "linear",
+     "keeps-rising"
+    ]
+   },
+   "trap_text": "\"constant new sales means MRR grows linearly forever\" — ignores that churn grows with the base."
+  },
+  "SF-GRID-075": {
+   "level": "L3",
+   "domain": "software/infra",
+   "fields": {
+    "shape": {
+     "kind": "shape",
+     "expected": "oscillates",
+     "ask": "the battery's state of charge: levels-off (stays right where it should) | oscillates (overshoots and oscillates)",
+     "accept": [
+      "overshoot"
+     ]
+    }
+   },
+   "trap": {
+    "shape": [
+     "levels-off"
+    ]
+   },
+   "trap_text": "\"acting on the forecast keeps the charge right where it should be\" — ignores that the lag makes each correction arrive at the wrong time."
+  }
+ }
+}

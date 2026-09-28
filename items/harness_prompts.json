@@ -1,49 +1,334 @@
 {
-  "_meta": {
-    "what": "Machine-readable elicitation source for engine/harness.py `template` — per-item scenario prompts + the per-format canonical-schema instruction wrapper that elicits the structured response the deterministic scorers consume.",
-    "source_items": "Scenario prompts copied verbatim from items/seed_CLD_causalloops.md and items/seed_DYN_dynamics.md (SenseRun #7 / #9). The worked examples are NEUTRAL (a thermostat / a cooling coffee) and leak none of the 5 reference answers.",
-    "scope": "Elicitation only. Scoring stays in engine/cld-score.py + engine/dyn-score.py against the oracles. The schema_instructions are tool-internal harness policy, NOT governance.",
-    "date": "2026-06-13",
-    "senserun": 10
-  },
-  "CLD": {
-    "schema_instructions": "Return your answer as a SINGLE JSON object, and nothing else, fenced in a ```json code block. Use these exact keys:\n- \"variables\": list of the variable names you use (your own names; be consistent).\n- \"edges\": list of {\"from\": <var>, \"to\": <var>, \"sign\": \"+\" | \"-\", \"delay\": true?} — one per signed causal link; set \"delay\": true on a link that carries a significant time delay.\n- \"loops\": list of {\"id\": \"R1\"|\"B1\"|..., \"type\": \"R\" | \"B\", \"nodes\": [<vars in cycle order>]} — one per feedback loop; \"R\" = reinforcing, \"B\" = balancing (a loop's polarity = the product of its edge signs).\n- \"dominant_loop\": the id of the loop that dominates the observed behavior.\n- \"names_dominant_shift\": true if dominance shifts from one loop to another over time, else false.\n- \"delays\": list of [<from>, <to>] pairs naming the links whose delay drives the dynamics.\nWorked example (a thermostat — illustrative only, not the answer to this item):\n```json\n{\n  \"variables\": [\"RoomTemperature\", \"ThermostatGap\", \"HeaterOutput\"],\n  \"edges\": [\n    {\"from\": \"RoomTemperature\", \"to\": \"ThermostatGap\", \"sign\": \"-\"},\n    {\"from\": \"ThermostatGap\", \"to\": \"HeaterOutput\", \"sign\": \"+\"},\n    {\"from\": \"HeaterOutput\", \"to\": \"RoomTemperature\", \"sign\": \"+\"}\n  ],\n  \"loops\": [\n    {\"id\": \"B1\", \"type\": \"B\", \"nodes\": [\"RoomTemperature\", \"ThermostatGap\", \"HeaterOutput\"]}\n  ],\n  \"dominant_loop\": \"B1\",\n  \"names_dominant_shift\": false,\n  \"delays\": []\n}\n```",
-    "items": {
-      "CLD-FISH-001": {
-        "prompt": "A coastal fishery is open-access. Boats catch fish; good catches mean good profits, which draw more boats into the fleet (new boats take a couple of seasons to build and crew). The fish population regenerates on its own, but regeneration slows sharply once the population falls below a threshold. Over the last decade the fleet grew steadily; catches rose, peaked, then collapsed.\n1. Map the variables, signed links, and feedback loops (mark polarity R/B and any delays).\n2. Identify the dominant loop and how dominance shifts over time.\n3. Explain the observed rise-peak-collapse from the structure (not from \"bad luck\" or \"greedy fishers\")."
-      },
-      "CLD-EPI-002": {
-        "prompt": "A new respiratory virus spreads in a city. People who are infected can infect susceptible people on contact. Infected people recover after a couple of weeks and are then immune. As case counts rise and become public, people voluntarily cut their contacts — but only after a reporting/awareness lag. Cases rose fast, peaked, fell, then rose again in a second smaller wave.\n1. Map variables, signed links, and feedback loops (polarity R/B + delays).\n2. Identify the dominant loop and how dominance shifts over the epidemic.\n3. Explain the peak and the second wave from the loop structure."
-      },
-      "CLD-ORG-003": {
-        "prompt": "A support team has a target first-response time. When the team misses the target, two things happen: managers push for genuine process improvements (which take time to land), and — because the miss is embarrassing — there is also pressure to \"rebaseline\" the target to a more lenient number. Over two years the team almost always \"meets target,\" yet customers complain that responses keep getting slower.\n1. Map variables, signed links, and feedback loops (polarity R/B + delays).\n2. Identify the dominant loop and explain the paradox (\"meets target\" yet slower).\n3. Locate the cause in structure."
-      },
-      "CLD-INFRA-004": {
-        "prompt": "An on-call team is flooded with production incidents. Whenever incidents pile up, engineers drop everything to firefight, which clears the queue quickly. But the same engineers are the only ones who can do reliability/automation work, and that work is what slowly drives the underlying incident rate down. After a year of \"heroic\" on-call, the open-incident queue is often empty by end of day, yet the number of incidents arriving per week keeps climbing.\n1. Map variables, signed links, and feedback loops (polarity R/B + delays).\n2. Identify the dominant loop short-term vs long-term and explain the climbing arrival rate.\n3. Locate the cause in structure."
-      },
-      "CLD-MKT-005": {
-        "prompt": "In a commodity market (say, a metal), high prices make mining very profitable, so firms invest in new mines — but a new mine takes about four years to come online. When it does, the extra supply pushes prices down; low prices stop new investment, but existing mines keep producing. Historically the price of this metal swings in long, repeating boom-bust cycles rather than settling at a stable level.\n1. Map variables, signed links, and feedback loops (polarity R/B + delays).\n2. Identify the dominant loop and explain why the price oscillates instead of settling.\n3. Name the structural feature responsible for the cycle."
-      }
-    }
-  },
-  "DYN": {
-    "schema_instructions": "Return your answer as a SINGLE JSON object, and nothing else, fenced in a ```json code block. Use these exact keys:\n- \"behavior_mode\": the qualitative trajectory mode (e.g. exponential-growth, goal-seeking, s-shaped, oscillation, overshoot-and-collapse, better-before-worse, delayed-rise-to-plateau — or your own phrase).\n- \"overshoot\": true | false — does the focal variable rise above its eventual level before settling?\n- \"oscillation\": true | false — does it swing up and down?\n- \"delay_dominant\": true | false — is a time delay the main driver of the shape?\n- \"eventual_direction\": \"higher\" | \"lower\" | \"same\" | \"collapse\" — where the focal variable ends up versus its starting value.\n- \"mechanism\": a short explanation of the loop/delay/stock-flow structure that produces this behavior.\nWorked example (a cooling coffee — illustrative only, not the answer to this item):\n```json\n{\n  \"behavior_mode\": \"goal-seeking\",\n  \"overshoot\": false,\n  \"oscillation\": false,\n  \"delay_dominant\": false,\n  \"eventual_direction\": \"lower\",\n  \"mechanism\": \"A hot coffee loses heat in proportion to its gap above room temperature; as the gap shrinks the cooling slows — a smooth asymptotic approach down to room temperature.\"\n}\n```",
-    "items": {
-      "DYN-FISH-001": {
-        "prompt": "A coastal fishery is open-access and currently at a healthy fish population. To boost the local economy, the government introduces a subsidy that sharply lowers the cost of buying and operating a boat. New boats take a couple of seasons to build and crew, and once built they keep fishing as long as they cover running costs (they don't exit quickly when catches fall). Fish regenerate, but regeneration slows sharply once the population drops below a threshold. Predict the behavior over time of the fish population (and the fleet/catch) after the subsidy. Name the trajectory mode; state whether there is overshoot, oscillation, a dominant delay, and where the fish population ends up versus today."
-      },
-      "DYN-SHOWER-002": {
-        "prompt": "Someone steps into a shower fed by a long pipe: water reaching the head reflects the valve setting from about 20 seconds ago. The water starts too cold, so they open the hot tap. Frustrated by the lag, they react strongly to whatever they currently feel. Predict the behavior over time of the water temperature. Name the trajectory mode; state overshoot/oscillation, whether a delay dominates, and where temperature ends up. Also: if they reacted even more aggressively to the gap, would it settle faster?"
-      },
-      "DYN-ADOPT-003": {
-        "prompt": "A new app grows almost entirely by word of mouth: each active user tends to bring in others. The total number of people who could ever use it is finite (a fixed addressable market). The company runs a one-time marketing blitz that converts a chunk of the market up front. Predict the behavior over time of the cumulative number of adopters. Name the trajectory mode; state overshoot/oscillation, whether a delay dominates, and where adoption ends up versus the start."
-      },
-      "DYN-CAPTRAP-004": {
-        "prompt": "A software team is behind on a deadline. Management mandates sustained mandatory overtime until they catch up. In the first weeks, weekly output clearly rises. Overtime continues for months. Tired engineers make more mistakes, the best ones quit, and onboarding their replacements consumes the seniors' time — but these effects build up only gradually. Predict the behavior over time of the team's weekly output from the start of the overtime mandate through the following year. Name the trajectory mode; state overshoot/oscillation, whether a delay dominates, and where output ends up versus the start."
-      },
-      "DYN-CLIMATE-005": {
-        "prompt": "Atmospheric CO2 is a stock: emissions add to it (inflow), natural sinks remove some (outflow), and today emissions are well above what the sinks absorb. Suppose the world permanently cuts emissions by 50% starting now — still above the absorption rate. Predict the behavior over time of the atmospheric CO2 concentration (and note how global temperature responds relative to CO2). Name the trajectory mode; state overshoot/oscillation, whether a delay dominates, and where CO2 ends up versus today."
-      }
-    }
+ "_meta": {
+  "what": "Machine-readable elicitation source for engine/harness.py `template` — per-item scenario prompts + the per-format canonical-schema instruction wrapper that elicits the structured response the deterministic scorers consume.",
+  "source_items": "Scenario prompts copied verbatim from items/seed_CLD_causalloops.md and items/seed_DYN_dynamics.md (SenseRun #7 / #9). The worked examples are NEUTRAL (a thermostat / a cooling coffee) and leak none of the 5 reference answers. SF: scenario prompts copied verbatim from items/seed_SF_stockflow.md (SenseRun #13); the worked example is a bathtub that matches no item.",
+  "scope": "Elicitation only. Scoring stays in engine/cld-score.py + engine/dyn-score.py against the oracles. The schema_instructions are tool-internal harness policy, NOT governance.",
+  "date": "2026-06-13",
+  "senserun": 10
+ },
+ "CLD": {
+  "schema_instructions": "Return your answer as a SINGLE JSON object, and nothing else, fenced in a ```json code block. Use these exact keys:\n- \"variables\": list of the variable names you use (your own names; be consistent).\n- \"edges\": list of {\"from\": <var>, \"to\": <var>, \"sign\": \"+\" | \"-\", \"delay\": true?} — one per signed causal link; set \"delay\": true on a link that carries a significant time delay.\n- \"loops\": list of {\"id\": \"R1\"|\"B1\"|..., \"type\": \"R\" | \"B\", \"nodes\": [<vars in cycle order>]} — one per feedback loop; \"R\" = reinforcing, \"B\" = balancing (a loop's polarity = the product of its edge signs).\n- \"dominant_loop\": the id of the loop that dominates the observed behavior.\n- \"names_dominant_shift\": true if dominance shifts from one loop to another over time, else false.\n- \"delays\": list of [<from>, <to>] pairs naming the links whose delay drives the dynamics.\nWorked example (a thermostat — illustrative only, not the answer to this item):\n```json\n{\n  \"variables\": [\"RoomTemperature\", \"ThermostatGap\", \"HeaterOutput\"],\n  \"edges\": [\n    {\"from\": \"RoomTemperature\", \"to\": \"ThermostatGap\", \"sign\": \"-\"},\n    {\"from\": \"ThermostatGap\", \"to\": \"HeaterOutput\", \"sign\": \"+\"},\n    {\"from\": \"HeaterOutput\", \"to\": \"RoomTemperature\", \"sign\": \"+\"}\n  ],\n  \"loops\": [\n    {\"id\": \"B1\", \"type\": \"B\", \"nodes\": [\"RoomTemperature\", \"ThermostatGap\", \"HeaterOutput\"]}\n  ],\n  \"dominant_loop\": \"B1\",\n  \"names_dominant_shift\": false,\n  \"delays\": []\n}\n```",
+  "items": {
+   "CLD-FISH-001": {
+    "prompt": "A coastal fishery is open-access. Boats catch fish; good catches mean good profits, which draw more boats into the fleet (new boats take a couple of seasons to build and crew). The fish population regenerates on its own, but regeneration slows sharply once the population falls below a threshold. Over the last decade the fleet grew steadily; catches rose, peaked, then collapsed.\n1. Map the variables, signed links, and feedback loops (mark polarity R/B and any delays).\n2. Identify the dominant loop and how dominance shifts over time.\n3. Explain the observed rise-peak-collapse from the structure (not from \"bad luck\" or \"greedy fishers\")."
+   },
+   "CLD-EPI-002": {
+    "prompt": "A new respiratory virus spreads in a city. People who are infected can infect susceptible people on contact. Infected people recover after a couple of weeks and are then immune. As case counts rise and become public, people voluntarily cut their contacts — but only after a reporting/awareness lag. Cases rose fast, peaked, fell, then rose again in a second smaller wave.\n1. Map variables, signed links, and feedback loops (polarity R/B + delays).\n2. Identify the dominant loop and how dominance shifts over the epidemic.\n3. Explain the peak and the second wave from the loop structure."
+   },
+   "CLD-ORG-003": {
+    "prompt": "A support team has a target first-response time. When the team misses the target, two things happen: managers push for genuine process improvements (which take time to land), and — because the miss is embarrassing — there is also pressure to \"rebaseline\" the target to a more lenient number. Over two years the team almost always \"meets target,\" yet customers complain that responses keep getting slower.\n1. Map variables, signed links, and feedback loops (polarity R/B + delays).\n2. Identify the dominant loop and explain the paradox (\"meets target\" yet slower).\n3. Locate the cause in structure."
+   },
+   "CLD-INFRA-004": {
+    "prompt": "An on-call team is flooded with production incidents. Whenever incidents pile up, engineers drop everything to firefight, which clears the queue quickly. But the same engineers are the only ones who can do reliability/automation work, and that work is what slowly drives the underlying incident rate down. After a year of \"heroic\" on-call, the open-incident queue is often empty by end of day, yet the number of incidents arriving per week keeps climbing.\n1. Map variables, signed links, and feedback loops (polarity R/B + delays).\n2. Identify the dominant loop short-term vs long-term and explain the climbing arrival rate.\n3. Locate the cause in structure."
+   },
+   "CLD-MKT-005": {
+    "prompt": "In a commodity market (say, a metal), high prices make mining very profitable, so firms invest in new mines — but a new mine takes about four years to come online. When it does, the extra supply pushes prices down; low prices stop new investment, but existing mines keep producing. Historically the price of this metal swings in long, repeating boom-bust cycles rather than settling at a stable level.\n1. Map variables, signed links, and feedback loops (polarity R/B + delays).\n2. Identify the dominant loop and explain why the price oscillates instead of settling.\n3. Name the structural feature responsible for the cycle."
+   }
   }
+ },
+ "DYN": {
+  "schema_instructions": "Return your answer as a SINGLE JSON object, and nothing else, fenced in a ```json code block. Use these exact keys:\n- \"behavior_mode\": the qualitative trajectory mode (e.g. exponential-growth, goal-seeking, s-shaped, oscillation, overshoot-and-collapse, better-before-worse, delayed-rise-to-plateau — or your own phrase).\n- \"overshoot\": true | false — does the focal variable rise above its eventual level before settling?\n- \"oscillation\": true | false — does it swing up and down?\n- \"delay_dominant\": true | false — is a time delay the main driver of the shape?\n- \"eventual_direction\": \"higher\" | \"lower\" | \"same\" | \"collapse\" — where the focal variable ends up versus its starting value.\n- \"mechanism\": a short explanation of the loop/delay/stock-flow structure that produces this behavior.\nWorked example (a cooling coffee — illustrative only, not the answer to this item):\n```json\n{\n  \"behavior_mode\": \"goal-seeking\",\n  \"overshoot\": false,\n  \"oscillation\": false,\n  \"delay_dominant\": false,\n  \"eventual_direction\": \"lower\",\n  \"mechanism\": \"A hot coffee loses heat in proportion to its gap above room temperature; as the gap shrinks the cooling slows — a smooth asymptotic approach down to room temperature.\"\n}\n```",
+  "items": {
+   "DYN-FISH-001": {
+    "prompt": "A coastal fishery is open-access and currently at a healthy fish population. To boost the local economy, the government introduces a subsidy that sharply lowers the cost of buying and operating a boat. New boats take a couple of seasons to build and crew, and once built they keep fishing as long as they cover running costs (they don't exit quickly when catches fall). Fish regenerate, but regeneration slows sharply once the population drops below a threshold. Predict the behavior over time of the fish population (and the fleet/catch) after the subsidy. Name the trajectory mode; state whether there is overshoot, oscillation, a dominant delay, and where the fish population ends up versus today."
+   },
+   "DYN-SHOWER-002": {
+    "prompt": "Someone steps into a shower fed by a long pipe: water reaching the head reflects the valve setting from about 20 seconds ago. The water starts too cold, so they open the hot tap. Frustrated by the lag, they react strongly to whatever they currently feel. Predict the behavior over time of the water temperature. Name the trajectory mode; state overshoot/oscillation, whether a delay dominates, and where temperature ends up. Also: if they reacted even more aggressively to the gap, would it settle faster?"
+   },
+   "DYN-ADOPT-003": {
+    "prompt": "A new app grows almost entirely by word of mouth: each active user tends to bring in others. The total number of people who could ever use it is finite (a fixed addressable market). The company runs a one-time marketing blitz that converts a chunk of the market up front. Predict the behavior over time of the cumulative number of adopters. Name the trajectory mode; state overshoot/oscillation, whether a delay dominates, and where adoption ends up versus the start."
+   },
+   "DYN-CAPTRAP-004": {
+    "prompt": "A software team is behind on a deadline. Management mandates sustained mandatory overtime until they catch up. In the first weeks, weekly output clearly rises. Overtime continues for months. Tired engineers make more mistakes, the best ones quit, and onboarding their replacements consumes the seniors' time — but these effects build up only gradually. Predict the behavior over time of the team's weekly output from the start of the overtime mandate through the following year. Name the trajectory mode; state overshoot/oscillation, whether a delay dominates, and where output ends up versus the start."
+   },
+   "DYN-CLIMATE-005": {
+    "prompt": "Atmospheric CO2 is a stock: emissions add to it (inflow), natural sinks remove some (outflow), and today emissions are well above what the sinks absorb. Suppose the world permanently cuts emissions by 50% starting now — still above the absorption rate. Predict the behavior over time of the atmospheric CO2 concentration (and note how global temperature responds relative to CO2). Name the trajectory mode; state overshoot/oscillation, whether a delay dominates, and where CO2 ends up versus today."
+   }
+  }
+ },
+ "SF": {
+  "schema_instructions": "Return your answer as a SINGLE JSON object, and nothing else, fenced in a ```json code block, with exactly these keys:\n- \"answers\": an object holding this item's answer fields, listed below. Inside \"answers\" write plain numbers (no units, no thousands separators) and single words or the named option exactly as written.\n- \"mechanism\": one or two sentences naming the mechanism: which flow sets the stock's direction, and why. A jury reads this; the scorer does not.\nAnswer fields for this item:\n{KEYS}\nWorked example (a different scenario): a bathtub holds 20 L; the tap adds 5 L/min and the drain removes 3 L/min for 10 minutes; asked for the volume after 10 minutes and the direction:\n```json\n{\"answers\": {\"value\": 40, \"direction\": \"rising\"}, \"mechanism\": \"Net flow is +2 L/min because the tap exceeds the drain, so the stock rises by 20 L over 10 minutes.\"}\n```",
+  "items": {
+   "SF-RES-001": {
+    "prompt": "A reservoir starts at 100 ML. For 4 hours, inflow is constant 30 ML/h and outflow is constant 20 ML/h. What is the volume after 4 hours? Is the reservoir rising, falling, or steady?",
+    "keys": "- \"value\": a number; volume after 4 hours\n- \"direction\": one word: rising | falling | steady; one word: rising | falling | steady"
+   },
+   "SF-ACCT-007": {
+    "prompt": "A checking account holds $500. During one month there is a single $200 deposit and a single $50 withdrawal, and nothing else. What is the balance at month end? Is the balance higher or lower than it started?",
+    "keys": "- \"value\": a number; balance at month end, in dollars\n- \"direction\": one word: rising | falling | steady; versus the start: rising (higher) | falling (lower) | steady"
+   },
+   "SF-POP-008": {
+    "prompt": "A town has 10,000 people. Over one year there are 300 births and 200 deaths, and no migration. What is the population at year end? Is it rising, falling, or steady?",
+    "keys": "- \"value\": a number; population at year end\n- \"direction\": one word: rising | falling | steady; one word: rising | falling | steady"
+   },
+   "SF-WARE-009": {
+    "prompt": "A warehouse holds 200 units this morning. During the day, 40 units arrive and 25 units ship out. How many units are in the warehouse at day's end? Is the level rising or falling?",
+    "keys": "- \"value\": a number; units in the warehouse at day's end\n- \"direction\": one word: rising | falling | steady; one word: rising | falling | steady"
+   },
+   "SF-INBOX-010": {
+    "prompt": "An inbox has 40 unread messages. Over one day, 30 new messages arrive and you read 20. How many unread messages remain at day's end? Is the unread count rising or falling?",
+    "keys": "- \"value\": a number; unread messages at day's end\n- \"direction\": one word: rising | falling | steady; one word: rising | falling | steady"
+   },
+   "SF-FOREST-011": {
+    "prompt": "A managed woodlot has 1,000 trees. In one year, 50 trees are planted and 30 are cut. How many trees at year end? Rising or falling?",
+    "keys": "- \"value\": a number; trees at year end\n- \"direction\": one word: rising | falling | steady; one word: rising | falling | steady"
+   },
+   "SF-BATT-013": {
+    "prompt": "A phone is at 60% charge. While plugged in, charging adds 10 percentage points per hour and the phone's use drains 4 points per hour, for 3 hours. What is the charge level after 3 hours (assume it doesn't reach 100%)? Rising or falling?",
+    "keys": "- \"value\": a number; charge level after 3 hours, in percent\n- \"direction\": one word: rising | falling | steady; one word: rising | falling | steady"
+   },
+   "SF-STEADY-014": {
+    "prompt": "A tank holds 100 L. For 5 hours the inflow is a constant 25 L/h and the outflow is a constant 25 L/h. What is the level after 5 hours? Rising, falling, or steady?",
+    "keys": "- \"value\": a number; level after 5 hours, in litres\n- \"direction\": one word: rising | falling | steady; one word: rising | falling | steady"
+   },
+   "SF-LOAN-015": {
+    "prompt": "You owe $1,000 on a no-interest loan. You pay $100 per month for 3 months and borrow nothing new. What is the balance after 3 months? Rising or falling?",
+    "keys": "- \"value\": a number; balance after 3 months, in dollars\n- \"direction\": one word: rising | falling | steady; one word: rising | falling | steady"
+   },
+   "SF-DRAW-016": {
+    "prompt": "A reservoir holds 100 ML. For 4 hours inflow is 10 ML/h and outflow is 25 ML/h. What is the volume after 4 hours? Rising or falling?",
+    "keys": "- \"value\": a number; volume after 4 hours\n- \"direction\": one word: rising | falling | steady; one word: rising | falling | steady"
+   },
+   "SF-SNOW-018": {
+    "prompt": "There is 20 cm of snow on the ground. In one day, 5 cm of new snow falls and 2 cm melts. How much snow at day's end? Rising or falling?",
+    "keys": "- \"value\": a number; snow at day's end, in cm\n- \"direction\": one word: rising | falling | steady; one word: rising | falling | steady"
+   },
+   "SF-MEM-019": {
+    "prompt": "An agent's memory holds 50 stored facts. In one work session it learns 12 new facts and forgets (drops) 4. How many facts are stored after the session? Rising or falling?",
+    "keys": "- \"value\": a number; facts stored after the session\n- \"direction\": one word: rising | falling | steady; one word: rising | falling | steady"
+   },
+   "SF-TODO-020": {
+    "prompt": "Your to-do list has 15 tasks. Over one week you add 8 new tasks and complete 5. How many tasks remain at week's end? Rising or falling?",
+    "keys": "- \"value\": a number; tasks remaining at week's end\n- \"direction\": one word: rising | falling | steady; one word: rising | falling | steady"
+   },
+   "SF-CUST-021": {
+    "prompt": "A business has 5,000 customers. In one quarter it gains 400 and loses 150. How many customers at quarter end? Rising or falling?",
+    "keys": "- \"value\": a number; customers at quarter end\n- \"direction\": one word: rising | falling | steady; one word: rising | falling | steady"
+   },
+   "SF-DISK-022": {
+    "prompt": "A disk has 200 GB used. In one day, 30 GB is written and 10 GB is deleted. How much is used at day's end? Rising or falling?",
+    "keys": "- \"value\": a number; GB used at day's end\n- \"direction\": one word: rising | falling | steady; one word: rising | falling | steady"
+   },
+   "SF-POND-023": {
+    "prompt": "A stocked pond holds 500 fish. In one season 80 fish are added and 100 are caught. How many fish at season's end? Rising or falling?",
+    "keys": "- \"value\": a number; fish at season's end\n- \"direction\": one word: rising | falling | steady; one word: rising | falling | steady"
+   },
+   "SF-FOLLOW-024": {
+    "prompt": "An account has 2,000 followers. In one month it gains 300 and loses 500. How many followers at month end? Rising or falling?",
+    "keys": "- \"value\": a number; followers at month end\n- \"direction\": one word: rising | falling | steady; one word: rising | falling | steady"
+   },
+   "SF-QUEUE-026": {
+    "prompt": "A content-moderation queue holds 100 flagged items. In one hour, 40 new items are flagged and 60 are resolved. How many remain queued after the hour? Rising or falling?",
+    "keys": "- \"value\": a number; items still queued after the hour\n- \"direction\": one word: rising | falling | steady; one word: rising | falling | steady"
+   },
+   "SF-RAIN-027": {
+    "prompt": "A rain barrel holds 30 L. In one day, 12 L of rain runs in and you draw 5 L for the garden. How much water at day's end? Rising or falling?",
+    "keys": "- \"value\": a number; litres in the barrel at day's end\n- \"direction\": one word: rising | falling | steady; one word: rising | falling | steady"
+   },
+   "SF-SUB-028": {
+    "prompt": "A newsletter has 8,000 subscribers. In one month 500 people subscribe and 500 unsubscribe. How many subscribers at month end? Rising, falling, or steady?",
+    "keys": "- \"value\": a number; subscribers at month end\n- \"direction\": one word: rising | falling | steady; one word: rising | falling | steady"
+   },
+   "SF-BED-029": {
+    "prompt": "A hospital ward has 120 occupied beds. Over one day there are 25 admissions and 30 discharges. How many occupied beds at day's end? Rising or falling?",
+    "keys": "- \"value\": a number; occupied beds at day's end\n- \"direction\": one word: rising | falling | steady; one word: rising | falling | steady"
+   },
+   "SF-BANK-002": {
+    "prompt": "A debt stock is $10,000. Monthly interest adds 1% of the current debt (inflow); you pay $80/month (outflow). In month 1, does the debt rise or fall? What does this tell you about the long-run trajectory if payment stays fixed?",
+    "keys": "- \"direction\": one word: rising | falling | steady; in month 1 the debt: rising | falling | steady\n- \"shape\": one of the named shapes, exactly as written; long-run trajectory if the payment stays fixed: accelerates | linear | levels-off | keeps-falling"
+   },
+   "SF-INV-004": {
+    "prompt": "A warehouse holds 500 units. Over a week: Mon +50 in/−20 out, Tue +10/−40, Wed +0/−30, Thu +60/−10, Fri +20/−20. Net stock Friday close? On which day did the stock first *decrease*?",
+    "keys": "- \"value\": a number; net stock at Friday close, in units\n- \"first_decrease_day\": a weekday name; the weekday on which the stock first decreases"
+   },
+   "SF-HIRE-030": {
+    "prompt": "A firm's net headcount change (hires minus departures) is +200 in Q1, +150 in Q2, +100 in Q3, +50 in Q4 — positive every quarter but shrinking. Is headcount at year-end higher or lower than at the start? Is it still rising in Q4?",
+    "keys": "- \"change\": a number; year-end headcount minus start-of-year headcount (positive if higher)\n- \"direction\": one word: rising | falling | steady; in Q4 headcount is: rising | falling | steady"
+   },
+   "SF-PEAK-031": {
+    "prompt": "A reservoir starts at 100 ML. Hours 1–3: inflow 40, outflow 20 ML/h. Hours 4–6: inflow 10, outflow 30 ML/h. What is the volume at the end of hour 6, and at what hour is the volume highest?",
+    "keys": "- \"value\": a number; volume at the end of hour 6\n- \"peak_value\": a number; the highest volume reached\n- \"peak_time\": a number; the hour at which the volume is highest"
+   },
+   "SF-TICKET-032": {
+    "prompt": "Support tickets arrive at 50/day and the team resolves 40/day; the backlog starts at 0. What is the backlog after 30 days, and what is its long-run trajectory if nothing changes?",
+    "keys": "- \"value\": a number; backlog after 30 days, in tickets\n- \"shape\": one of the named shapes, exactly as written; long-run trajectory if nothing changes: unbounded (grows without bound) | levels-off | keeps-falling"
+   },
+   "SF-CASH-033": {
+    "prompt": "A startup has $1,000,000 cash. It spends $150,000/month and earns $50,000/month in revenue. How many months until it runs out of cash?",
+    "keys": "- \"months\": a number; months until the cash runs out"
+   },
+   "SF-STEADYK-034": {
+    "prompt": "A tank has a constant inflow of 20 L/min. Its outflow is 0.1 × (current volume) L/min — it drains faster the fuller it is. At what volume does the level stop changing?",
+    "keys": "- \"value\": a number; the volume at which the level stops changing, in litres"
+   },
+   "SF-SAVE-035": {
+    "prompt": "You deposit $100 at the end of each month into an account paying 1%/month interest, starting from $0. Does the balance grow linearly (a straight line) or accelerate over time? Why?",
+    "keys": "- \"shape\": one of the named shapes, exactly as written; the balance over time: linear (a straight line) | accelerates"
+   },
+   "SF-PAYOFF-036": {
+    "prompt": "A $5,000 debt accrues 2%/month interest; you pay $150/month. In month 1, does the balance rise or fall? Will the loan ever be paid off at this fixed payment?",
+    "keys": "- \"direction\": one word: rising | falling | steady; in month 1 the balance: rising | falling | steady\n- \"paid_off\": yes or no; will the loan ever be paid off at this fixed payment: yes | no"
+   },
+   "SF-CHURN-037": {
+    "prompt": "An app gains a constant 100 new users/week and loses 5% of its *current* users to churn each week. At what user count does the base stop growing?",
+    "keys": "- \"value\": a number; the user count at which the base stops growing"
+   },
+   "SF-OVERFLOW-038": {
+    "prompt": "A reservoir has a 300 ML capacity and currently holds 120 ML. Inflow is 40 ML/h, outflow 25 ML/h. After how many hours does it overflow?",
+    "keys": "- \"hours\": a number; hours until it overflows"
+   },
+   "SF-BAC-039": {
+    "prompt": "Someone drinks steadily, adding alcohol to the blood at 8 g/h for 3 hours, then stops. The liver clears alcohol at a constant 6 g/h throughout. Starting from 0, at what time is blood alcohol highest, and roughly how much?",
+    "keys": "- \"peak_time\": a number; the hour at which blood alcohol is highest\n- \"peak_value\": a number; blood alcohol at the peak, in grams"
+   },
+   "SF-AQUI-040": {
+    "prompt": "An aquifer recharges at a constant 100 ML/yr. Extraction is 60 ML/yr in year 1 and rises 10 ML/yr each year. In which year does the aquifer level *begin to fall*?",
+    "keys": "- \"year\": a number; the year in which the aquifer level begins to fall"
+   },
+   "SF-INVWK-041": {
+    "prompt": "A parts bin holds 300 units Monday morning. Daily in/out: Mon +40/−20, Tue +60/−30, Wed +10/−50, Thu +30/−20, Fri +20/−40. What is the level at Friday close, and on which day is the bin fullest?",
+    "keys": "- \"value\": a number; level at Friday close, in units\n- \"peak_value\": a number; the fullest the bin gets, in units\n- \"peak_day\": a weekday name; the weekday on which the bin is fullest"
+   },
+   "SF-RIVER-042": {
+    "prompt": "A lake's inflow is 50 ML/h in hour 1 and drops 5 ML/h each hour (50, 45, 40, 35, …). Outflow is a constant 20 ML/h. During hours 1–4, is the lake rising or falling, even though inflow is dropping?",
+    "keys": "- \"direction\": one word: rising | falling | steady; during hours 1 to 4 the lake is: rising | falling | steady"
+   },
+   "SF-HEATER-043": {
+    "prompt": "A water heater adds heat that would raise a perfectly insulated tank by 10°C/h. Heat loss = 0.5°C/h for every °C the water is above the 20°C room. At what temperature does the water settle?",
+    "keys": "- \"value\": a number; the temperature at which the water settles, in degrees C"
+   },
+   "SF-CACHE-044": {
+    "prompt": "A cache receives 500 new entries/min. Its eviction policy removes 10% of the *current* entries each minute. At what size does the cache stabilize?",
+    "keys": "- \"value\": a number; the size at which the cache stabilizes, in entries"
+   },
+   "SF-AGENT-045": {
+    "prompt": "An agent adds facts to its knowledge base at a *decreasing* rate — 40 in session 1, 30 in session 2, 20 in session 3, 10 in session 4 — and never deletes any. Over these four sessions, is the knowledge base growing or shrinking?",
+    "keys": "- \"direction\": one word: rising | falling | steady; over the four sessions the knowledge base is: rising (growing) | falling (shrinking) | steady"
+   },
+   "SF-WEIGHT-046": {
+    "prompt": "A person's daily calorie surplus (intake minus expenditure) shrinks over four weeks — +500/day, +300, +150, +50 — but stays positive. Is their stored body fat higher or lower after four weeks? Is it still rising in week 4?",
+    "keys": "- \"direction\": one word: rising | falling | steady; stored body fat after four weeks versus the start: rising (higher) | falling (lower) | steady\n- \"still_rising\": yes or no; is it still rising in week 4: yes | no"
+   },
+   "SF-COHORT-047": {
+    "prompt": "A company hires a constant 30 people/month; attrition runs at 2% of headcount/month. What is the steady-state headcount?",
+    "keys": "- \"value\": a number; the steady-state headcount, in people"
+   },
+   "SF-DAM-048": {
+    "prompt": "A reservoir starts at 200 ML. The net weekly change over five weeks is −40, −40, +10, +60, +50. What is the volume at the end of week 5, and in which week does the volume first climb back above its 200 ML starting level?",
+    "keys": "- \"value\": a number; volume at the end of week 5\n- \"week\": a number; the week in which the volume first climbs back above 200 ML"
+   },
+   "SF-EMISS-049": {
+    "prompt": "A factory releases a pollutant into a pond at a constant 100 kg/yr. The pond breaks it down at 5%/yr of the amount present. Does the pollutant rise forever, or approach a steady level — and what level?",
+    "keys": "- \"shape\": one of the named shapes, exactly as written; the pollutant in the pond: unbounded (rises forever) | levels-off (approaches a steady level)\n- \"value\": a number; the steady level, in kg"
+   },
+   "SF-SALES-050": {
+    "prompt": "A factory produces a constant 500 units/day into inventory. Sales start at 400/day and rise 20/day each day. Inventory starts at 1,000. On which day does inventory *begin to fall*?",
+    "keys": "- \"day\": a number; the day on which inventory begins to fall"
+   },
+   "SF-COOL-051": {
+    "prompt": "A server room's cooling removes heat at a constant rate equivalent to −2.0°C/h. The server heat load adds +1.5°C/h in hour 1 and rises +0.5°C/h each hour (1.5, 2.0, 2.5, …). The room starts at 20°C. In which hour does the room temperature *begin to rise*?",
+    "keys": "- \"hour\": a number; the hour in which the room temperature begins to rise"
+   },
+   "SF-POND2-052": {
+    "prompt": "A pond holds 1,000 fish. Monthly stocking/harvest over a 5-month season: M1 +100/−200, M2 +100/−150, M3 +100/−80, M4 +200/−50, M5 +150/−50. What is the level at season's end, and in which month is the pond lowest?",
+    "keys": "- \"value\": a number; level at season's end, in fish\n- \"low_value\": a number; the lowest level reached, in fish\n- \"low_month\": a number; the month in which the pond is lowest"
+   },
+   "SF-CO2-003": {
+    "prompt": "Atmospheric CO₂ is a stock. Suppose global emissions (inflow) stop *rising* and hold perfectly constant, while natural absorption (outflow) stays below emissions. Does atmospheric CO₂ stabilize, keep rising, or fall?",
+    "keys": "- \"shape\": one of the named shapes, exactly as written; atmospheric CO2: levels-off (stabilizes) | keeps-rising | keeps-falling"
+   },
+   "SF-EMISSDROP-053": {
+    "prompt": "Global CO₂ emissions (inflow) are now *declining* year over year, but still exceed natural absorption (outflow). Is atmospheric CO₂ currently rising, falling, or stable? When would the CO₂ stock peak?",
+    "keys": "- \"shape\": one of the named shapes, exactly as written; atmospheric CO2 is currently: keeps-rising | keeps-falling | levels-off (stable)"
+   },
+   "SF-MOMENTUM-054": {
+    "prompt": "A country's fertility rate falls to exactly replacement level (2.1) this year. Its population is very young — large cohorts are just entering childbearing age. Will population growth stop now, or continue — and why?",
+    "keys": "- \"shape\": one of the named shapes, exactly as written; population growth: levels-off (stops now) | keeps-rising (continues)"
+   },
+   "SF-DEFICIT-055": {
+    "prompt": "A government cuts its annual budget deficit for five straight years — the deficit shrinks each year but stays positive. Over those five years, is the national debt going up or down?",
+    "keys": "- \"shape\": one of the named shapes, exactly as written; over the five years the national debt: keeps-rising | keeps-falling | levels-off"
+   },
+   "SF-AQUIFER-056": {
+    "prompt": "After years of over-pumping, a town cuts groundwater extraction back to exactly the natural recharge rate. Will the aquifer refill to its former level, hold where it is, or keep dropping?",
+    "keys": "- \"shape\": one of the named shapes, exactly as written; the aquifer will: keeps-rising (refill) | levels-off (hold where it is) | keeps-falling"
+   },
+   "SF-FISHSET-057": {
+    "prompt": "A fishery was sustainable at 10,000 t/yr of catch when the population was healthy. After heavy fishing, the stock is now half its former size, but managers hold the catch at 10,000 t/yr. What happens to the fish population?",
+    "keys": "- \"shape\": one of the named shapes, exactly as written; the fish population: keeps-falling | levels-off | keeps-rising"
+   },
+   "SF-TEMPCOMMIT-058": {
+    "prompt": "Suppose the world reaches net-zero CO₂ emissions, so atmospheric CO₂ stops rising. Does global temperature then fall back to pre-industrial levels, hold roughly steady, or keep climbing?",
+    "keys": "- \"shape\": one of the named shapes, exactly as written; global temperature then: keeps-falling (falls back) | levels-off (holds roughly steady) | keeps-rising"
+   },
+   "SF-TECHDEBT-059": {
+    "prompt": "A team fixes a constant 20 bugs/week. But the codebase keeps growing, and new bugs are introduced at a rate proportional to code size — currently 15/week and climbing as the code grows. What happens to the open-bug backlog over time?",
+    "keys": "- \"shape\": one of the named shapes, exactly as written; the open-bug backlog over time: keeps-falling (drains) | levels-off | unbounded (grows without bound)"
+   },
+   "SF-PIPELINE-060": {
+    "prompt": "A retailer sees demand drop and immediately cuts new orders to zero. But there's a 3-week shipping pipeline, and three weeks of previously-placed orders are still in transit. What happens to on-hand inventory before it settles?",
+    "keys": "- \"shape\": one of the named shapes, exactly as written; on-hand inventory before it settles: levels-off (stops rising immediately) | overshoot (keeps rising, then overshoots)"
+   },
+   "SF-PLASTIC-061": {
+    "prompt": "Ocean plastic is a stock. Suppose the world *halves* the rate of plastic entering the ocean, while natural removal stays negligible (≈0). Does the amount of plastic in the ocean fall, stabilize, or keep rising?",
+    "keys": "- \"shape\": one of the named shapes, exactly as written; the amount of plastic in the ocean: keeps-falling | levels-off | keeps-rising"
+   },
+   "SF-RETIRE-062": {
+    "prompt": "A retiree has $500,000 and withdraws a fixed $40,000/year. The portfolio also earns returns proportional to its balance, averaging 6%/yr. Is the balance stable, growing, or shrinking? What balance would exactly sustain the withdrawal?",
+    "keys": "- \"direction\": one word: rising | falling | steady; the balance is: rising (growing) | steady (stable) | falling (shrinking)\n- \"breakeven\": a number; the balance that would exactly sustain the withdrawal, in dollars"
+   },
+   "SF-OCEANHEAT-063": {
+    "prompt": "Suppose greenhouse-gas concentrations are held perfectly constant from today (the climate forcing stops increasing). Does global temperature stop rising immediately, or keep rising for a while — and why?",
+    "keys": "- \"shape\": one of the named shapes, exactly as written; global temperature: levels-off (stops rising immediately) | rise-then-level (keeps rising for a while, then levels off)"
+   },
+   "SF-SKILL-064": {
+    "prompt": "You learn a language by adding a roughly constant amount of vocabulary each week, but you also forget words at a rate proportional to how many you currently know. Does your vocabulary grow without limit, or level off — and what sets the ceiling?",
+    "keys": "- \"shape\": one of the named shapes, exactly as written; vocabulary: unbounded (grows without limit) | levels-off"
+   },
+   "SF-RESIST-065": {
+    "prompt": "Antibiotic-resistant bacteria are a stock. A hospital sharply cuts antibiotic use, slowing the *creation* of new resistance. Existing resistant strains persist (little natural loss). What happens to the overall level of resistance?",
+    "keys": "- \"shape\": one of the named shapes, exactly as written; the overall level of resistance: keeps-falling (goes away) | levels-off (stays high)"
+   },
+   "SF-AGENTERR-066": {
+    "prompt": "A long-running AI agent accumulates errors in its working context — each wrong fact it writes stays in memory. Engineers halve the *rate* of new errors, but the agent still never prunes old ones. Over a long session, is the total error count in context going down?",
+    "keys": "- \"going_down\": yes or no; is the total error count in context going down: yes | no\n- \"shape\": one of the named shapes, exactly as written; the total error count: keeps-falling | keeps-rising | levels-off"
+   },
+   "SF-HOUSING-067": {
+    "prompt": "When housing demand and prices rise, developers start building — but a project takes ~3 years from permit to occupancy. Prices signal a shortage *today*; construction responds only after a long delay. What tends to happen to the housing stock (and prices) once the units finally arrive?",
+    "keys": "- \"shape\": one of the named shapes, exactly as written; once the units arrive the housing stock tends to: levels-off (smoothly close the gap) | overshoot"
+   },
+   "SF-WEALTH-068": {
+    "prompt": "In an economy, wealth earns returns proportional to how much you already have (a reinforcing loop), and everyone spends the same fixed amount. Left alone, does the wealth gap between rich and poor shrink, stay flat, or widen? Would an equal cash handout to everyone close it?",
+    "keys": "- \"shape\": one of the named shapes, exactly as written; the wealth gap: keeps-falling (shrinks) | levels-off (stays flat) | diverges (widens)\n- \"handout_closes_gap\": yes or no; would an equal cash handout to everyone close it: yes | no"
+   },
+   "SF-PENSION-069": {
+    "prompt": "A pay-as-you-go pension pays retirees out of current workers' contributions. Contributions scale with the number of workers; payouts scale with the number of retirees. The population ages: workers shrink, retirees grow. What happens to the fund balance — even if nobody changes the contribution or benefit *rates*?",
+    "keys": "- \"shape\": one of the named shapes, exactly as written; the fund balance: levels-off (stays fine) | keeps-falling (drawn down)"
+   },
+   "SF-RESERVOIR-070": {
+    "prompt": "A lake's inflow starts at 10 ML/h and rises over time toward a ceiling of 60 ML/h (approaching but never quite reaching it). Outflow is a constant 40 ML/h. Does the lake's volume level off, or rise without bound?",
+    "keys": "- \"shape\": one of the named shapes, exactly as written; the lake's volume: levels-off | unbounded (rises without bound)"
+   },
+   "SF-FORESTC-071": {
+    "prompt": "An old-growth forest stores carbon (a stock). Logging is stopped completely today. Regrowth is slow — there's a lag before young trees sequester much carbon — while decay of logging debris and old material continues for years. In the first years after logging stops, does the forest's carbon stock rise right away, or keep falling first?",
+    "keys": "- \"shape\": one of the named shapes, exactly as written; in the first years the carbon stock: keeps-rising (rises right away) | worse-before-better (keeps falling first, then recovers)"
+   },
+   "SF-GLUCOSE-072": {
+    "prompt": "After a sugary meal, glucose enters the blood quickly; the body clears it via insulin, but insulin release lags the glucose rise. Starting from normal, describe the blood-glucose trajectory — and explain why it can dip *below* normal before settling.",
+    "keys": "- \"shape\": one of the named shapes, exactly as written; blood glucose: rise-then-level (rises, then smoothly returns to normal) | overshoot-undershoot (spikes, then dips below normal before settling)"
+   },
+   "SF-SILT-073": {
+    "prompt": "A reservoir behind a dam slowly fills with sediment: rivers deposit a small, roughly constant amount of silt each year, and essentially none leaves. Over decades, what happens to the reservoir's usable water-storage capacity — and is it easily reversed?",
+    "keys": "- \"shape\": one of the named shapes, exactly as written; usable storage capacity over decades: levels-off (basically fine) | keeps-falling (declines toward zero)\n- \"reversible\": yes or no; is it easily reversed: yes | no"
+   },
+   "SF-SAAS-074": {
+    "prompt": "A SaaS company signs a constant $100,000 of new recurring revenue (MRR) each month, but loses a fixed 5% of its *existing* MRR to churn each month. If sales effort stays constant, does MRR grow forever, or hit a ceiling — and where?",
+    "keys": "- \"shape\": one of the named shapes, exactly as written; MRR: unbounded (grows forever) | levels-off (hits a ceiling)\n- \"value\": a number; the ceiling, in dollars of MRR"
+   },
+   "SF-GRID-075": {
+    "prompt": "A grid battery charges whenever there's solar surplus. Operators dispatch discharge based on a demand forecast that lags real demand by a few hours, so when a spike hits, discharge is ordered late. Describe how the battery's state-of-charge behaves, and why relying on the lagged signal causes trouble.",
+    "keys": "- \"shape\": one of the named shapes, exactly as written; the battery's state of charge: levels-off (stays right where it should) | oscillates (overshoots and oscillates)"
+   }
+  }
+ }
 }

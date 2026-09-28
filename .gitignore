@@ -18,3 +18,6 @@ results/**/R*.prompt
 
 # Local proxy config (env placeholder lives local-only by policy)
 SystemsBenchPitchSite/proxy.json
+
+# Python bytecode
+__pycache__/

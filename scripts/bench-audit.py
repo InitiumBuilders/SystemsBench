@@ -28,7 +28,9 @@ Usage:  python3 scripts/bench-audit.py            (from anywhere in the repo)
 import io, os, re, sys, collections
 
 _here = os.path.dirname(os.path.abspath(__file__))
-R = (sys.argv[1] if len(sys.argv) > 1 else os.path.dirname(_here)).rstrip('/') + '/'
+_args = [a for a in sys.argv[1:] if not a.startswith('--')]
+WRITE_STATUS = '--write-status' in sys.argv
+R = (_args[0] if _args else os.path.dirname(_here)).rstrip('/') + '/'
 raw = io.open(R + 'items/INDEX.md', encoding='utf-8').read()
 
 def tables(md):
@@ -91,7 +93,8 @@ RUNGS = ['AUTHORED', 'REVIEWED', 'ORACLE-READY', 'EXECUTABLE', 'HUMAN-CALIBRATED
 def _load(p):
     try: return json.load(io.open(R + p, encoding='utf-8'))
     except Exception: return {}
-_oracle = set(_load('items/cld_oracle.json').get('items', {})) | set(_load('items/dyn_oracle.json').get('items', {}))
+_oracle = set().union(*[set(_load(os.path.relpath(_p, R)).get('items', {})) for _p in glob.glob(R + 'items/*_oracle.json')]) if glob.glob(R + 'items/*_oracle.json') else set()
+_oracle_files = sorted(os.path.basename(_p) for _p in glob.glob(R + 'items/*_oracle.json'))
 _hp = _load('items/harness_prompts.json')
 _harness = set().union(*[set(_hp[k].get('items', {})) for k in _hp if k != '_meta' and isinstance(_hp[k], dict)]) if _hp else set()
 _gold = {}
@@ -114,6 +117,23 @@ for row in items:
         elif c in RUNGS and RUNGS.index(c) < RUNGS.index(e): understated.append((_id, c, e))
         elif c not in RUNGS: violations.append((_id, c, e))
 has_status = i_status is not None
+if WRITE_STATUS:
+    # rewrite the register's Status cells from evidence (touching only the register rows)
+    _lines = raw.split('\n'); _hi = next(i for i, l in enumerate(_lines) if l.startswith('| ID |'))
+    _hdr = [c.strip() for c in _lines[_hi].strip().strip('|').split('|')]
+    if 'Status' not in _hdr:
+        _lines[_hi] = _lines[_hi].rstrip() + ' Status |'; _lines[_hi + 1] = _lines[_hi + 1].rstrip() + '---|'
+    _si = ([c.strip() for c in _lines[_hi].strip().strip('|').split('|')]).index('Status')
+    _changed = 0; _j = _hi + 2
+    while _j < len(_lines) and _lines[_j].startswith('|'):
+        _cells = [c.strip() for c in _lines[_j].strip().strip('|').split('|')]
+        _e = earned(_cells[0], _cells[i_file] if i_file is not None and i_file < len(_cells) else '')
+        if len(_cells) <= _si: _cells.append(_e)
+        if _cells[_si] != _e: _cells[_si] = _e; _changed += 1
+        _lines[_j] = '| ' + ' | '.join(_cells) + ' |'; _j += 1
+    io.open(R + 'items/INDEX.md', 'w', encoding='utf-8').write('\n'.join(_lines))
+    print('  wrote Status from evidence: %d item(s) changed' % _changed)
+    violations, understated = [], []   # the column now IS the evidence
 
 cl = io.open(R + 'CHANGELOG.md', encoding='utf-8').read()
 rd = io.open(R + 'README.md', encoding='utf-8').read()
@@ -187,9 +207,10 @@ for k, v in gold.most_common():
 A('')
 A('No item is `HUMAN-CALIBRATED` or `CERTIFIED`. The mechanism to become either')
 A('now exists (a rung with a definition, and a guard); the labels do not, because no')
-A('human has graded an item and no live run has happened. The SF format has reference')
-A('answers and an exact-match rule but no scorer script and no harness template, so its')
-A('%d items stay `AUTHORED` until `engine/sf-score.py` exists (BACKLOG #15).' % fmts.get('SF', 0))
+A('human has graded an item and no live run has happened. Oracle files found: %s.' % ', '.join('`items/%s`' % f for f in _oracle_files))
+_sf_exec = sum(1 for row in items if row[0].startswith('SF-') and earned(row[0], row[i_file] if (i_file is not None and i_file < len(row)) else '') == 'EXECUTABLE')
+A('The SF format has %d of %d items executable through `engine/sf-score.py` (SenseRun #13); the rest ask for a' % (_sf_exec, fmts.get('SF', 0)))
+A('classification or a comparative sketch that no field can hold, and stay `AUTHORED` on purpose.')
 A('')
 A('## Version and count, checked')
 A('')
@@ -227,3 +248,4 @@ print('  maturity: %s' % dict(maturity))
 if has_status and violations:
     print('  GUARD FAILED: %d claim(s) above evidence' % len(violations)); sys.exit(3)
 print('  guard: %s' % ('every claimed rung is earned' if has_status else 'no Status column to guard'))
+# usage: python3 scripts/bench-audit.py [repo-root] [--write-status]   (--write-status rewrites the Status column from evidence)

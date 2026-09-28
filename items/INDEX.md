@@ -116,81 +116,81 @@ These definitions are provisional: rung names and thresholds touch the Structure
 | LEV-OVERTOUR-073 | LEV | L3 | economics/social | C (sub-threshold #12; rental rules #5; goal #3), D | 2026-07-05 | items/seed_LEV_organizations.md · jury UNCALIBRATED (no gold yet) | AUTHORED |
 | LEV-YOYO-074 | LEV | L3 | personal/behavioral | C (intensity wrong-direction; environment #5 + goal #3), B, D | 2026-07-05 | items/seed_LEV_organizations.md · jury UNCALIBRATED (no gold yet) | AUTHORED |
 | LEV-BACKLOG-075 | LEV | L3 | government/organizations | C (outflow structure #10/#5; defensive-filing loop), B, D | 2026-07-05 | items/seed_LEV_organizations.md · jury UNCALIBRATED (no gold yet) | AUTHORED |
-| SF-RES-001 | SF | L1 | ecology | A (stock/flow), D (BOT) | 2026-05-31 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-BANK-002 | SF | L2 | economics | A, D, reinforcing-loop | 2026-05-31 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-CO2-003 | SF | L3 | public-health/climate | A, D, inflow>outflow | 2026-05-31 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-INV-004 | SF | L2 | operations | A (integrate flows) | 2026-05-31 | items/seed_SF_stockflow.md | AUTHORED |
+| SF-RES-001 | SF | L1 | ecology | A (stock/flow), D (BOT) | 2026-05-31 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-BANK-002 | SF | L2 | economics | A, D, reinforcing-loop | 2026-05-31 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-CO2-003 | SF | L3 | public-health/climate | A, D, inflow>outflow | 2026-05-31 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-INV-004 | SF | L2 | operations | A (integrate flows) | 2026-05-31 | items/seed_SF_stockflow.md | EXECUTABLE |
 | SF-TRUST-005 | SF | L3 | social/behavioral | A, D, nonlinearity, delay | 2026-05-31 | items/seed_SF_stockflow.md | AUTHORED |
 | SF-BATH-006 | SF | L1 | personal/water | A (stock/flow classification) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-ACCT-007 | SF | L1 | economics | A, D (net-flow) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-POP-008 | SF | L1 | ecology/social | A, D (net-flow); trap: both-flows-nonzero≠steady | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-WARE-009 | SF | L1 | operations | A, D (net-flow) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-INBOX-010 | SF | L1 | software/infra | A, D (queue net-flow) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-FOREST-011 | SF | L1 | ecology | A, D (net-flow) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
+| SF-ACCT-007 | SF | L1 | economics | A, D (net-flow) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-POP-008 | SF | L1 | ecology/social | A, D (net-flow); trap: both-flows-nonzero≠steady | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-WARE-009 | SF | L1 | operations | A, D (net-flow) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-INBOX-010 | SF | L1 | software/infra | A, D (queue net-flow) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-FOREST-011 | SF | L1 | ecology | A, D (net-flow) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
 | SF-LABEL-012 | SF | L1 | organizations | A (stock/flow classification) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-BATT-013 | SF | L1 | personal/tech | A, D (net-flow) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-STEADY-014 | SF | L1 | ecology/water | A, D (balanced flows → steady) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-LOAN-015 | SF | L1 | economics | A, D (net-flow; stock vs cumulative flow) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-DRAW-016 | SF | L1 | ecology/water | A, D (net-flow; positive inflow, still falling) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
+| SF-BATT-013 | SF | L1 | personal/tech | A, D (net-flow) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-STEADY-014 | SF | L1 | ecology/water | A, D (balanced flows → steady) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-LOAN-015 | SF | L1 | economics | A, D (net-flow; stock vs cumulative flow) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-DRAW-016 | SF | L1 | ecology/water | A, D (net-flow; positive inflow, still falling) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
 | SF-ROOM-017 | SF | L1 | public-health | A (classification) + D (net-flow) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-SNOW-018 | SF | L1 | ecology | A, D (net-flow) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-MEM-019 | SF | L1 | AI/agent | A, D (net-flow) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-TODO-020 | SF | L1 | personal/behavioral | A, D (queue net-flow) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-CUST-021 | SF | L1 | organizations/markets | A, D (net-flow) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-DISK-022 | SF | L1 | software/infra | A, D (net-flow) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-POND-023 | SF | L1 | ecology/fisheries | A, D (net-flow, falling) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-FOLLOW-024 | SF | L1 | social | A, D (net-flow, falling) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
+| SF-SNOW-018 | SF | L1 | ecology | A, D (net-flow) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-MEM-019 | SF | L1 | AI/agent | A, D (net-flow) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-TODO-020 | SF | L1 | personal/behavioral | A, D (queue net-flow) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-CUST-021 | SF | L1 | organizations/markets | A, D (net-flow) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-DISK-022 | SF | L1 | software/infra | A, D (net-flow) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-POND-023 | SF | L1 | ecology/fisheries | A, D (net-flow, falling) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-FOLLOW-024 | SF | L1 | social | A, D (net-flow, falling) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
 | SF-HEAT-025 | SF | L1 | personal/infra | A (stock/flow classification) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-QUEUE-026 | SF | L1 | AI/agent | A, D (queue net-flow, falling) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-RAIN-027 | SF | L1 | ecology/water | A, D (net-flow) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-SUB-028 | SF | L1 | markets | A, D (balanced churn → steady) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-BED-029 | SF | L1 | public-health | A, D (net-flow, falling) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-HIRE-030 | SF | L2 | organizations | A, D, correlation-heuristic (falling flow, rising stock) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-PEAK-031 | SF | L2 | ecology/water | A, D (peak = net-flow zero crossing) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-TICKET-032 | SF | L2 | software/infra | A, D (unbounded queue growth) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-CASH-033 | SF | L2 | organizations | A, D (runway = stock / net flow) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-STEADYK-034 | SF | L2 | ecology/water | A, D (steady state, stock-proportional outflow) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-SAVE-035 | SF | L2 | personal/finance | A, D, reinforcing (compounding) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-PAYOFF-036 | SF | L2 | economics | A, D (payment vs interest; contrast SF-BANK-002) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-CHURN-037 | SF | L2 | social | A, D (steady state, proportional churn) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-OVERFLOW-038 | SF | L2 | ecology/water | A, D (time-to-threshold) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-BAC-039 | SF | L2 | personal/health | A, D (peak when inflow stops) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-AQUI-040 | SF | L2 | ecology/economics | A, D (rising outflow crosses inflow) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-INVWK-041 | SF | L2 | operations | A, D (integrate schedule + find peak) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-RIVER-042 | SF | L2 | ecology/water | A, D, correlation-heuristic (declining inflow, still rising) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-HEATER-043 | SF | L2 | personal/infra | A, D (steady-state temperature) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-CACHE-044 | SF | L2 | software/infra | A, D (steady state, proportional eviction) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-AGENT-045 | SF | L2 | AI/agent | A, D, correlation-heuristic (decreasing inflow, rising stock) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-WEIGHT-046 | SF | L2 | personal/behavioral | A, D, correlation-heuristic (shrinking surplus, rising fat) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-COHORT-047 | SF | L2 | organizations | A, D (steady-state headcount) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-DAM-048 | SF | L2 | ecology/water | A, D (integrate + threshold crossing) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-EMISS-049 | SF | L2 | public-health/ecology | A, D (proportional sink → steady state) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-SALES-050 | SF | L2 | operations/markets | A, D (rising outflow crosses inflow) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-COOL-051 | SF | L2 | software/infra | A, D (rising load crosses cooling) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-POND2-052 | SF | L2 | ecology/fisheries | A, D (integrate + find low) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-EMISSDROP-053 | SF | L3 | climate | A, D, correlation-heuristic + mechanism (declining inflow > outflow) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-MOMENTUM-054 | SF | L3 | public-health/social | A, D, delay (demographic momentum) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-DEFICIT-055 | SF | L3 | economics | A, D, correlation-heuristic (deficit flow vs debt stock) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-AQUIFER-056 | SF | L3 | ecology | A, D (matching flows holds, doesn't restore; irreversibility) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-FISHSET-057 | SF | L3 | ecology/fisheries | A, D (flow tuned to wrong stock; state-dependent inflow) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-TEMPCOMMIT-058 | SF | L3 | climate | A, D (temperature tracks cumulative stock) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-TECHDEBT-059 | SF | L3 | software/infra | A, D (state-dependent inflow overtakes constant outflow) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-PIPELINE-060 | SF | L3 | operations | A, D, delay (supply-line → overshoot) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-PLASTIC-061 | SF | L3 | ecology | A, D (positive inflow, ~zero outflow) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-RETIRE-062 | SF | L3 | personal/finance | A, D, reinforcing (stock-dependent inflow, break-even) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-OCEANHEAT-063 | SF | L3 | climate | A, D, delay (forcing → temperature lag) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-SKILL-064 | SF | L3 | personal/behavioral | A, D (constant inflow, proportional outflow → plateau) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-RESIST-065 | SF | L3 | public-health | A, D (reduced inflow can't drain a no-outflow stock) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-AGENTERR-066 | SF | L3 | AI/agent | A, D (halved inflow, no pruning → still rising) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-HOUSING-067 | SF | L3 | economics/markets | A, D, delay (long build lag → boom-bust overshoot) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-WEALTH-068 | SF | L3 | economics/social | A, D, reinforcing (proportional returns → divergence) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-PENSION-069 | SF | L3 | economics | A, D (both flows state-dependent on shifting stocks) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-RESERVOIR-070 | SF | L3 | ecology/water | A, D, correlation-heuristic (leveling inflow above outflow) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-FORESTC-071 | SF | L3 | ecology | A, D, delay (worse-before-better; delayed inflow) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-GLUCOSE-072 | SF | L3 | public-health | A, D, delay (delayed corrective outflow → overshoot) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-SILT-073 | SF | L3 | infra/ecology | A, D (small constant inflow, no outflow → irreversible) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-SAAS-074 | SF | L3 | markets | A, D (churn ceiling; proportional outflow → asymptote) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
-| SF-GRID-075 | SF | L3 | software/infra | A, D, delay (lagged control signal → oscillation) | 2026-07-03 | items/seed_SF_stockflow.md | AUTHORED |
+| SF-QUEUE-026 | SF | L1 | AI/agent | A, D (queue net-flow, falling) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-RAIN-027 | SF | L1 | ecology/water | A, D (net-flow) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-SUB-028 | SF | L1 | markets | A, D (balanced churn → steady) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-BED-029 | SF | L1 | public-health | A, D (net-flow, falling) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-HIRE-030 | SF | L2 | organizations | A, D, correlation-heuristic (falling flow, rising stock) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-PEAK-031 | SF | L2 | ecology/water | A, D (peak = net-flow zero crossing) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-TICKET-032 | SF | L2 | software/infra | A, D (unbounded queue growth) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-CASH-033 | SF | L2 | organizations | A, D (runway = stock / net flow) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-STEADYK-034 | SF | L2 | ecology/water | A, D (steady state, stock-proportional outflow) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-SAVE-035 | SF | L2 | personal/finance | A, D, reinforcing (compounding) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-PAYOFF-036 | SF | L2 | economics | A, D (payment vs interest; contrast SF-BANK-002) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-CHURN-037 | SF | L2 | social | A, D (steady state, proportional churn) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-OVERFLOW-038 | SF | L2 | ecology/water | A, D (time-to-threshold) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-BAC-039 | SF | L2 | personal/health | A, D (peak when inflow stops) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-AQUI-040 | SF | L2 | ecology/economics | A, D (rising outflow crosses inflow) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-INVWK-041 | SF | L2 | operations | A, D (integrate schedule + find peak) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-RIVER-042 | SF | L2 | ecology/water | A, D, correlation-heuristic (declining inflow, still rising) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-HEATER-043 | SF | L2 | personal/infra | A, D (steady-state temperature) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-CACHE-044 | SF | L2 | software/infra | A, D (steady state, proportional eviction) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-AGENT-045 | SF | L2 | AI/agent | A, D, correlation-heuristic (decreasing inflow, rising stock) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-WEIGHT-046 | SF | L2 | personal/behavioral | A, D, correlation-heuristic (shrinking surplus, rising fat) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-COHORT-047 | SF | L2 | organizations | A, D (steady-state headcount) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-DAM-048 | SF | L2 | ecology/water | A, D (integrate + threshold crossing) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-EMISS-049 | SF | L2 | public-health/ecology | A, D (proportional sink → steady state) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-SALES-050 | SF | L2 | operations/markets | A, D (rising outflow crosses inflow) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-COOL-051 | SF | L2 | software/infra | A, D (rising load crosses cooling) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-POND2-052 | SF | L2 | ecology/fisheries | A, D (integrate + find low) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-EMISSDROP-053 | SF | L3 | climate | A, D, correlation-heuristic + mechanism (declining inflow > outflow) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-MOMENTUM-054 | SF | L3 | public-health/social | A, D, delay (demographic momentum) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-DEFICIT-055 | SF | L3 | economics | A, D, correlation-heuristic (deficit flow vs debt stock) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-AQUIFER-056 | SF | L3 | ecology | A, D (matching flows holds, doesn't restore; irreversibility) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-FISHSET-057 | SF | L3 | ecology/fisheries | A, D (flow tuned to wrong stock; state-dependent inflow) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-TEMPCOMMIT-058 | SF | L3 | climate | A, D (temperature tracks cumulative stock) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-TECHDEBT-059 | SF | L3 | software/infra | A, D (state-dependent inflow overtakes constant outflow) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-PIPELINE-060 | SF | L3 | operations | A, D, delay (supply-line → overshoot) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-PLASTIC-061 | SF | L3 | ecology | A, D (positive inflow, ~zero outflow) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-RETIRE-062 | SF | L3 | personal/finance | A, D, reinforcing (stock-dependent inflow, break-even) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-OCEANHEAT-063 | SF | L3 | climate | A, D, delay (forcing → temperature lag) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-SKILL-064 | SF | L3 | personal/behavioral | A, D (constant inflow, proportional outflow → plateau) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-RESIST-065 | SF | L3 | public-health | A, D (reduced inflow can't drain a no-outflow stock) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-AGENTERR-066 | SF | L3 | AI/agent | A, D (halved inflow, no pruning → still rising) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-HOUSING-067 | SF | L3 | economics/markets | A, D, delay (long build lag → boom-bust overshoot) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-WEALTH-068 | SF | L3 | economics/social | A, D, reinforcing (proportional returns → divergence) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-PENSION-069 | SF | L3 | economics | A, D (both flows state-dependent on shifting stocks) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-RESERVOIR-070 | SF | L3 | ecology/water | A, D, correlation-heuristic (leveling inflow above outflow) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-FORESTC-071 | SF | L3 | ecology | A, D, delay (worse-before-better; delayed inflow) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-GLUCOSE-072 | SF | L3 | public-health | A, D, delay (delayed corrective outflow → overshoot) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-SILT-073 | SF | L3 | infra/ecology | A, D (small constant inflow, no outflow → irreversible) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-SAAS-074 | SF | L3 | markets | A, D (churn ceiling; proportional outflow → asymptote) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
+| SF-GRID-075 | SF | L3 | software/infra | A, D, delay (lagged control signal → oscillation) | 2026-07-03 | items/seed_SF_stockflow.md | EXECUTABLE |
 | CLD-FISH-001 | CLD | L3 | ecology/fisheries | A (loops/polarity/delay), B, D (dominant-loop shift) | 2026-06-13 | items/seed_CLD_causalloops.md · jury portion UNCALIBRATED; structural oracle live | EXECUTABLE |
 | CLD-EPI-002 | CLD | L3 | public-health | A, B, D (R1→B1+B3 shift, 2nd wave) | 2026-06-13 | items/seed_CLD_causalloops.md · jury portion UNCALIBRATED; structural oracle live | EXECUTABLE |
 | CLD-ORG-003 | CLD | L3 | organizations | A, B (eroding-goals; two balancing loops) | 2026-06-13 | items/seed_CLD_causalloops.md · jury portion UNCALIBRATED; structural oracle live | EXECUTABLE |
