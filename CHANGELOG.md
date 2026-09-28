@@ -3,6 +3,13 @@
 All notable changes. Every `Davara /SystemsBenchSenseRun` appends here.
 Format: `vX.Y.Z — YYYY-MM-DD — type — summary`.
 
+## v0.13.0 — 2026-09-27 — SenseRun #12 — rules-of-register (a computed `Status` column + a guard that fails when an item claims a rung it has not earned)
+- **`items/INDEX.md` gains a `Status` column**, computed from evidence by `scripts/bench-audit.py` and never typed: 10 `EXECUTABLE` (the 5 CLD + 5 DYN items that are in an oracle JSON and wired into `harness_prompts.json`), 1 `ORACLE-READY` (LEV-ORG-001, whose gold file is provisional and synthetic), 289 `AUTHORED`. Six rungs, one provisional definition each, in a new INDEX section; the definitions touch the Structure and await ratification by August and Ember.
+- **The guard:** the counter recomputes every item's earned rung and **fails (exit 3)** when the column claims a rung above the evidence. Understated claims are reported, not failed. STATUS.md's "maturity cannot be produced" paragraph is replaced by a counted table, and it now says out loud that no item is human-calibrated or certified.
+- **A finding the column surfaced:** `SF` has reference answers and an exact-match rule but no `engine/sf-score.py` and no harness template. By the definitions, its 75 items are `AUTHORED`, not `EXECUTABLE`. The README's line about SF being runnable end to end was overstated; the status block now says so. Logged as BACKLOG #15.
+- **Self-tests before and after:** measured, see the run log. Nothing scoreable changed.
+- **Scope:** register schema (one appended column), tooling, documentation. No item prompt, reference, rubric, weight, scorer, oracle or invariant changed. Additive and reversible: one APPLY commit, one revert. §3.1(b) stays PARKED (Meadows #5).
+
 ## v0.12.1 — 2026-09-27 — SenseRun #11 — truth (the front door counts itself: README and engine state regenerated from the register; the counter published)
 - **`README.md` now states the counted state:** v0.12.1, 300 items (75 per seeded format, 25 per level), 11 SenseRuns, 299 of 300 without a gold reference. Before this run it said v0.8.0 and 16 items while the CHANGELOG said v0.12.0 and STATUS.md counted 300. STATUS.md had recorded the drift since the 2026-08-02 sync: "Nobody lied — the versions moved and the prose did not."
 - **`scripts/bench-audit.py` published.** It lived only in the Davara baseline, so the "counted" status cited a counter nobody outside could run. It now resolves the repo root from its own location, regenerates STATUS.md, and reports agreement when README and CHANGELOG match instead of assuming drift.

@@ -25,33 +25,39 @@ If a README disagrees with this, the README is wrong — that is the point.*
 | L2 | 100 |
 | L3 | 100 |
 
-## Maturity — the honest part
+## Maturity — counted from evidence
 
-There is no `status` column. What exists is a **gold-reference marker** inside
-the `File` cell, which is the only maturity signal the register carries:
+Each item's rung is computed from the files (oracle JSONs, the harness prompt
+file, the gold files), and compared with the `Status` column in the register.
+
+| Rung | Items | Earned when |
+|---|---|---|
+| `AUTHORED` | 289 | in the register with a prompt and a seed-file reference |
+| `REVIEWED` | 0 | a named second reader signed it (`reviewed:`) |
+| `ORACLE-READY` | 1 | machine-readable reference (oracle JSON) or a gold file |
+| `EXECUTABLE` | 10 | oracle + harness: elicit, parse, score with no hand in the loop |
+| `HUMAN-CALIBRATED` | 0 | a gold file with human labels clearing the §3.1 gate |
+| `CERTIFIED` | 0 | human-calibrated + a live-run item statistic on file |
+
+**Guard: every claimed rung is earned.** 0 item(s) claim below what they earned (understated, not a failure).
 
 | Gold reference | Items |
 |---|---|
 | NO GOLD REFERENCE | 299 |
 | PROVISIONAL | 1 |
 
-So the breakdown by AUTHORED / REVIEWED / ORACLE-READY / EXECUTABLE /
-HUMAN-CALIBRATED / CERTIFIED **cannot be produced** — those states are not
-recorded anywhere. Every item is authored. A `PROVISIONAL` gold reference is
-the highest rung any item has reached, and provisional is not calibrated.
-
-**Nothing in this bank is certified, and there is no mechanism by which an item
-could become certified.** A bench that cannot separate *written down* from
-*known to work* cannot be cited as evidence — by us or by anyone. The next move
-is not more items. It is a status column, a definition per rung, and a guard
-that fails when an item claims a rung it has not earned.
+No item is `HUMAN-CALIBRATED` or `CERTIFIED`. The mechanism to become either
+now exists (a rung with a definition, and a guard); the labels do not, because no
+human has graded an item and no live run has happened. The SF format has reference
+answers and an exact-match rule but no scorer script and no harness template, so its
+75 items stay `AUTHORED` until `engine/sf-score.py` exists (BACKLOG #15).
 
 ## Version and count, checked
 
 | Source | Says |
 |---|---|
-| `CHANGELOG.md` | **v0.12.1** |
-| `README.md` | **v0.12.1**, "300 items" |
+| `CHANGELOG.md` | **v0.13.0** |
+| `README.md` | **v0.13.0**, "300 items" |
 | this register | **300 items** |
 
 README, CHANGELOG and the register agree.
@@ -59,7 +65,7 @@ README, CHANGELOG and the register agree.
 ## What may be said in public
 
 - ✅ "300 authored items across 4 seeded formats"
-- ✅ the README states the counted number (300) and the CHANGELOG version (v0.12.1)
+- ✅ the README states the counted number (300) and the CHANGELOG version (v0.13.0)
 - ❌ any claim of calibration, certification, or IRT stability
 
 *Re-run `python3 scripts/bench-audit.py` after any change to the register.*

@@ -17,6 +17,11 @@ root from its own location (or takes it as the first argument) and reports
 agreement as well as drift, so a README that matches the register is recorded
 as matching instead of being assumed stale.
 
+SenseRun #12 (2026-09-27) added the maturity guard: every item's rung is
+recomputed from evidence (oracle JSONs, the harness prompt file, gold files) and
+compared with the register's Status column. A claim above the evidence fails
+the run (exit 3). Understated claims are reported, not failed.
+
 Usage:  python3 scripts/bench-audit.py            (from anywhere in the repo)
         python3 scripts/bench-audit.py /path/to/repo
 """
@@ -66,7 +71,7 @@ items = register[1] if register else []
 H = [h.lower() for h in (register[0] if register else [])]
 def idx(frag):
     return next((i for i, h in enumerate(H) if frag in h), None)
-i_fmt, i_diff, i_dom, i_file = idx('format'), idx('diff'), idx('domain'), idx('file')
+i_fmt, i_diff, i_dom, i_file, i_status = idx('format'), idx('diff'), idx('domain'), idx('file'), idx('status')
 
 fmts = collections.Counter()
 diffs = collections.Counter()
@@ -79,6 +84,36 @@ for row in items:
     cell = row[i_file] if (i_file is not None and i_file < len(row)) else ''
     m = re.search(r'gold:\s*([A-Za-z-]+)', cell)
     gold[m.group(1).upper() if m else 'NO GOLD REFERENCE'] += 1
+
+# ── maturity: the earned rung per item, from evidence; the claimed rung from the column ──
+import json, glob
+RUNGS = ['AUTHORED', 'REVIEWED', 'ORACLE-READY', 'EXECUTABLE', 'HUMAN-CALIBRATED', 'CERTIFIED']
+def _load(p):
+    try: return json.load(io.open(R + p, encoding='utf-8'))
+    except Exception: return {}
+_oracle = set(_load('items/cld_oracle.json').get('items', {})) | set(_load('items/dyn_oracle.json').get('items', {}))
+_hp = _load('items/harness_prompts.json')
+_harness = set().union(*[set(_hp[k].get('items', {})) for k in _hp if k != '_meta' and isinstance(_hp[k], dict)]) if _hp else set()
+_gold = {}
+for _f in glob.glob(R + 'calibration/gold/*.gold.md'):
+    _gold[os.path.basename(_f).replace('.gold.md', '')] = io.open(_f, encoding='utf-8').read()
+_human = {k for k, v in _gold.items() if re.search(r'HUMAN-CALIBRATED|raters:\s*human', v, re.I)}
+def earned(item_id, file_cell):
+    if item_id in _human: return 'HUMAN-CALIBRATED'
+    if item_id in _oracle and item_id in _harness: return 'EXECUTABLE'
+    if item_id in _oracle or item_id in _gold: return 'ORACLE-READY'
+    if re.search(r'reviewed:', file_cell or ''): return 'REVIEWED'
+    return 'AUTHORED'
+maturity = collections.Counter(); violations = []; understated = []
+for row in items:
+    _id = row[0]; _file = row[i_file] if (i_file is not None and i_file < len(row)) else ''
+    e = earned(_id, _file); maturity[e] += 1
+    if i_status is not None and i_status < len(row):
+        c = row[i_status].strip()
+        if c in RUNGS and RUNGS.index(c) > RUNGS.index(e): violations.append((_id, c, e))
+        elif c in RUNGS and RUNGS.index(c) < RUNGS.index(e): understated.append((_id, c, e))
+        elif c not in RUNGS: violations.append((_id, c, e))
+has_status = i_status is not None
 
 cl = io.open(R + 'CHANGELOG.md', encoding='utf-8').read()
 rd = io.open(R + 'README.md', encoding='utf-8').read()
@@ -120,26 +155,41 @@ if diffs:
         A('| %s | %d |' % (k, v))
     A('')
 
-A('## Maturity — the honest part')
+A('## Maturity — counted from evidence')
 A('')
-A('There is no `status` column. What exists is a **gold-reference marker** inside')
-A('the `File` cell, which is the only maturity signal the register carries:')
+A('Each item\'s rung is computed from the files (oracle JSONs, the harness prompt')
+A('file, the gold files), and compared with the `Status` column in the register.')
+A('')
+A('| Rung | Items | Earned when |')
+A('|---|---|---|')
+_when = {'AUTHORED': 'in the register with a prompt and a seed-file reference',
+         'REVIEWED': 'a named second reader signed it (`reviewed:`)',
+         'ORACLE-READY': 'machine-readable reference (oracle JSON) or a gold file',
+         'EXECUTABLE': 'oracle + harness: elicit, parse, score with no hand in the loop',
+         'HUMAN-CALIBRATED': 'a gold file with human labels clearing the §3.1 gate',
+         'CERTIFIED': 'human-calibrated + a live-run item statistic on file'}
+for k in RUNGS:
+    A('| `%s` | %d | %s |' % (k, maturity.get(k, 0), _when[k]))
+A('')
+if not has_status:
+    A('**The register carries no `Status` column.** Add it; this script will guard it.')
+elif violations:
+    A('**GUARD FAILED — %d item(s) claim a rung above the evidence:**' % len(violations))
+    for _id, c, e in violations[:20]:
+        A('- `%s` claims `%s`, earned `%s`' % (_id, c, e))
+else:
+    A('**Guard: every claimed rung is earned.** %d item(s) claim below what they earned (understated, not a failure).' % len(understated))
 A('')
 A('| Gold reference | Items |')
 A('|---|---|')
 for k, v in gold.most_common():
     A('| %s | %d |' % (k, v))
 A('')
-A('So the breakdown by AUTHORED / REVIEWED / ORACLE-READY / EXECUTABLE /')
-A('HUMAN-CALIBRATED / CERTIFIED **cannot be produced** — those states are not')
-A('recorded anywhere. Every item is authored. A `PROVISIONAL` gold reference is')
-A('the highest rung any item has reached, and provisional is not calibrated.')
-A('')
-A('**Nothing in this bank is certified, and there is no mechanism by which an item')
-A('could become certified.** A bench that cannot separate *written down* from')
-A('*known to work* cannot be cited as evidence — by us or by anyone. The next move')
-A('is not more items. It is a status column, a definition per rung, and a guard')
-A('that fails when an item claims a rung it has not earned.')
+A('No item is `HUMAN-CALIBRATED` or `CERTIFIED`. The mechanism to become either')
+A('now exists (a rung with a definition, and a guard); the labels do not, because no')
+A('human has graded an item and no live run has happened. The SF format has reference')
+A('answers and an exact-match rule but no scorer script and no harness template, so its')
+A('%d items stay `AUTHORED` until `engine/sf-score.py` exists (BACKLOG #15).' % fmts.get('SF', 0))
 A('')
 A('## Version and count, checked')
 A('')
@@ -173,3 +223,7 @@ print('  register: %d items | matrix claims: %d' % (len(items), claimed_total))
 print('  formats: %s' % dict(fmts))
 print('  gold:    %s' % dict(gold))
 print('  readme/changelog/register: %s' % ('AGREE' if agree else 'DRIFT'))
+print('  maturity: %s' % dict(maturity))
+if has_status and violations:
+    print('  GUARD FAILED: %d claim(s) above evidence' % len(violations)); sys.exit(3)
+print('  guard: %s' % ('every claimed rung is earned' if has_status else 'no Status column to guard'))
