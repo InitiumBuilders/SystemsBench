@@ -79,7 +79,7 @@
     {
       "run": 11,
       "version": "v0.12.1",
-      "lever": "TRUTH (documentation + state + tooling, additive, self-approved): the front door counts itself. README regenerated from the register (v0.8.0/16 items -> v0.12.1/300 items, 11 runs), engine_state coverage 5/1/5/5 -> 75/75/75/75 with gold 1/300 provisional, scripts/bench-audit.py published (root from its own path; reports agreement as well as drift), STATUS.md regenerated. Meadows #6 information flow: STATUS.md had diagnosed the drift on 2026-08-02 and no actor consumed the reading. Self-tests green before and after (harness 61/61, CLD 31/31, DYN 34/34). No item, rubric, weight, scorer, oracle or invariant touched. BACKLOG #14 (maturity column + rung guard) logged, not built. §3.1(b) Meadows-#5 hardening NOT touched."
+      "lever": "TRUTH (documentation + state + tooling, additive, self-approved): the front door counts itself. README regenerated from the register (v0.8.0/16 items -> v0.12.1/300 items, 11 runs), engine_state coverage 5/1/5/5 -> 75/75/75/75 with gold 1/300 provisional, scripts/bench-audit.py published (root from its own path; reports agreement as well as drift), STATUS.md regenerated. Meadows #6 information flow: STATUS.md had diagnosed the drift on 2026-08-02 and no actor consumed the reading. Self-tests green before and after (harness 61/61, CLD 36/36, DYN 34/34). No item, rubric, weight, scorer, oracle or invariant touched. BACKLOG #14 (maturity column + rung guard) logged, not built. §3.1(b) Meadows-#5 hardening NOT touched."
     }
   ]
 }

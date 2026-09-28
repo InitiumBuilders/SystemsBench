@@ -143,7 +143,7 @@ This is a **research preview**, and we'd rather tell you exactly what's real tha
 
 **Live and running:**
 - ✅ The full **recursive engine** — detached, crash-proof, self-verifying, git-reversible (11 SenseRuns logged).
-- ✅ **Three executable deterministic scoring lanes** — SF, CLD, DYN — runnable end-to-end against a live model (elicit → parse → score), all fail-closed. Self-tests green: harness **61/61**, CLD **31/31**, DYN **34/34**.
+- ✅ **Three executable deterministic scoring lanes** — SF, CLD, DYN — runnable end-to-end against a live model (elicit → parse → score), all fail-closed. Self-tests green: harness **61/61**, CLD **36/36**, DYN **34/34**.
 - ✅ **300 items** in the register, counted by `scripts/bench-audit.py`: 75 × SF, 75 × CLD, 75 × DYN, 75 × LEV, each 25 per level across L1, L2 and L3, across 8 domains. The counted status lives in [STATUS.md](STATUS.md); run the script after any change to the register.
 - ✅ **Blind N-rater jury infrastructure** (`engine/jury.sh`) with agreement statistics.
 
