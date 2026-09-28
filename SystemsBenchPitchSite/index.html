@@ -4,10 +4,10 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>SystemsBench — The Benchmark for Systems Intelligence in LLMs · Outlier.Systems</title>
-<meta name="description" content="SystemsBench is the open-source benchmark for systems intelligence in AI, by Outlier.Systems: can a model map a system, find the leverage, predict what moves, and know when it is wrong? v0.16 research preview: four deterministic scoring lanes, a blind jury that fails closed, a 327-item register, and an engine that improves itself. Led by Ember Seoni." />
+<meta name="description" content="SystemsBench is the open-source benchmark for systems intelligence in AI, by Outlier.Systems: can a model map a system, find the leverage, predict what moves, and know when it is wrong? v0.17 research preview: five deterministic scoring lanes, a faithfulness probe, a blind jury that fails closed, a 354-item register, and an engine that improves itself. Led by Ember Seoni." />
 <meta name="theme-color" content="#070709" />
 <meta property="og:title" content="SystemsBench — The Benchmark for Systems Intelligence" />
-<meta property="og:description" content="The open-source benchmark for systems intelligence in AI. Not what a model knows. Where it chooses to push. v0.16 research preview, by Outlier.Systems." />
+<meta property="og:description" content="The open-source benchmark for systems intelligence in AI. Not what a model knows. Where it chooses to push. v0.17 research preview, by Outlier.Systems." />
 <meta property="og:type" content="website" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -280,8 +280,9 @@ footer .f-lines a{color:var(--ink-soft);border-bottom:1px solid var(--line-2)}
 footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);letter-spacing:.14em;margin-top:18px}
 
 
-/* ---------- the instrument (v0.16) ---------- */
-.lanes{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:30px}
+/* ---------- the instrument (v0.17) ---------- */
+.lanes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:30px}
+.lanes .lane.jury .lk{font-family:var(--sans);font-size:17px;letter-spacing:-.01em;background:none;color:var(--ink);margin-bottom:10px}
 @media(max-width:1180px){.lanes{grid-template-columns:repeat(2,1fr)}}
 .lane{border:1px solid var(--glass-border);border-radius:var(--r);padding:24px 22px;background:var(--glass-bg);
   box-shadow:0 12px 36px -26px rgba(0,0,0,.7);position:relative;overflow:hidden;
@@ -296,7 +297,7 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
 .lane p{font-size:13.5px;color:var(--muted);line-height:1.6}
 .lane p .mono{font-family:var(--mono);color:var(--c-cyan);font-weight:500}
 .lane .lt{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-family:var(--mono);font-size:11.5px;color:var(--c-cyan);letter-spacing:.04em}
-.rulepair{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:16px}
+.rulepair{display:grid;grid-template-columns:1fr;gap:16px;margin-top:16px}
 .rulepair .lane .lk{font-family:var(--sans);font-size:17px;letter-spacing:-.01em;background:none;color:var(--ink);margin-bottom:10px}
 .term{margin-top:30px;border:1px solid var(--glass-border);border-radius:var(--r);overflow:hidden;position:relative;
   background:linear-gradient(180deg,rgba(9,12,18,.94),rgba(6,8,12,.97));box-shadow:var(--glass-shadow),var(--glass-glow)}
@@ -589,7 +590,7 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
 <!-- HERO -->
 <header id="top" class="hero">
   <div class="wrap">
-    <span class="hero-badge"><span class="b-dot"></span> Open Source · v0.16 Research Preview · Live on GitHub</span>
+    <span class="hero-badge"><span class="b-dot"></span> Open Source · v0.17 Research Preview · Live on GitHub</span>
     <h1 class="gradient-text">SystemsBench In A Sense!</h1>
     <div class="tag">The Benchmark for Systems Intelligence Within Large Language Models.</div>
     <p class="sub">Not what a model knows. <b style="color:var(--ink);font-weight:500">Where it chooses to push.</b> The open-source ruler for the one capability that decides whether an intelligence can be trusted near a living system: can it see what else moves when it acts? Nothing else measures it. So we built it, and we are giving it away.</p>
@@ -604,8 +605,8 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
     <!-- OPEN-SOURCE RELEASE -->
     <div class="countdown-card reveal" id="join">
       <div class="cd-label">◆ Now Open Source</div>
-      <div class="cd-title gradient-text">SystemsBench v0.16 is live</div>
-      <div class="cd-note">The recursive engine, four deterministic scorers (SF · CLD · DYN · ARC), the blind jury, a 327-item register, and the four living files — open for the world to run, audit, and evolve. Zero dependencies. Zero model spend.</div>
+      <div class="cd-title gradient-text">SystemsBench v0.17 is live</div>
+      <div class="cd-note">The recursive engine, five deterministic scorers (SF · CLD · DYN · ARC · TRAP), the blind jury, a 354-item register, and the four living files — open for the world to run, audit, and evolve. Zero dependencies. Zero model spend.</div>
       <a class="btn btn-primary" href="https://github.com/InitiumBuilders/SystemsBench" target="_blank" rel="noopener" style="margin-top:6px;width:100%;justify-content:center">★ github.com/InitiumBuilders/SystemsBench →</a>
       <a class="btn btn-ghost" href="#instrument" style="margin-top:10px;width:100%;justify-content:center">Try it in two minutes ↓</a>
     </div>
@@ -933,7 +934,7 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
       </div>
       <div class="sl-disc reveal">Simulated run · hypothetical models · illustrative scores</div>
     </div>
-    <p class="lede" id="slLede">No human marks this paper. Pick a wicked, self-reinforcing system below. A hypothetical frontier model must map its structure, find where to push, predict what happens — and reflect on its own reasoning. Then four deterministic scorers and a five-judge blind jury grade the trace, slowly, in front of you.</p>
+    <p class="lede" id="slLede">No human marks this paper. Pick a wicked, self-reinforcing system below. A hypothetical frontier model must map its structure, find where to push, predict what happens — and reflect on its own reasoning. Then five deterministic scorers and a five-judge blind jury grade the trace, slowly, in front of you.</p>
 
     <!-- scenario picker -->
     <div class="sl-pick reveal" id="slPick" role="tablist" aria-label="Choose a wicked problem to simulate">
@@ -1045,7 +1046,7 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
       <!-- final card -->
       <div class="sl-card" id="slCard">
         <div class="sl-card-h">
-          <div class="sl-card-t">SystemsBench Card <span id="slCardSub">· ATTN-ECON-001 · spec v0.16</span></div>
+          <div class="sl-card-t">SystemsBench Card <span id="slCardSub">· ATTN-ECON-001 · spec v0.17</span></div>
           <span class="sl-verdict" id="slVerdict">✓ Faithful · calibrated</span>
         </div>
         <div class="sl-card-grid">
@@ -1062,7 +1063,7 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
             </div>
           </div>
         </div>
-        <div class="sl-foot-note">This is an illustrative simulation of the SystemsBench evaluation pipeline (§4.6). The models and scores are <b>hypothetical</b>, and in the shipping v0.16 every jury sub-score still reports UNCALIBRATED, because the human gold set does not exist yet. What is real is the <i>process</i>: deterministic oracles where structure is checkable, a cross-family blind jury where judgment is needed, every score a vector with error bars, never a bare number. Real model cards arrive with SystemsBench v1.</div>
+        <div class="sl-foot-note">This is an illustrative simulation of the SystemsBench evaluation pipeline (§4.6). The models and scores are <b>hypothetical</b>, and in the shipping v0.17 every jury sub-score still reports UNCALIBRATED, because the human gold set does not exist yet. What is real is the <i>process</i>: deterministic oracles where structure is checkable, a cross-family blind jury where judgment is needed, every score a vector with error bars, never a bare number. Real model cards arrive with SystemsBench v1.</div>
       </div>
     </div>
   </div>
@@ -1080,7 +1081,7 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
     /* ---------- scenario data ---------- */
     var SCN={
       attn:{
-        model:'SystemSense', maker:'Microsoft', item:'ATTN-ECON-001', cardSub:'· ATTN-ECON-001 · spec v0.16',
+        model:'SystemSense', maker:'Microsoft', item:'ATTN-ECON-001', cardSub:'· ATTN-ECON-001 · spec v0.17',
         title:'The Attention Economy',
         lede:'A hypothetical frontier model — <b style="color:var(--ink);font-weight:500">SystemSense, by Microsoft</b> — sits one SystemsBench item: <b style="color:var(--ink);font-weight:500">The Attention Economy</b>, a self-reinforcing system that harvests human attention. It must map the structure, find where to push, predict what happens — and reflect on its own reasoning.',
         stock:{id:'att',label:'Captured',sub:'Attention ◆ stock'},
@@ -1151,7 +1152,7 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
         ]
       },
       polar:{
-        model:'SystemSync', maker:'Google', item:'POLAR-AFF-002', cardSub:'· POLAR-AFF-002 · spec v0.16',
+        model:'SystemSync', maker:'Google', item:'POLAR-AFF-002', cardSub:'· POLAR-AFF-002 · spec v0.17',
         title:'Political Polarization',
         lede:'A hypothetical frontier model — <b style="color:var(--ink);font-weight:500">SystemSync, by Google</b> — sits a harder item: <b style="color:var(--ink);font-weight:500">Affective Political Polarization</b>. Identity, outrage and profit lock into a spiral. The model must find the rule that is generating it — and resist the fixes that only feed it.',
         stock:{id:'pol',label:'Affective',sub:'Polarization ◆ stock'},
@@ -1223,7 +1224,7 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
         ]
       },
       house:{
-        model:'SystemSync', maker:'Google', item:'HOUSE-US-003', cardSub:'· HOUSE-US-003 · spec v0.16',
+        model:'SystemSync', maker:'Google', item:'HOUSE-US-003', cardSub:'· HOUSE-US-003 · spec v0.17',
         title:'The U.S. Housing Crisis',
         lede:'A hypothetical frontier model — <b style="color:var(--ink);font-weight:500">SystemSync, by Google</b> — sits a long-delay system: <b style="color:var(--ink);font-weight:500">the U.S. Housing Crisis</b>. The seductive fix points the right lever the <i>wrong way</i>. The model must catch the inversion and intervene where the rules are written.',
         stock:{id:'pti',label:'Price-to-',sub:'Income ◆ stock'},
@@ -1574,10 +1575,10 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
 <section style="padding-top:20px">
   <div class="wrap">
     <div class="strip reveal">
-      <div class="cell"><div class="k"><span class="gradient-text">327</span></div><div class="v">Items in the register, counted</div></div>
-      <div class="cell"><div class="k"><span class="gradient-text">4</span></div><div class="v">Deterministic scoring lanes, runnable</div></div>
+      <div class="cell"><div class="k"><span class="gradient-text">354</span></div><div class="v">Items in the register, counted</div></div>
+      <div class="cell"><div class="k"><span class="gradient-text">5</span></div><div class="v">Deterministic scoring lanes, runnable</div></div>
       <div class="cell"><div class="k"><span class="gradient-text">12</span></div><div class="v">Meadows leverage points, the ladder</div></div>
-      <div class="cell"><div class="k"><span class="gradient-text">15</span></div><div class="v">SenseRuns logged, each reversible</div></div>
+      <div class="cell"><div class="k"><span class="gradient-text">16</span></div><div class="v">SenseRuns logged, each reversible</div></div>
     </div>
   </div>
 </section>
@@ -1703,15 +1704,16 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
   <div class="wrap">
     <div class="eyebrow">03 — The Instrument · Two Engines, One Rule</div>
     <h2>Computed where it can be checked. <span class="gradient-text">A blind jury where judgment is needed.</span> Fail closed everywhere.</h2>
-    <p class="lede">For the formats that can be checked like arithmetic, a program computes the score. No judge, no bias, fully reproducible. Four executable lanes ship today, each with a self-test you can run in seconds, and one command runs any model through every executable item; the instrument scored 1.0 on all of them before a model was asked.</p>
+    <p class="lede">For the formats that can be checked like arithmetic, a program computes the score. No judge, no bias, fully reproducible. Five executable lanes ship today, each with a self-test you can run in seconds, and one command runs any model through every executable item; the instrument scored 1.0 on all 134 before a model was asked, and told a silent flip from an honest one on every TRAP item.</p>
     <div class="lanes">
       <div class="lane reveal"><div class="lk">SF</div><div class="ln">Stock &amp; Flow</div><p>Given the flows, infer the stock's path: the bathtub task that fools most humans. Each answer field is matched by computation, and the trap each item names is capped.</p><div class="lt">calibrate · 450/450 pass</div></div>
       <div class="lane reveal"><div class="lk">CLD</div><div class="ln">Causal Loops</div><p>Map the feedback structure. Each loop's polarity is recomputed as the product of its signed edges and checked against the reference. A diagram graded by computation, not opinion.</p><div class="lt">cld-score calibrate · 36/36 pass</div></div>
       <div class="lane reveal"><div class="lk">DYN</div><div class="ln">Dynamic Prediction</div><p>Predict the behavior over time after an intervention, matched against a reference trajectory. The shape is the proof.</p><div class="lt">dyn-score calibrate · 34/34 pass</div></div>
       <div class="lane reveal"><div class="lk">ARC</div><div class="ln">Archetype Recognition</div><p>Name the recurring plot from a fresh surface, never the textbook example. The label is matched against the reference, and the archetype the surface most resembles is the trap, capped.</p><div class="lt">arc-score calibrate · 334/334 pass</div></div>
+      <div class="lane reveal"><div class="lk">TRAP</div><div class="ln">Misperception Trap</div><p>The intuitive option is the trap, and every item is asked twice: plain, and with a colleague's note pointing at the trap. A model that flips and never says why is measured on its own axis, never averaged in.</p><div class="lt">trap-score calibrate · 389/389 pass</div></div>
+      <div class="lane reveal jury"><div class="lk">The jury, for open-ended answers</div><p>A cross-family panel of judge models, never the candidate's own family, grades against an anchored rubric, reference-guided and swap-averaged, five raters blind to one another. Agreement is measured and published, Krippendorff's α and Kendall's τ, never assumed.</p></div>
     </div>
     <div class="rulepair">
-      <div class="lane reveal"><div class="lk">The jury, for open-ended answers</div><p>A cross-family panel of judge models, never the candidate's own family, grades against an anchored rubric, reference-guided and swap-averaged, five raters blind to one another. Agreement is measured and published, Krippendorff's α and Kendall's τ, never assumed.</p></div>
       <div class="lane reveal"><div class="lk">The rule: fail closed</div><p>No judge's score counts until it is validated against human-graded answers (α ≥ 0.667 and τ ≥ 0.7). Until then the format reports <span class="mono">UNCALIBRATED — not scored</span>: never imputed, never averaged in, never silently zeroed. An unparseable reply yields <span class="mono">PARSE_ERROR</span>, not a deceptive zero. We would rather report a blank than a fake number.</p></div>
     </div>
     <div class="term reveal">
@@ -1721,8 +1723,9 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
 <span class="p">$</span> <span class="cmd">python3 engine/cld-score.py calibrate items/cld_oracle.json</span>   <span class="ok">→ 36/36 PASS</span>
 <span class="p">$</span> <span class="cmd">python3 engine/dyn-score.py calibrate items/dyn_oracle.json</span>   <span class="ok">→ 34/34 PASS</span>
 <span class="p">$</span> <span class="cmd">python3 engine/arc-score.py calibrate items/arc_oracle.json</span>   <span class="ok">→ 334/334 PASS</span>
-<span class="p">$</span> <span class="cmd">python3 engine/bench-run.py run --adapter reference --all</span>       <span class="ok">→ 107 items · mean 1.000 · 0 parse errors</span>
-<span class="p">$</span> <span class="cmd">python3 engine/harness.py selftest</span>                            <span class="ok">→ 649/649 PASS</span>
+<span class="p">$</span> <span class="cmd">python3 engine/trap-score.py calibrate items/trap_oracle.json</span> <span class="ok">→ 389/389 PASS</span>
+<span class="p">$</span> <span class="cmd">python3 engine/bench-run.py run --adapter reference --all</span>       <span class="ok">→ 134 items · mean 1.000 · 0 parse errors</span>
+<span class="p">$</span> <span class="cmd">python3 engine/harness.py selftest</span>                            <span class="ok">→ 922/922 PASS</span>
 
 <span class="c"># 2. See the question a model would actually receive: scenario + the exact answer schema</span>
 <span class="p">$</span> <span class="cmd">python3 engine/harness.py template DYN DYN-FISH-001</span>
@@ -1920,7 +1923,7 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
         <!-- hub: version ticks as the loop completes a lap -->
         <circle class="hub" cx="160" cy="160" r="40"/>
         <text class="hub-l" x="160" y="150" text-anchor="middle">/SenseRun</text>
-        <text class="hub-v" x="160" y="166" text-anchor="middle" id="hubVer">v0.16</text>
+        <text class="hub-v" x="160" y="166" text-anchor="middle" id="hubVer">v0.17</text>
         <text class="hub-l" x="160" y="176" text-anchor="middle" id="hubState" style="fill:var(--faint)">sense</text>
       </svg>
       <div class="viz-cap"><b>One command, one circuit.</b> Each lap of <span style="color:var(--c-cyan)">Davara /SystemsBenchSenseRun</span> makes exactly one bounded, gated, logged enhancement — then feeds the result back into the next SENSE. The benchmark studies itself the way it studies any system.</div>
@@ -1986,15 +1989,15 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
     <div class="status">
       <div class="stat-card reveal"><div class="sh">✓ Live and running</div>
         <ul>
-          <li><i>✓</i><span><b>The full recursive engine.</b> Detached, crash-proof, self-verifying, reversible by git. Fifteen SenseRuns logged.</span></li>
-          <li><i>✓</i><span><b>Four deterministic scoring lanes</b>, SF, CLD, DYN, ARC, runnable end to end against a live model: elicit, parse, score. All fail closed.</span></li>
-          <li><i>✓</i><span><b>327 items in the register</b>: 75 each of LEV, SF, CLD, and DYN, 27 of ARC, across three difficulty levels, synced forward from the Davara baseline.</span></li>
+          <li><i>✓</i><span><b>The full recursive engine.</b> Detached, crash-proof, self-verifying, reversible by git. Sixteen SenseRuns logged.</span></li>
+          <li><i>✓</i><span><b>Five deterministic scoring lanes</b>, SF, CLD, DYN, ARC, TRAP, runnable end to end against a live model: elicit, parse, score. All fail closed.</span></li>
+          <li><i>✓</i><span><b>354 items in the register</b>: 75 each of LEV, SF, CLD, and DYN, 27 each of ARC and TRAP, across three difficulty levels, synced forward from the Davara baseline.</span></li>
           <li><i>✓</i><span><b>Blind five-rater jury infrastructure</b> with agreement statistics.</span></li>
         </ul>
       </div>
       <div class="stat-card wait reveal"><div class="sh">⏳ Honestly not done yet</div>
         <ul>
-          <li><i>⏳</i><span><b>No human gold set yet</b>, so every jury sub-score ships UNCALIBRATED. Maturity is now a computed column: 107 items executable by machine, one oracle-ready with a provisional gold file, 219 authored, none human-calibrated. Current raters are synthetic, labeled as evidence, not certification.</span></li>
+          <li><i>⏳</i><span><b>No human gold set yet</b>, so every jury sub-score ships UNCALIBRATED. Maturity is now a computed column: 134 items executable by machine, one oracle-ready with a provisional gold file, 219 authored, none human-calibrated. The faithfulness probe is live on TRAP and reported on its own axis. Current raters are synthetic, labeled as evidence, not certification.</span></li>
           <li><i>⏳</i><span><b>Three formats specified, not seeded:</b> ARC, TRAP, BRIEF.</span></li>
           <li><i>⏳</i><span><b>No frontier model scored yet.</b> The first real run is the benchmark's moment of truth, and it is an operator-gated decision, because it costs real compute and we do not spend without a human's explicit word.</span></li>
         </ul>
@@ -2042,8 +2045,8 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
   <div class="wrap">
     <div class="f-brand"><span class="dot"></span> SystemsBench</div>
     <div class="f-lines">
-      Open Source · v0.16 Research Preview · <a href="https://github.com/InitiumBuilders/SystemsBench" target="_blank" rel="noopener">github.com/InitiumBuilders/SystemsBench</a><br/>
-      327 items in the register · 4 deterministic lanes · 15 SenseRuns logged · counted by scripts/bench-audit.py<br/>
+      Open Source · v0.17 Research Preview · <a href="https://github.com/InitiumBuilders/SystemsBench" target="_blank" rel="noopener">github.com/InitiumBuilders/SystemsBench</a><br/>
+      354 items in the register · 5 deterministic lanes · 16 SenseRuns logged · counted by scripts/bench-audit.py<br/>
       An Open-Source Framework by <a href="about.html">Outlier.Systems</a> · Led by Ember Seoni &amp; August Domanchuk<br/>
       <a href="mailto:Ember@Outlier.Systems">Ember@Outlier.Systems</a> &nbsp;·&nbsp; <a href="mailto:EVOLVE@Outlier.Systems">EVOLVE@Outlier.Systems</a>
     </div>
@@ -2086,7 +2089,7 @@ footer .f-mantra{font-family:var(--mono);font-size:11.5px;color:var(--faint);let
 (function(){
   var verEl=document.getElementById('hubVer'),stEl=document.getElementById('hubState');
   if(!verEl||!stEl)return;
-  verEl.textContent='v0.16';
+  verEl.textContent='v0.17';
   if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches){stEl.textContent='12 runs logged';return;}
   var phases=['sense','critique','research','propose','review','apply','calibrate','log','recurse'];
   var LAP=6000,i=0; // matches the .signal travel animation duration
