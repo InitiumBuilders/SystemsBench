@@ -7,7 +7,7 @@
 For weeks SystemsBench could *score* but had never *scored anyone*. Every lane was green in
 self-test, every oracle calibrated — but no living model had ever answered an item and had its
 answer graded. Tonight that changed. We built the one missing bridge (`engine/elicit.sh`), pointed
-it at the Semble-Cortex relay, and ran **both twins through the full bank**: Davara, the deep thinker,
+it at our private relay, and ran **both twins through the full bank**: Davara, the deep thinker,
 and Davaris, the workhorse. 20 model turns, $0 of paid API, every one scored by deterministic local
 math against the reference oracles.
 

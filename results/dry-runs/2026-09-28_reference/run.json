@@ -1,0 +1,27 @@
+{
+ "adapter": "reference",
+ "kind": "DRY",
+ "name": "reference",
+ "date": "2026-09-28",
+ "lanes": [
+  "CLD",
+  "DYN",
+  "SF",
+  "ARC"
+ ],
+ "items": 107,
+ "scored": 107,
+ "parse_errors": 0,
+ "adapter_errors": 0,
+ "command": null,
+ "spec_version": "v0.15.0",
+ "last_senserun": 14,
+ "gates": {
+  "CLD calibrate": "calibrate: 36/36 checks passed",
+  "DYN calibrate": "calibrate: 34/34 checks passed",
+  "SF calibrate": "calibrate: 450/450 checks passed",
+  "ARC calibrate": "calibrate: 334/334 checks passed",
+  "harness selftest": "selftest: 649/649 checks passed"
+ },
+ "jury": "UNCALIBRATED — not scored (no jury dimension is run by this runner)"
+}

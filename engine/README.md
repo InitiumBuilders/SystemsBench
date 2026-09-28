@@ -15,6 +15,8 @@ a runnable, crash-proof, self-verifying detached job.
 | `jury.sh` | Phase 4: blind N-rater jury. Each rater = an independent, context-isolated `claude -p` session (no tools) seeing ONLY persona + item + rubric + response. `score / status / collect`. Raters are SYNTHETIC — evidence labels, never certification (§3 needs humans). |
 | `jury-stats.py` | Phase 4: extraction + aggregation math — median-per-sub → mean-per-dim, ordinal Krippendorff α, the §3.1 accept-rule, and dry-run simulations of the three Future-§6.1 hardening forks. `calibrate` self-tests against the recorded gold arithmetic (18 checks) before any live run is trusted. |
 | `personas/R1–R5.md` | The jury bench: R1–R3 transcribed from the recorded N=3 baseline personas; R4 (lean/flow practitioner) + R5 (psychometrics literalist) new and orthogonal. |
+| `harness.py` + `cld-score.py` · `dyn-score.py` · `sf-score.py` · `arc-score.py` | The deterministic lanes: `harness.py template` elicits the canonical schema, `parse` turns a raw reply into the scorer's input (fail-closed `PARSE_ERROR`), each scorer grades against its `items/*_oracle.json` and proves itself with `calibrate`. |
+| `bench-run.py` | The runner (SenseRun #15): any model behind a shell command through every executable item, template → parse → score, results as files under `results/`. Built-in `reference` and `trap` adapters replay the scorers' own builders through the real path (zero spend, the instrument's ceiling and floor); `--adapter cmd` needs `--live` and is capped unless `--all`. |
 
 ## Quick use
 
@@ -27,6 +29,10 @@ engine/senserun.sh verify 7                        # proof, not self-report
 engine/jury.sh score items/<item>.md <response.txt> <outdir> 5   # 5 blind raters, detached
 engine/jury.sh collect <outdir>                                  # rc=0 iff all rater JSON parses clean
 python3 engine/jury-stats.py report <baseline.json> <c> <m> <t>  # N-vs-N agreement report
+
+python3 engine/bench-run.py selftest                                              # the runner proves itself
+python3 engine/bench-run.py run --adapter reference --all                         # the instrument's ceiling, zero spend
+python3 engine/bench-run.py run --adapter cmd --cmd "<model command>" --live --all  # a real model, results under results/live/
 ```
 
 Crash recovery is two-layer: phase state + incremental run log (coarse), `--resume <session>`

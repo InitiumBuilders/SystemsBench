@@ -1,0 +1,9 @@
+Here is my answer.
+
+```json
+{
+ "archetype": "shifting-the-burden",
+ "trap": "",
+ "escape": ""
+}
+```

@@ -56,8 +56,8 @@ classification or a comparative sketch that no field can hold, and stay `AUTHORE
 
 | Source | Says |
 |---|---|
-| `CHANGELOG.md` | **v0.15.0** |
-| `README.md` | **v0.15.0**, "327 items" |
+| `CHANGELOG.md` | **v0.16.0** |
+| `README.md` | **v0.16.0**, "327 items" |
 | this register | **327 items** |
 
 README, CHANGELOG and the register agree.
@@ -65,7 +65,7 @@ README, CHANGELOG and the register agree.
 ## What may be said in public
 
 - ✅ "327 authored items across 5 seeded formats"
-- ✅ the README states the counted number (327) and the CHANGELOG version (v0.15.0)
+- ✅ the README states the counted number (327) and the CHANGELOG version (v0.16.0)
 - ❌ any claim of calibration, certification, or IRT stability
 
 *Re-run `python3 scripts/bench-audit.py` after any change to the register.*
