@@ -46,22 +46,20 @@ could become certified.** A bench that cannot separate *written down* from
 is not more items. It is a status column, a definition per rung, and a guard
 that fails when an item claims a rung it has not earned.
 
-## The version drift
+## Version and count, checked
 
 | Source | Says |
 |---|---|
-| `CHANGELOG.md` | **v0.12.0** |
-| `README.md` | **v0.8.0**, "16 items" |
+| `CHANGELOG.md` | **v0.12.1** |
+| `README.md` | **v0.12.1**, "300 items" |
 | this register | **300 items** |
 
-The CHANGELOG is current; the README is stale by several versions and its
-item count is off by roughly 19x. Nobody lied — the versions moved and the
-prose did not.
+README, CHANGELOG and the register agree.
 
 ## What may be said in public
 
 - ✅ "300 authored items across 4 seeded formats"
-- ❌ "16 items" (README) — stale
+- ✅ the README states the counted number (300) and the CHANGELOG version (v0.12.1)
 - ❌ any claim of calibration, certification, or IRT stability
 
 *Re-run `python3 scripts/bench-audit.py` after any change to the register.*

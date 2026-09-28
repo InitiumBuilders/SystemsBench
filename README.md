@@ -7,7 +7,7 @@
 *Can a model see a system, map its structure, find where to intervene, and predict what happens when it does?*
 *That is the one thing today's benchmarks don't measure. So we built the ruler — and we're giving it away.*
 
-**v0.8.0** · research preview · open source · built on the Donella Meadows lineage
+**v0.12.1** · research preview · open source · built on the Donella Meadows lineage
 maintained by **[Outlier.Systems](https://outlier.systems)** — led by Ember Seoni & August Domanchuk · operated by Davara (EI)
 
 [**Quickstart**](#try-it-in-two-minutes) · [**Glossary**](GLOSSARY.md) · [**Foundations & Principles**](FOUNDATIONS.md) · [**The Spec**](SystemsBenchStructure.MD) · [**One-Pager**](SystemsBenchOnePage.MD)
@@ -137,19 +137,19 @@ and waits for human ratification. The engine governs infrastructure; humans gove
 
 ---
 
-## Where it stands today (honest status — v0.8.0)
+## Where it stands today (honest status — v0.12.1, counted)
 
 This is a **research preview**, and we'd rather tell you exactly what's real than oversell it.
 
 **Live and running:**
-- ✅ The full **recursive engine** — detached, crash-proof, self-verifying, git-reversible (10 SenseRuns logged).
+- ✅ The full **recursive engine** — detached, crash-proof, self-verifying, git-reversible (11 SenseRuns logged).
 - ✅ **Three executable deterministic scoring lanes** — SF, CLD, DYN — runnable end-to-end against a live model (elicit → parse → score), all fail-closed. Self-tests green: harness **61/61**, CLD **31/31**, DYN **34/34**.
-- ✅ **16 items** seeded across 5 domains: 5 × SF, 5 × CLD, 5 × DYN, 1 × LEV. CLD and DYN cleared the ≥5-per-L3 go-live threshold.
+- ✅ **300 items** in the register, counted by `scripts/bench-audit.py`: 75 × SF, 75 × CLD, 75 × DYN, 75 × LEV, each 25 per level across L1, L2 and L3, across 8 domains. The counted status lives in [STATUS.md](STATUS.md); run the script after any change to the register.
 - ✅ **Blind N-rater jury infrastructure** (`engine/jury.sh`) with agreement statistics.
 
 **Honestly not done yet (and labeled as such everywhere):**
 - ⏳ All **jury** sub-scores ship `UNCALIBRATED — not scored` — there is **no human gold set yet**, so no open-format number is certified. Our current raters are *synthetic* (other models), honestly labeled as **evidence, not certification.**
-- ⏳ Formats `ARC`, `TRAP`, `BRIEF` are specified but **not yet seeded**; `LEV` is at 1 of 5. No format has the ≥20 items needed for stable IRT.
+- ⏳ Formats `ARC`, `TRAP`, `BRIEF` are specified but **not yet seeded**. 299 of the 300 items carry no gold reference; one (`LEV-ORG-001`) is provisional. Every seeded format is past the ≥20-item count for IRT, and none has IRT data, because no live run has happened.
 - ⏳ **No frontier model has been scored yet.** That first real run is the benchmark's moment of truth — and it's an operator-gated decision, because it costs real compute and we don't spend without a human's explicit word.
 
 We publish the gaps as loudly as the wins. That *is* the discipline.
