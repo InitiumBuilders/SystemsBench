@@ -116,3 +116,10 @@ Five dimensions (A System Representation, B Causal Depth, C Leverage Placement, 
 
 *Search before you build. Cite when you reuse. Append when you learn. Never reinvent the wheel.*
 **Outlier.Systems** · Led by Ember Seoni & August Domanchuk · Operated by Outlier.Systems.
+
+
+---
+
+## 2026-10-06 · SenseRun #17 · traps that cannot discriminate
+- **Keyed distractors.** Item-writing guidance treats a distractor that is also a defensible answer as an item defect (Haladyna, Downing & Rodriguez, 2002). In SystemsBench terms: a named trap must differ from the item's answer. SF-INV-004 broke this (largest single outflow and first net decrease both fell on Tuesday) and was repaired; `scripts/bench-audit.py` now enforces it across every oracle.
+- **Unbounded-growth misperception.** Booth Sweeney & Sterman (2000) and Cronin, Gonzalez & Sterman (2009): people expect a stock with constant inflow to grow without limit even when its outflow scales with the stock. Five SF items name this trap and ask for a number, so it cannot be encoded without a reply format for "no limit" (BACKLOG #16).
