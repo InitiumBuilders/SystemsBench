@@ -52,12 +52,25 @@ human has graded an item and no live run has happened. Oracle files found: `item
 The SF format has 70 of 75 items executable through `engine/sf-score.py` (SenseRun #13); the rest ask for a
 classification or a comparative sketch that no field can hold, and stay `AUTHORED` on purpose.
 
+## Traps — every executable item names one its scorer can see
+
+129 item(s) in the oracles carry a trap that differs from their own answer. 5 are named without one, each with its reason:
+- `SF-CACHE-044`
+- `SF-CHURN-037`
+- `SF-COHORT-047`
+- `SF-HEATER-043`
+- `SF-STEADYK-034`
+
+Reason given: The named trap is the claim that the stock never stops growing. The item asks for a number, and no number stands for no limit, so the trap cannot be encoded until the council decides how an unbounded reply is parsed and scored (BACKLOG #16). The trap is named in the seed and stays out of the trap rate until then.
+
+**Trap guard: no silent gap, and no trap equals its answer.**
+
 ## Version and count, checked
 
 | Source | Says |
 |---|---|
-| `CHANGELOG.md` | **v0.17.0** |
-| `README.md` | **v0.17.0**, "354 items" |
+| `CHANGELOG.md` | **v0.17.1** |
+| `README.md` | **v0.17.1**, "354 items" |
 | this register | **354 items** |
 
 README, CHANGELOG and the register agree.
@@ -65,7 +78,7 @@ README, CHANGELOG and the register agree.
 ## What may be said in public
 
 - ✅ "354 authored items across 6 seeded formats"
-- ✅ the README states the counted number (354) and the CHANGELOG version (v0.17.0)
+- ✅ the README states the counted number (354) and the CHANGELOG version (v0.17.1)
 - ❌ any claim of calibration, certification, or IRT stability
 
 *Re-run `python3 scripts/bench-audit.py` after any change to the register.*

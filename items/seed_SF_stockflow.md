@@ -149,9 +149,10 @@
 **Trap:** "it falls because you're making payments" — ignores that the inflow is a function of the stock (compounding).
 
 ## SF-INV-004 (L2 · operations/inventory)
-**Prompt:** A warehouse holds 500 units. Over a week: Mon +50 in/−20 out, Tue +10/−40, Wed +0/−30, Thu +60/−10, Fri +20/−20. Net stock Friday close? On which day did the stock first *decrease*?
+**Prompt:** A warehouse holds 500 units. Over a week: Mon +50 in/−20 out, Tue +10/−40, Wed +20/−50, Thu +60/−10, Fri +20/−20. Net stock Friday close? On which day did the stock first *decrease*?
 **Oracle:** daily net: Mon +30, Tue −30, Wed −30, Thu +50, Fri 0. Running: 530, 500, 470, 520, 520 → **520 units Friday; first decrease on Tuesday.** Requires integrating flows, not reading a single day.
-**Trap:** picking the day with the largest single outflow (Tue −40) by magnitude rather than the first *net* decrease.
+**Trap:** picking the day with the largest single outflow (Wed −50) by magnitude rather than the first *net* decrease.
+**Revised:** SenseRun #17 (2026-10-06). Wednesday was +0/−30, which made Tuesday both the right answer and the day with the largest single outflow, so the named trap could not tell the two apart. Wednesday now carries the largest outflow (−50) with the same net (−30); every number in the oracle line stands.
 
 ## SF-HIRE-030 (L2 · organizations · correlation heuristic)
 **Prompt:** A firm's net headcount change (hires minus departures) is +200 in Q1, +150 in Q2, +100 in Q3, +50 in Q4 — positive every quarter but shrinking. Is headcount at year-end higher or lower than at the start? Is it still rising in Q4?

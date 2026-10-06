@@ -138,7 +138,7 @@
     "keys": "- \"direction\": one word: rising | falling | steady; in month 1 the debt: rising | falling | steady\n- \"shape\": one of the named shapes, exactly as written; long-run trajectory if the payment stays fixed: accelerates | linear | levels-off | keeps-falling"
    },
    "SF-INV-004": {
-    "prompt": "A warehouse holds 500 units. Over a week: Mon +50 in/−20 out, Tue +10/−40, Wed +0/−30, Thu +60/−10, Fri +20/−20. Net stock Friday close? On which day did the stock first *decrease*?",
+    "prompt": "A warehouse holds 500 units. Over a week: Mon +50 in/−20 out, Tue +10/−40, Wed +20/−50, Thu +60/−10, Fri +20/−20. Net stock Friday close? On which day did the stock first *decrease*?",
     "keys": "- \"value\": a number; net stock at Friday close, in units\n- \"first_decrease_day\": a weekday name; the weekday on which the stock first decreases"
    },
    "SF-HIRE-030": {

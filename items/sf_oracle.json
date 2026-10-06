@@ -12,7 +12,14 @@
    "SF-TRUST-005": "a qualitative sketch compared with a naive estimate; no single value or named shape to grade"
   },
   "date": "2026-09-27",
-  "senserun": 13
+  "senserun": 13,
+  "trap_not_encoded": {
+   "SF-STEADYK-034": "The named trap is the claim that the stock never stops growing. The item asks for a number, and no number stands for no limit, so the trap cannot be encoded until the council decides how an unbounded reply is parsed and scored (BACKLOG #16). The trap is named in the seed and stays out of the trap rate until then.",
+   "SF-CHURN-037": "The named trap is the claim that the stock never stops growing. The item asks for a number, and no number stands for no limit, so the trap cannot be encoded until the council decides how an unbounded reply is parsed and scored (BACKLOG #16). The trap is named in the seed and stays out of the trap rate until then.",
+   "SF-HEATER-043": "The named trap is the claim that the stock never stops growing. The item asks for a number, and no number stands for no limit, so the trap cannot be encoded until the council decides how an unbounded reply is parsed and scored (BACKLOG #16). The trap is named in the seed and stays out of the trap rate until then.",
+   "SF-CACHE-044": "The named trap is the claim that the stock never stops growing. The item asks for a number, and no number stands for no limit, so the trap cannot be encoded until the council decides how an unbounded reply is parsed and scored (BACKLOG #16). The trap is named in the seed and stays out of the trap rate until then.",
+   "SF-COHORT-047": "The named trap is the claim that the stock never stops growing. The item asks for a number, and no number stands for no limit, so the trap cannot be encoded until the council decides how an unbounded reply is parsed and scored (BACKLOG #16). The trap is named in the seed and stays out of the trap rate until then."
+  }
  },
  "items": {
   "SF-RES-001": {
@@ -531,7 +538,12 @@
      "ask": "the weekday on which the stock first decreases"
     }
    },
-   "trap_text": "picking the day with the largest single outflow (Tue −40) by magnitude rather than the first *net* decrease."
+   "trap": {
+    "first_decrease_day": [
+     "wednesday"
+    ]
+   },
+   "trap_text": "picking the day with the largest single outflow (Wed −50) by magnitude rather than the first *net* decrease."
   },
   "SF-HIRE-030": {
    "level": "L2",

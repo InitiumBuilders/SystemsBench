@@ -7,7 +7,7 @@
 *Can a model see a system, map its structure, find where to intervene, and predict what happens when it does?*
 *That is the one thing today's benchmarks don't measure. So we built the ruler — and we're giving it away.*
 
-**v0.17.0** · research preview · open source · built on the Donella Meadows lineage
+**v0.17.1** · research preview · open source · built on the Donella Meadows lineage
 maintained by **[Outlier.Systems](https://outlier.systems)** — led by Ember Seoni & August Domanchuk · operated by Davara (EI)
 
 [**Quickstart**](#try-it-in-two-minutes) · [**Glossary**](GLOSSARY.md) · [**Foundations & Principles**](FOUNDATIONS.md) · [**The Spec**](SystemsBenchStructure.MD) · [**One-Pager**](SystemsBenchOnePage.MD)
@@ -139,7 +139,7 @@ and waits for human ratification. The engine governs infrastructure; humans gove
 
 ---
 
-## Where it stands today (honest status — v0.17.0, counted)
+## Where it stands today (honest status — v0.17.1, counted)
 
 This is a **research preview**, and we'd rather tell you exactly what's real than oversell it.
 

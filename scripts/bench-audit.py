@@ -22,6 +22,13 @@ recomputed from evidence (oracle JSONs, the harness prompt file, gold files) and
 compared with the register's Status column. A claim above the evidence fails
 the run (exit 3). Understated claims are reported, not failed.
 
+SenseRun #17 (2026-10-06) added the trap guard: every item in an oracle names a
+trap the scorer can see, and that trap differs from the item's own answer; or
+the oracle names the item in `_meta.trap_not_encoded` with the reason. A silent
+gap or a trap equal to the answer fails the run (exit 3). It was written after
+SF-INV-004 turned out to have a trap identical to its answer, which is why the
+trap had never been encoded and why nothing noticed.
+
 Usage:  python3 scripts/bench-audit.py            (from anywhere in the repo)
         python3 scripts/bench-audit.py /path/to/repo
 """
@@ -107,6 +114,45 @@ def earned(item_id, file_cell):
     if item_id in _oracle or item_id in _gold: return 'ORACLE-READY'
     if re.search(r'reviewed:', file_cell or ''): return 'REVIEWED'
     return 'AUTHORED'
+# ── traps: every executable item's trap is visible to its scorer and differs from its answer, or is named ──
+def _close(a, b):
+    try: return abs(float(a) - float(b)) <= max(0.5, 0.005 * abs(float(b)))
+    except (TypeError, ValueError): return False
+trap_problems, trap_named, trap_seen = [], {}, 0
+for _p in sorted(glob.glob(R + 'items/*_oracle.json')):
+    _o = _load(os.path.relpath(_p, R)); _fmt = os.path.basename(_p).split('_')[0].upper()
+    _nn = (_o.get('_meta') or {}).get('trap_not_encoded') or {}
+    for _iid, _it in (_o.get('items') or {}).items():
+        if not isinstance(_it, dict): continue
+        if _iid in _nn and str(_nn[_iid]).strip():
+            trap_named[_iid] = _nn[_iid]
+            if _it.get('trap'): trap_problems.append((_iid, 'named as not encoded, yet it carries a trap'))
+            continue
+        if _fmt == 'SF':
+            _t = _it.get('trap') or {}
+            if not _t: trap_problems.append((_iid, 'no trap value and no named reason')); continue
+            for _f, _vals in _t.items():
+                _spec = (_it.get('fields') or {}).get(_f)
+                if not _spec: trap_problems.append((_iid, 'the trap names a field the item does not ask: %s' % _f)); continue
+                _acc = [_spec.get('expected')] + list(_spec.get('accept', []))
+                for _tv in _vals:
+                    if _spec.get('kind') == 'number':
+                        if _close(_tv, _spec.get('expected')): trap_problems.append((_iid, 'trap %s equals the answer for %s' % (_tv, _f)))
+                    elif _tv in _acc: trap_problems.append((_iid, 'trap %r is an accepted answer for %s' % (_tv, _f)))
+        elif _fmt == 'TRAP':
+            if not _it.get('trap'): trap_problems.append((_iid, 'no trap option')); continue
+            if _it.get('trap') == _it.get('reference'): trap_problems.append((_iid, 'the trap option is the reference'))
+            if _it.get('trap') not in (_it.get('options') or []): trap_problems.append((_iid, 'the trap is not among the options'))
+        elif _fmt == 'ARC':
+            if not _it.get('confusable'): trap_problems.append((_iid, 'no confusable named')); continue
+            if _it.get('confusable') == _it.get('archetype'): trap_problems.append((_iid, 'the confusable is the archetype'))
+        elif _fmt == 'DYN':
+            if not _it.get('trap_mode'): trap_problems.append((_iid, 'no trap trajectory')); continue
+            if _it.get('trap_mode') == _it.get('behavior_mode') and _it.get('trap_features') == _it.get('features'):
+                trap_problems.append((_iid, 'the trap trajectory is the reference trajectory'))
+        elif _fmt == 'CLD':
+            if not str(_it.get('trap') or '').strip(): trap_problems.append((_iid, 'no trap named')); continue
+        trap_seen += 1
 maturity = collections.Counter(); violations = []; understated = []
 for row in items:
     _id = row[0]; _file = row[i_file] if (i_file is not None and i_file < len(row)) else ''
@@ -212,6 +258,23 @@ _sf_exec = sum(1 for row in items if row[0].startswith('SF-') and earned(row[0],
 A('The SF format has %d of %d items executable through `engine/sf-score.py` (SenseRun #13); the rest ask for a' % (_sf_exec, fmts.get('SF', 0)))
 A('classification or a comparative sketch that no field can hold, and stay `AUTHORED` on purpose.')
 A('')
+A('## Traps — every executable item names one its scorer can see')
+A('')
+A('%d item(s) in the oracles carry a trap that differs from their own answer. %d are named without one, each with its reason:' % (trap_seen, len(trap_named)))
+for _iid in sorted(trap_named):
+    A('- `%s`' % _iid)
+if trap_named:
+    A('')
+    A('Reason given: %s' % sorted(set(trap_named.values()))[0] if len(set(trap_named.values())) == 1 else 'Reasons are recorded in each oracle\'s `_meta.trap_not_encoded`.')
+if trap_problems:
+    A('')
+    A('**TRAP GUARD FAILED — %d problem(s):**' % len(trap_problems))
+    for _iid, _why in trap_problems[:20]:
+        A('- `%s`: %s' % (_iid, _why))
+else:
+    A('')
+    A('**Trap guard: no silent gap, and no trap equals its answer.**')
+A('')
 A('## Version and count, checked')
 A('')
 A('| Source | Says |')
@@ -248,4 +311,9 @@ print('  maturity: %s' % dict(maturity))
 if has_status and violations:
     print('  GUARD FAILED: %d claim(s) above evidence' % len(violations)); sys.exit(3)
 print('  guard: %s' % ('every claimed rung is earned' if has_status else 'no Status column to guard'))
+print('  traps: %d carry a distinct trap; %d named without one' % (trap_seen, len(trap_named)))
+if trap_problems:
+    for _iid, _why in trap_problems[:20]: print('    %s: %s' % (_iid, _why))
+    print('  TRAP GUARD FAILED: %d problem(s)' % len(trap_problems)); sys.exit(3)
+print('  trap guard: no silent gap, and no trap equals its answer')
 # usage: python3 scripts/bench-audit.py [repo-root] [--write-status]   (--write-status rewrites the Status column from evidence)
