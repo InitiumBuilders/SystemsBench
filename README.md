@@ -277,6 +277,10 @@ to start: you are who this is for.
 - **Contact:** Ember@Outlier.Systems
 - **Contribute / evolve:** EVOLVE@Outlier.Systems
 
+## License
+
+MIT. See [LICENSE](LICENSE). Copyright (c) 2026 August James Domanchuk. Forks and pull requests are welcome.
+
 ---
 
 <div align="center">
